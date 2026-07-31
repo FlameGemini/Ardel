@@ -1,0 +1,257 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <resheader name="resmimetype"><value>text/microsoft-resx</value></resheader>
+  <resheader name="version"><value>2.0</value></resheader>
+  <resheader name="reader"><value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader>
+  <resheader name="writer"><value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader>
+  <data name="Brand_Name" xml:space="preserve"><value>Ardel</value></data>
+  <data name="Nav_Play" xml:space="preserve"><value>プレイ</value></data>
+  <data name="Nav_Download" xml:space="preserve"><value>ダウンロード</value></data>
+  <data name="Nav_Instances" xml:space="preserve"><value>プロファイル</value></data>
+  <data name="Nav_Settings" xml:space="preserve"><value>設定</value></data>
+  <data name="Action_Launch" xml:space="preserve"><value>起動</value></data>
+  <data name="Action_Cancel" xml:space="preserve"><value>キャンセル</value></data>
+  <data name="Action_Download" xml:space="preserve"><value>ダウンロード</value></data>
+  <data name="Action_Refresh" xml:space="preserve"><value>更新</value></data>
+  <data name="Action_Save" xml:space="preserve"><value>保存</value></data>
+  <data name="Action_Rescan" xml:space="preserve"><value>再スキャン</value></data>
+  <data name="Action_Browse" xml:space="preserve"><value>参照…</value></data>
+  <data name="Action_OpenFolder" xml:space="preserve"><value>フォルダーを開く</value></data>
+  <data name="Action_OpenMinecraftFolder" xml:space="preserve"><value>.minecraft を開く</value></data>
+  <data name="Action_Delete" xml:space="preserve"><value>削除</value></data>
+  <data name="Home_Tagline" xml:space="preserve"><value>Minecraft を起動</value></data>
+  <data name="Home_Version" xml:space="preserve"><value>バージョン</value></data>
+  <data name="Home_PlayerOffline" xml:space="preserve"><value>プレイヤー名（オフライン）</value></data>
+  <data name="Home_Ready" xml:space="preserve"><value>準備完了</value></data>
+  <data name="Home_GoDownload" xml:space="preserve"><value>ダウンロードページでゲームを入手してください</value></data>
+  <data name="Home_InitFailed" xml:space="preserve"><value>初期化に失敗しました: {0}</value></data>
+  <data name="Home_Preparing" xml:space="preserve"><value>{0} を準備中…</value></data>
+  <data name="Home_Starting" xml:space="preserve"><value>{0} を起動中…</value></data>
+  <data name="Home_ResolvingJava" xml:space="preserve"><value>Java を確認中…</value></data>
+  <data name="Home_DownloadingJava" xml:space="preserve"><value>Java {0} をダウンロード中…</value></data>
+  <data name="Home_LaunchingGame" xml:space="preserve"><value>ゲームを起動中…</value></data>
+  <data name="Home_WaitingForWindow" xml:space="preserve"><value>ゲームウィンドウを待機中…</value></data>
+  <data name="Home_GameRunning" xml:space="preserve"><value>ゲーム実行中</value></data>
+  <data name="Home_GameExited" xml:space="preserve"><value>ゲームが終了しました</value></data>
+  <data name="Home_LaunchFailed" xml:space="preserve"><value>起動に失敗しました: {0}</value></data>
+  <data name="Home_Cancelled" xml:space="preserve"><value>キャンセルしました</value></data>
+  <data name="Home_Cancelling" xml:space="preserve"><value>キャンセル中…</value></data>
+  <data name="Home_DownloadingBytes" xml:space="preserve"><value>ダウンロード中 {0} / {1}</value></data>
+  <data name="Instances_Title" xml:space="preserve"><value>プロファイル</value></data>
+  <data name="Instances_Subtitle" xml:space="preserve"><value>この PC にインストール済みのゲームバージョン</value></data>
+  <data name="Instances_Empty" xml:space="preserve"><value>プロファイルがありません — 先にダウンロードしてください</value></data>
+  <data name="Instances_Count" xml:space="preserve"><value>{0} 件のプロファイル</value></data>
+  <data name="Instances_LoadFailed" xml:space="preserve"><value>プロファイルを読み込めませんでした: {0}</value></data>
+  <data name="Instances_OpenSettings" xml:space="preserve"><value>プロファイルフォルダーを開く</value></data>
+  <data name="Instances_OpenedFolder" xml:space="preserve"><value>{0} を開きました</value></data>
+  <data name="Instances_DeleteTitle" xml:space="preserve"><value>プロファイルを削除</value></data>
+  <data name="Instances_DeleteConfirm" xml:space="preserve"><value>「{0}」を削除しますか？バージョンフォルダーが削除され、元に戻せません。</value></data>
+  <data name="Instances_Deleting" xml:space="preserve"><value>{0} を削除中…</value></data>
+  <data name="Instances_Deleted" xml:space="preserve"><value>{0} を削除しました</value></data>
+  <data name="Instances_DeleteFailed" xml:space="preserve"><value>{0} を削除できませんでした: {1}</value></data>
+  <data name="Instances_DeleteNoUi" xml:space="preserve"><value>削除ダイアログを表示できません — プロファイルページを開き直して再試行してください。</value></data>
+  <data name="Home_ProcessError" xml:space="preserve"><value>プロセスエラー: {0}</value></data>
+  <data name="Download_Type" xml:space="preserve"><value>種類</value></data>
+  <data name="Download_Search" xml:space="preserve"><value>検索</value></data>
+  <data name="Download_SearchPlaceholder" xml:space="preserve"><value>例: 1.21</value></data>
+  <data name="Download_Installed" xml:space="preserve"><value>インストール済み</value></data>
+  <data name="Download_JavaTag" xml:space="preserve"><value>Java {0}</value></data>
+  <data name="Download_JavaTagPending" xml:space="preserve"><value>Java …</value></data>
+  <data name="Download_SelectHint" xml:space="preserve"><value>バージョンをクリックして名前とローダーを選択</value></data>
+  <data name="Download_SelectRelease" xml:space="preserve"><value>リリースをクリックしてインストール</value></data>
+  <data name="Download_SelectSnapshot" xml:space="preserve"><value>スナップショットは不安定な場合があります — クリックでインストール</value></data>
+  <data name="Download_Fetching" xml:space="preserve"><value>バージョン一覧を取得中…</value></data>
+  <data name="Download_Available" xml:space="preserve"><value>{0} 件のバージョンが利用可能</value></data>
+  <data name="Download_AvailableBusy" xml:space="preserve"><value>{0} 件のタスク · {1} 件のバージョン</value></data>
+  <data name="Download_LoadFailed" xml:space="preserve"><value>読み込みに失敗しました: {0}</value></data>
+  <data name="Download_Started" xml:space="preserve"><value>{0} を開始 · 実行中 {1}</value></data>
+  <data name="Download_Waiting" xml:space="preserve"><value>待機中…</value></data>
+  <data name="Download_WaitingGate" xml:space="preserve"><value>別のタスクを待機中…</value></data>
+  <data name="Download_InitLauncher" xml:space="preserve"><value>インストーラーを起動中…</value></data>
+  <data name="Download_PreparingFiles" xml:space="preserve"><value>準備中…</value></data>
+  <data name="Download_ResolvingFiles" xml:space="preserve"><value>バージョンファイルを解決中…</value></data>
+  <data name="Download_ResolvingElapsed" xml:space="preserve"><value>バージョンファイルを解決中…（{0} 秒）</value></data>
+  <data name="Download_CheckingFiles" xml:space="preserve"><value>ファイルを確認中 {0}/{1}</value></data>
+  <data name="Download_DownloadingCount" xml:space="preserve"><value>ダウンロード中 {0}/{1}</value></data>
+  <data name="Download_Queued" xml:space="preserve"><value>キュー待ち…</value></data>
+  <data name="Download_Cancelling" xml:space="preserve"><value>キャンセル中…</value></data>
+  <data name="Download_Cancelled" xml:space="preserve"><value>キャンセルしました</value></data>
+  <data name="Download_CancelledNamed" xml:space="preserve"><value>{0} をキャンセルしました</value></data>
+  <data name="Download_Downloaded" xml:space="preserve"><value>ダウンロード完了</value></data>
+  <data name="Download_DownloadedNamed" xml:space="preserve"><value>{0} をダウンロードしました</value></data>
+  <data name="Download_CompleteToast" xml:space="preserve"><value>ダウンロード完了 · {0}</value></data>
+  <data name="Download_Failed" xml:space="preserve"><value>失敗 {0}: {1}</value></data>
+  <data name="Download_CannotOpenFolder" xml:space="preserve"><value>フォルダーを開けません: {0}</value></data>
+  <data name="Download_FlyoutHeader" xml:space="preserve"><value>タスク</value></data>
+  <data name="Download_FlyoutHeaderCount" xml:space="preserve"><value>タスク（{0}）</value></data>
+  <data name="Download_AlreadyRunning" xml:space="preserve"><value>{0} はすでにタスク一覧にあります</value></data>
+  <data name="Category_Release" xml:space="preserve"><value>リリース</value></data>
+  <data name="Category_Snapshot" xml:space="preserve"><value>スナップショット</value></data>
+  <data name="Settings_Title" xml:space="preserve"><value>設定</value></data>
+  <data name="Settings_Java" xml:space="preserve"><value>Java</value></data>
+  <data name="Settings_JavaPlaceholder" xml:space="preserve"><value>自動 / 未選択</value></data>
+  <data name="Settings_MaxMemory" xml:space="preserve"><value>最大メモリ</value></data>
+  <data name="Settings_MemoryUnitMb" xml:space="preserve"><value> MB</value></data>
+  <data name="Settings_BmclTitle" xml:space="preserve"><value>BMCLAPI ミラー</value></data>
+  <data name="Settings_BmclHint" xml:space="preserve"><value>一部地域でアセットやライブラリの取得を速くできる任意のミラー</value></data>
+  <data name="Settings_Off" xml:space="preserve"><value>オフ</value></data>
+  <data name="Settings_On" xml:space="preserve"><value>オン</value></data>
+  <data name="Settings_GameDirectory" xml:space="preserve"><value>ゲームディレクトリ</value></data>
+  <data name="Settings_GameDirectoryHint" xml:space="preserve"><value>実行ファイル横の .minecraft に固定（ポータブル）。バージョン分離が強制され、各バージョンに独自の mods / saves / config があります。</value></data>
+  <data name="Settings_SourceBmcl" xml:space="preserve"><value>ダウンロード元: BMCLAPI</value></data>
+  <data name="Settings_SourceOfficial" xml:space="preserve"><value>ダウンロード元: 公式</value></data>
+  <data name="Settings_FoundJava" xml:space="preserve"><value>{0} 件の Java を検出</value></data>
+  <data name="Settings_ScanFailed" xml:space="preserve"><value>スキャンに失敗しました: {0}</value></data>
+  <data name="Settings_SelectJavaExe" xml:space="preserve"><value>java.exe を選択してください</value></data>
+  <data name="Settings_JavaUpdated" xml:space="preserve"><value>Java パスを更新しました</value></data>
+  <data name="Settings_BrowseFailed" xml:space="preserve"><value>参照に失敗しました: {0}</value></data>
+  <data name="Settings_CannotOpenFolder" xml:space="preserve"><value>フォルダーを開けません: {0}</value></data>
+  <data name="Settings_Saved" xml:space="preserve"><value>保存しました</value></data>
+  <data name="Settings_SaveFailed" xml:space="preserve"><value>保存に失敗しました: {0}</value></data>
+  <data name="Settings_JavaAuto" xml:space="preserve"><value>Java は自動で選択されます</value></data>
+  <data name="Settings_JavaSelected" xml:space="preserve"><value>Java {0} を使用</value></data>
+  <data name="Settings_Language" xml:space="preserve"><value>言語</value></data>
+  <data name="Settings_LanguageSystem" xml:space="preserve"><value>システム既定</value></data>
+  <data name="Settings_LanguageEnglish" xml:space="preserve"><value>English</value></data>
+  <data name="Settings_LanguageChinese" xml:space="preserve"><value>简体中文</value></data>
+  <data name="Settings_LanguageJapanese" xml:space="preserve"><value>日本語</value></data>
+  <data name="Settings_LanguageRestartHint" xml:space="preserve"><value>言語を選んで「適用」をクリックしてください。</value></data>
+  <data name="Settings_RestartNow" xml:space="preserve"><value>適用</value></data>
+  <data name="Settings_LanguageApplied" xml:space="preserve"><value>言語: {0} · ナビ例: {1}</value></data>
+  <data name="Settings_ScanningJava" xml:space="preserve"><value>Java をスキャン中…</value></data>
+  <data name="Version_Fabric" xml:space="preserve"><value>Fabric {0}</value></data>
+  <data name="Version_Forge" xml:space="preserve"><value>Forge {0}</value></data>
+  <data name="Version_NeoForge" xml:space="preserve"><value>NeoForge {0}</value></data>
+  <data name="Version_OptiFine" xml:space="preserve"><value>OptiFine {0}</value></data>
+  <data name="Version_Vanilla" xml:space="preserve"><value>バニラ</value></data>
+  <data name="Version_Custom" xml:space="preserve"><value>カスタム</value></data>
+  <data name="Java_NamedWithSource" xml:space="preserve"><value>Java {0}（{1}）</value></data>
+  <data name="Java_NamedWithPath" xml:space="preserve"><value>Java {0} — {1}</value></data>
+  <data name="Java_SourceJavaHome" xml:space="preserve"><value>JAVA_HOME</value></data>
+  <data name="Java_SourcePath" xml:space="preserve"><value>PATH</value></data>
+  <data name="Java_SourceCommon" xml:space="preserve"><value>一般</value></data>
+  <data name="Java_SourceRegistry" xml:space="preserve"><value>レジストリ</value></data>
+  <data name="Java_SourceRegistryNamed" xml:space="preserve"><value>レジストリ（{0}）</value></data>
+  <data name="Progress_FileFallback" xml:space="preserve"><value>ファイル</value></data>
+  <data name="Unit_Byte" xml:space="preserve"><value>B</value></data>
+  <data name="Unit_Kilobyte" xml:space="preserve"><value>KB</value></data>
+  <data name="Unit_Megabyte" xml:space="preserve"><value>MB</value></data>
+  <data name="Unit_Gigabyte" xml:space="preserve"><value>GB</value></data>
+  <data name="Install_Title" xml:space="preserve"><value>{0} をインストール</value></data>
+  <data name="Install_VersionName" xml:space="preserve"><value>バージョン名</value></data>
+  <data name="Install_VersionNamePlaceholder" xml:space="preserve"><value>versions/ 下のフォルダー名</value></data>
+  <data name="Install_Loader" xml:space="preserve"><value>あわせてインストール</value></data>
+  <data name="Install_LoaderNone" xml:space="preserve"><value>バニラのみ</value></data>
+  <data name="Install_LoaderFabric" xml:space="preserve"><value>Fabric</value></data>
+  <data name="Install_LoaderForge" xml:space="preserve"><value>Forge</value></data>
+  <data name="Install_LoaderNeoForge" xml:space="preserve"><value>NeoForge</value></data>
+  <data name="Install_LoaderOptiFine" xml:space="preserve"><value>OptiFine</value></data>
+  <data name="Install_LoaderExclusiveHint" xml:space="preserve"><value>Forge・Fabric・NeoForge・OptiFine は併用できません — 最大で 1 つ選んでください。</value></data>
+  <data name="Install_LoaderVersion" xml:space="preserve"><value>ローダーバージョン</value></data>
+  <data name="Install_OptiFineVersion" xml:space="preserve"><value>OptiFine バージョン</value></data>
+  <data name="Install_LoadingLoaders" xml:space="preserve"><value>ローダーバージョンを読み込み中…</value></data>
+  <data name="Install_LoadingOptiFine" xml:space="preserve"><value>OptiFine バージョンを読み込み中…</value></data>
+  <data name="Install_NoLoaders" xml:space="preserve"><value>この Minecraft バージョン向けのローダーが見つかりません。</value></data>
+  <data name="Install_NoOptiFine" xml:space="preserve"><value>この Minecraft バージョン向けの OptiFine が見つかりません。</value></data>
+  <data name="Install_LoaderCount" xml:space="preserve"><value>{0} 件のビルドが利用可能</value></data>
+  <data name="Install_OptiFineCount" xml:space="preserve"><value>{0} 件の OptiFine ビルドが利用可能</value></data>
+  <data name="Install_LoaderLoadFailed" xml:space="preserve"><value>ローダーバージョンを読み込めませんでした: {0}</value></data>
+  <data name="Install_OptiFineLoadFailed" xml:space="preserve"><value>OptiFine バージョンを読み込めませんでした: {0}</value></data>
+  <data name="Install_SelectLoaderVersion" xml:space="preserve"><value>ローダーバージョンを選択してください。</value></data>
+  <data name="Install_SelectOptiFineVersion" xml:space="preserve"><value>OptiFine バージョンを選択してください。</value></data>
+  <data name="Install_FabricApi" xml:space="preserve"><value>Fabric API もインストール</value></data>
+  <data name="Install_FabricApiHint" xml:space="preserve"><value>このバージョンの mods フォルダーに Fabric API をダウンロードします（Modrinth 優先、次に CurseForge）。</value></data>
+  <data name="Conflict_WithAddon" xml:space="preserve"><value>{0} は {1} と互換性がありません。</value></data>
+  <data name="Conflict_Incompatible" xml:space="preserve"><value>これらのアドオンは併用できません。</value></data>
+  <data name="LoaderTag_Stable" xml:space="preserve"><value>安定</value></data>
+  <data name="LoaderTag_Unstable" xml:space="preserve"><value>不安定</value></data>
+  <data name="LoaderTag_Recommended" xml:space="preserve"><value>推奨</value></data>
+  <data name="LoaderTag_Latest" xml:space="preserve"><value>最新</value></data>
+  <data name="LoaderTag_Named" xml:space="preserve"><value>{0}（{1}）</value></data>
+  <data name="Progress_FileCount" xml:space="preserve"><value>{0}  {1}/{2}</value></data>
+  <data name="FabricApi_Resolving" xml:space="preserve"><value>Fabric API を検索中…</value></data>
+  <data name="FabricApi_Downloading" xml:space="preserve"><value>Fabric API をダウンロード中（{1}）: {0}</value></data>
+  <data name="FabricApi_Installed" xml:space="preserve"><value>Fabric API 準備完了（{1}）: {0}</value></data>
+  <data name="FabricApi_NotFound" xml:space="preserve"><value>Minecraft {0} 向けの Fabric API が見つかりません。</value></data>
+  <data name="FabricApi_ResolveFailed" xml:space="preserve"><value>{0} の Fabric API を解決できませんでした: {1}</value></data>
+  <data name="FabricApi_BothFailed" xml:space="preserve"><value>Modrinth: {0}; CurseForge: {1}</value></data>
+  <data name="FabricApi_SourceModrinth" xml:space="preserve"><value>Modrinth</value></data>
+  <data name="FabricApi_SourceCurseForge" xml:space="preserve"><value>CurseForge</value></data>
+  <data name="Error_BmclSetupFailed" xml:space="preserve"><value>BMCLAPI ミラーの設定に失敗しました。</value></data>
+  <data name="Error_LoaderEmptyId" xml:space="preserve"><value>MOD ローダーのインストールが空のバージョン ID を返しました。</value></data>
+  <data name="Error_FabricProfileInvalid" xml:space="preserve"><value>Fabric プロファイルが正しく作成されませんでした。Minecraft ID と異なるバージョン名を選んで再試行してください。</value></data>
+  <data name="Error_JavaNotFound" xml:space="preserve"><value>設定された Java パスが見つかりません。</value></data>
+  <data name="Error_JavaTooOld" xml:space="preserve"><value>Minecraft {0} には Java {1}+ が必要ですが、選択中の Java は {2} です。</value></data>
+  <data name="Error_JavaExeNotFound" xml:space="preserve"><value>java.exe が見つかりません。</value></data>
+  <data name="Error_JavaProcessStart" xml:space="preserve"><value>プロセスを起動できませんでした: {0}</value></data>
+  <data name="Error_JavaVersionParse" xml:space="preserve"><value>出力から Java バージョンを解析できません:{0}{1}</value></data>
+  <data name="Error_ProcessStartFailed" xml:space="preserve"><value>Minecraft プロセスを起動できませんでした。</value></data>
+  <data name="Error_VersionFolderNotFound" xml:space="preserve"><value>バージョンフォルダーが見つかりません: {0}</value></data>
+  <data name="Error_VersionAlreadyExists" xml:space="preserve"><value>バージョンは既に存在します: {0}</value></data>
+  <data name="Error_VersionDeleteLocked" xml:space="preserve"><value>「{0}」を削除できません — ゲームと開いているフォルダーを閉じてから再試行してください。</value></data>
+  <data name="Error_JavaDownloadFailed" xml:space="preserve"><value>Java {0} のダウンロードに失敗しました: {1}</value></data>
+  <data name="Error_AlreadyInstalling" xml:space="preserve"><value>インストールは既に進行中です。</value></data>
+  <data name="Error_FileDownloadFailed" xml:space="preserve"><value>{0} のダウンロードに失敗しました</value></data>
+  <data name="Error_HttpStatus" xml:space="preserve"><value>HTTP {0}</value></data>
+  <data name="Error_TimedOut" xml:space="preserve"><value>タイムアウト</value></data>
+  <data name="Error_Unknown" xml:space="preserve"><value>不明</value></data>
+  <data name="Validate_VersionEmpty" xml:space="preserve"><value>バージョン名を空にできません。</value></data>
+  <data name="Validate_NameLeadingSpace" xml:space="preserve"><value>名前をスペースで始められません。</value></data>
+  <data name="Validate_NameTrailingSpace" xml:space="preserve"><value>名前をスペースで終えられません。</value></data>
+  <data name="Validate_NameTrailingDot" xml:space="preserve"><value>名前をピリオドで終えられません。</value></data>
+  <data name="Validate_NameTooLong" xml:space="preserve"><value>名前は最大 {0} 文字です。</value></data>
+  <data name="Validate_NameInvalidChar" xml:space="preserve"><value>名前に使用できない文字: {0}</value></data>
+  <data name="Validate_NameReserved" xml:space="preserve"><value>名前に {0} は使用できません。</value></data>
+  <data name="Validate_NameNtfs83" xml:space="preserve"><value>この特殊な形式の名前は使用できません。</value></data>
+  <data name="Validate_VersionExists" xml:space="preserve"><value>同じ名前のバージョンフォルダーが既に存在します。</value></data>
+  <data name="Validate_LoaderNameEqualsMc" xml:space="preserve"><value>ローダープロファイルは Minecraft バージョンと同じ名前にできません（バニラを上書きします）。1.21.1-fabric のような名前を試してください。</value></data>
+  <data name="Validate_PlayerEmpty" xml:space="preserve"><value>プレイヤー名を空にできません。</value></data>
+  <data name="Validate_PlayerQuote" xml:space="preserve"><value>プレイヤー名に引用符（&quot;）を含められません。</value></data>
+  <data name="Validate_PlayerTooLong" xml:space="preserve"><value>プレイヤー名は 16 文字以下にしてください。</value></data>
+  <data name="Default_PlayerName" xml:space="preserve"><value>プレイヤー</value></data>
+  <data name="Action_Search" xml:space="preserve"><value>検索</value></data>
+  <data name="Action_Reset" xml:space="preserve"><value>リセット</value></data>
+  <data name="Mod_Keyword" xml:space="preserve"><value>キーワード</value></data>
+  <data name="Mod_KeywordPlaceholder" xml:space="preserve"><value>名前または ID</value></data>
+  <data name="Mod_Source" xml:space="preserve"><value>ソース</value></data>
+  <data name="Mod_Version" xml:space="preserve"><value>ゲームバージョン</value></data>
+  <data name="Mod_Category" xml:space="preserve"><value>カテゴリ</value></data>
+  <data name="Mod_Loader" xml:space="preserve"><value>ローダー</value></data>
+  <data name="Mod_SourceAll" xml:space="preserve"><value>すべてのソース</value></data>
+  <data name="Mod_SourceCurseForge" xml:space="preserve"><value>CurseForge</value></data>
+  <data name="Mod_SourceModrinth" xml:space="preserve"><value>Modrinth</value></data>
+  <data name="Mod_VersionAll" xml:space="preserve"><value>任意のバージョン</value></data>
+  <data name="Mod_LoaderAny" xml:space="preserve"><value>任意のローダー</value></data>
+  <data name="Mod_LoaderForge" xml:space="preserve"><value>Forge</value></data>
+  <data name="Mod_LoaderNeoForge" xml:space="preserve"><value>NeoForge</value></data>
+  <data name="Mod_LoaderFabric" xml:space="preserve"><value>Fabric</value></data>
+  <data name="Mod_LoaderQuilt" xml:space="preserve"><value>Quilt</value></data>
+  <data name="Mod_LoaderLiteLoader" xml:space="preserve"><value>LiteLoader</value></data>
+  <data name="Mod_CategoryAll" xml:space="preserve"><value>すべてのカテゴリ</value></data>
+  <data name="Mod_CategoryWorldGen" xml:space="preserve"><value>ワールド生成</value></data>
+  <data name="Mod_CategoryBiomes" xml:space="preserve"><value>バイオーム</value></data>
+  <data name="Mod_CategoryDimensions" xml:space="preserve"><value>ディメンション</value></data>
+  <data name="Mod_CategoryOres" xml:space="preserve"><value>鉱石と資源</value></data>
+  <data name="Mod_CategoryStructures" xml:space="preserve"><value>構造物</value></data>
+  <data name="Mod_CategoryTechnology" xml:space="preserve"><value>テクノロジー</value></data>
+  <data name="Mod_CategoryLogistics" xml:space="preserve"><value>物流</value></data>
+  <data name="Mod_CategoryAutomation" xml:space="preserve"><value>自動化</value></data>
+  <data name="Mod_CategoryEnergy" xml:space="preserve"><value>エネルギー</value></data>
+  <data name="Mod_CategoryRedstone" xml:space="preserve"><value>レッドストーン</value></data>
+  <data name="Mod_CategoryFood" xml:space="preserve"><value>食料と調理</value></data>
+  <data name="Mod_CategoryFarming" xml:space="preserve"><value>農業</value></data>
+  <data name="Mod_CategoryGameMechanics" xml:space="preserve"><value>ゲームメカニクス</value></data>
+  <data name="Mod_CategoryTransport" xml:space="preserve"><value>輸送</value></data>
+  <data name="Mod_CategoryStorage" xml:space="preserve"><value>保管</value></data>
+  <data name="Mod_CategoryMagic" xml:space="preserve"><value>魔法</value></data>
+  <data name="Mod_CategoryAdventure" xml:space="preserve"><value>冒険</value></data>
+  <data name="Mod_CategoryDecoration" xml:space="preserve"><value>装飾</value></data>
+  <data name="Mod_CategoryMobs" xml:space="preserve"><value>モブ</value></data>
+  <data name="Mod_CategoryUtility" xml:space="preserve"><value>ユーティリティ</value></data>
+  <data name="Mod_CategoryEquipment" xml:space="preserve"><value>装備とツール</value></data>
+  <data name="Mod_CategoryCreative" xml:space="preserve"><value>クリエイティブ</value></data>
+  <data name="Mod_CategoryOptimization" xml:space="preserve"><value>最適化</value></data>
+  <data name="Mod_CategoryInfo" xml:space="preserve"><value>情報表示</value></data>
+  <data name="Mod_CategorySocial" xml:space="preserve"><value>マルチプレイ</value></data>
+  <data name="Mod_CategoryLibrary" xml:space="preserve"><value>ライブラリ</value></data>
+</root>

@@ -1,0 +1,45 @@
+## Build
+bin/
+obj/
+.vs/
+*.user
+*.suo
+*.userosscache
+*.sln.docstates
+
+## NuGet
+**/packages/
+project.lock.json
+project.fragment.lock.json
+artifacts/
+
+## Publish / MSIX
+AppPackages/
+BundleArtifacts/
+Package.StoreAssociation.xml
+*_TemporaryKey.pfx
+*.appx
+*.msix
+*.msixbundle
+
+## IDE / OS
+.idea/
+*.swp
+Thumbs.db
+Desktop.ini
+
+## Logs & local settings
+*.log
+src/Ardel.Launcher/Assets/*.ico
+
+## Portable game data (dev)
+.minecraft/
+
+## Local scratch
+_tmp_api/
+_list_probe/
+## Portable auto-downloaded JREs ({exe}/java/{major})
+/java/
+## Legacy
+/runtime/
+.minecraft/runtime/

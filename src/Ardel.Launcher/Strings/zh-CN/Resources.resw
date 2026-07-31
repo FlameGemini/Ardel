@@ -1,0 +1,277 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <resheader name="resmimetype"><value>text/microsoft-resx</value></resheader>
+  <resheader name="version"><value>2.0</value></resheader>
+  <resheader name="reader"><value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader>
+  <resheader name="writer"><value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader>
+  <data name="Brand_Name" xml:space="preserve"><value>Ardel</value></data>
+
+  <data name="Nav_Play" xml:space="preserve"><value>开始游戏</value></data>
+  <data name="Nav_Download" xml:space="preserve"><value>下载</value></data>
+  <data name="Nav_Instances" xml:space="preserve"><value>游戏档案</value></data>
+  <data name="Nav_Settings" xml:space="preserve"><value>设置</value></data>
+
+  <data name="Action_Launch" xml:space="preserve"><value>启动</value></data>
+  <data name="Action_Cancel" xml:space="preserve"><value>取消</value></data>
+  <data name="Action_Download" xml:space="preserve"><value>下载</value></data>
+  <data name="Action_Refresh" xml:space="preserve"><value>刷新</value></data>
+  <data name="Action_Save" xml:space="preserve"><value>保存</value></data>
+  <data name="Action_Rescan" xml:space="preserve"><value>重新扫描</value></data>
+  <data name="Action_Browse" xml:space="preserve"><value>浏览…</value></data>
+  <data name="Action_OpenFolder" xml:space="preserve"><value>打开文件夹</value></data>
+  <data name="Action_OpenMinecraftFolder" xml:space="preserve"><value>打开 .minecraft</value></data>
+  <data name="Action_Delete" xml:space="preserve"><value>删除</value></data>
+
+  <data name="Home_Tagline" xml:space="preserve"><value>启动 Minecraft</value></data>
+  <data name="Home_Version" xml:space="preserve"><value>版本</value></data>
+  <data name="Home_PlayerOffline" xml:space="preserve"><value>玩家名（离线）</value></data>
+  <data name="Home_Ready" xml:space="preserve"><value>就绪</value></data>
+  <data name="Home_GoDownload" xml:space="preserve"><value>前往下载页获取游戏</value></data>
+  <data name="Home_InitFailed" xml:space="preserve"><value>初始化失败：{0}</value></data>
+  <data name="Home_Preparing" xml:space="preserve"><value>正在准备 {0}…</value></data>
+  <data name="Home_Starting" xml:space="preserve"><value>正在启动 {0}…</value></data>
+  <data name="Home_ResolvingJava" xml:space="preserve"><value>正在检查 Java…</value></data>
+  <data name="Home_DownloadingJava" xml:space="preserve"><value>正在下载 Java {0}…</value></data>
+  <data name="Home_LaunchingGame" xml:space="preserve"><value>正在启动游戏…</value></data>
+  <data name="Home_WaitingForWindow" xml:space="preserve"><value>等待游戏窗口出现…</value></data>
+  <data name="Home_GameRunning" xml:space="preserve"><value>游戏运行中</value></data>
+  <data name="Home_GameExited" xml:space="preserve"><value>游戏已退出</value></data>
+  <data name="Home_LaunchFailed" xml:space="preserve"><value>启动失败：{0}</value></data>
+  <data name="Home_Cancelled" xml:space="preserve"><value>已取消</value></data>
+  <data name="Home_Cancelling" xml:space="preserve"><value>正在取消…</value></data>
+  <data name="Home_DownloadingBytes" xml:space="preserve"><value>正在下载 {0} / {1}</value></data>
+
+  <data name="Instances_Title" xml:space="preserve"><value>游戏档案</value></data>
+  <data name="Instances_Subtitle" xml:space="preserve"><value>本机已安装的游戏版本</value></data>
+  <data name="Instances_Empty" xml:space="preserve"><value>还没有档案 — 请先去下载</value></data>
+  <data name="Instances_Count" xml:space="preserve"><value>{0} 个档案</value></data>
+  <data name="Instances_LoadFailed" xml:space="preserve"><value>无法加载档案：{0}</value></data>
+  <data name="Instances_OpenSettings" xml:space="preserve"><value>打开档案文件夹</value></data>
+  <data name="Instances_OpenedFolder" xml:space="preserve"><value>已打开 {0}</value></data>
+  <data name="Instances_DeleteTitle" xml:space="preserve"><value>删除档案</value></data>
+  <data name="Instances_DeleteConfirm" xml:space="preserve"><value>删除“{0}”？将移除该版本文件夹且无法恢复。</value></data>
+  <data name="Instances_Deleting" xml:space="preserve"><value>正在删除 {0}…</value></data>
+  <data name="Instances_Deleted" xml:space="preserve"><value>已删除 {0}</value></data>
+  <data name="Instances_DeleteFailed" xml:space="preserve"><value>无法删除 {0}：{1}</value></data>
+  <data name="Instances_DeleteNoUi" xml:space="preserve"><value>无法显示删除对话框 — 请重新打开游戏档案页后再试。</value></data>
+
+  <data name="Home_ProcessError" xml:space="preserve"><value>进程错误：{0}</value></data>
+
+  <data name="Download_Type" xml:space="preserve"><value>类型</value></data>
+  <data name="Download_Search" xml:space="preserve"><value>搜索</value></data>
+  <data name="Download_SearchPlaceholder" xml:space="preserve"><value>例如 1.21</value></data>
+  <data name="Download_Installed" xml:space="preserve"><value>已安装</value></data>
+  <data name="Download_JavaTag" xml:space="preserve"><value>Java {0}</value></data>
+  <data name="Download_JavaTagPending" xml:space="preserve"><value>Java …</value></data>
+  <data name="Download_SelectHint" xml:space="preserve"><value>点击版本以选择名称与加载器</value></data>
+  <data name="Download_SelectRelease" xml:space="preserve"><value>点击正式版开始安装</value></data>
+  <data name="Download_SelectSnapshot" xml:space="preserve"><value>快照可能不稳定 — 点击即可安装</value></data>
+  <data name="Download_Fetching" xml:space="preserve"><value>正在获取版本列表…</value></data>
+  <data name="Download_Available" xml:space="preserve"><value>共 {0} 个可用版本</value></data>
+  <data name="Download_AvailableBusy" xml:space="preserve"><value>{0} 个任务 · {1} 个可用版本</value></data>
+  <data name="Download_LoadFailed" xml:space="preserve"><value>加载失败：{0}</value></data>
+  <data name="Download_Started" xml:space="preserve"><value>已开始 {0} · {1} 进行中</value></data>
+  <data name="Download_Waiting" xml:space="preserve"><value>等待中…</value></data>
+  <data name="Download_WaitingGate" xml:space="preserve"><value>等待其他任务…</value></data>
+  <data name="Download_InitLauncher" xml:space="preserve"><value>正在启动安装程序…</value></data>
+  <data name="Download_PreparingFiles" xml:space="preserve"><value>准备中…</value></data>
+  <data name="Download_ResolvingFiles" xml:space="preserve"><value>正在解析版本文件…</value></data>
+  <data name="Download_ResolvingElapsed" xml:space="preserve"><value>正在解析版本文件…（{0} 秒）</value></data>
+  <data name="Download_CheckingFiles" xml:space="preserve"><value>正在检查文件 {0}/{1}</value></data>
+  <data name="Download_DownloadingCount" xml:space="preserve"><value>正在下载 {0}/{1}</value></data>
+  <data name="Download_Queued" xml:space="preserve"><value>已排队…</value></data>
+  <data name="Download_Cancelling" xml:space="preserve"><value>正在取消…</value></data>
+  <data name="Download_Cancelled" xml:space="preserve"><value>已取消</value></data>
+  <data name="Download_CancelledNamed" xml:space="preserve"><value>已取消 {0}</value></data>
+  <data name="Download_Downloaded" xml:space="preserve"><value>已下载</value></data>
+  <data name="Download_DownloadedNamed" xml:space="preserve"><value>已下载 {0}</value></data>
+  <data name="Download_CompleteToast" xml:space="preserve"><value>下载完成 · {0}</value></data>
+  <data name="Download_Failed" xml:space="preserve"><value>失败 {0}：{1}</value></data>
+  <data name="Download_CannotOpenFolder" xml:space="preserve"><value>无法打开文件夹：{0}</value></data>
+  <data name="Download_FlyoutHeader" xml:space="preserve"><value>任务</value></data>
+  <data name="Download_FlyoutHeaderCount" xml:space="preserve"><value>任务（{0}）</value></data>
+  <data name="Download_AlreadyRunning" xml:space="preserve"><value>{0} 已在任务列表中</value></data>
+
+  <data name="Category_Release" xml:space="preserve"><value>正式版</value></data>
+  <data name="Category_Snapshot" xml:space="preserve"><value>快照</value></data>
+
+  <data name="Settings_Title" xml:space="preserve"><value>设置</value></data>
+  <data name="Settings_Java" xml:space="preserve"><value>Java</value></data>
+  <data name="Settings_JavaPlaceholder" xml:space="preserve"><value>自动 / 未选择</value></data>
+  <data name="Settings_MaxMemory" xml:space="preserve"><value>最大内存</value></data>
+  <data name="Settings_MemoryUnitMb" xml:space="preserve"><value> MB</value></data>
+  <data name="Settings_BmclTitle" xml:space="preserve"><value>BMCLAPI 镜像</value></data>
+  <data name="Settings_BmclHint" xml:space="preserve"><value>可选镜像，部分地区可加快资源与库下载</value></data>
+  <data name="Settings_Off" xml:space="preserve"><value>关</value></data>
+  <data name="Settings_On" xml:space="preserve"><value>开</value></data>
+  <data name="Settings_GameDirectory" xml:space="preserve"><value>游戏目录</value></data>
+  <data name="Settings_GameDirectoryHint" xml:space="preserve"><value>固定为程序旁的 .minecraft（便携）。强制版本隔离：每个版本有独立的 mods / saves / config。</value></data>
+  <data name="Settings_SourceBmcl" xml:space="preserve"><value>下载源：BMCLAPI</value></data>
+  <data name="Settings_SourceOfficial" xml:space="preserve"><value>下载源：官方</value></data>
+  <data name="Settings_FoundJava" xml:space="preserve"><value>找到 {0} 个 Java 安装</value></data>
+  <data name="Settings_ScanFailed" xml:space="preserve"><value>扫描失败：{0}</value></data>
+  <data name="Settings_SelectJavaExe" xml:space="preserve"><value>请选择 java.exe</value></data>
+  <data name="Settings_JavaUpdated" xml:space="preserve"><value>Java 路径已更新</value></data>
+  <data name="Settings_BrowseFailed" xml:space="preserve"><value>浏览失败：{0}</value></data>
+  <data name="Settings_CannotOpenFolder" xml:space="preserve"><value>无法打开文件夹：{0}</value></data>
+  <data name="Settings_Saved" xml:space="preserve"><value>已保存</value></data>
+  <data name="Settings_SaveFailed" xml:space="preserve"><value>保存失败：{0}</value></data>
+  <data name="Settings_JavaAuto" xml:space="preserve"><value>将自动选择 Java</value></data>
+  <data name="Settings_JavaSelected" xml:space="preserve"><value>使用 Java {0}</value></data>
+  <data name="Settings_Language" xml:space="preserve"><value>语言</value></data>
+  <data name="Settings_LanguageSystem" xml:space="preserve"><value>跟随系统</value></data>
+  <data name="Settings_LanguageEnglish" xml:space="preserve"><value>English</value></data>
+  <data name="Settings_LanguageChinese" xml:space="preserve"><value>简体中文</value></data>
+  <data name="Settings_LanguageJapanese" xml:space="preserve"><value>日本語</value></data>
+  <data name="Settings_LanguageRestartHint" xml:space="preserve"><value>选择语言后点击「应用」。</value></data>
+  <data name="Settings_RestartNow" xml:space="preserve"><value>应用</value></data>
+  <data name="Settings_LanguageApplied" xml:space="preserve"><value>语言：{0} · 导航示例：{1}</value></data>
+  <data name="Settings_ScanningJava" xml:space="preserve"><value>正在扫描 Java…</value></data>
+
+  <data name="Version_Fabric" xml:space="preserve"><value>Fabric {0}</value></data>
+  <data name="Version_Forge" xml:space="preserve"><value>Forge {0}</value></data>
+  <data name="Version_NeoForge" xml:space="preserve"><value>NeoForge {0}</value></data>
+  <data name="Version_OptiFine" xml:space="preserve"><value>OptiFine {0}</value></data>
+  <data name="Version_Vanilla" xml:space="preserve"><value>原版</value></data>
+  <data name="Version_Custom" xml:space="preserve"><value>自定义</value></data>
+
+  <data name="Java_NamedWithSource" xml:space="preserve"><value>Java {0}（{1}）</value></data>
+  <data name="Java_NamedWithPath" xml:space="preserve"><value>Java {0} — {1}</value></data>
+  <data name="Java_SourceJavaHome" xml:space="preserve"><value>JAVA_HOME</value></data>
+  <data name="Java_SourcePath" xml:space="preserve"><value>PATH</value></data>
+  <data name="Java_SourceCommon" xml:space="preserve"><value>常见路径</value></data>
+  <data name="Java_SourceRegistry" xml:space="preserve"><value>注册表</value></data>
+  <data name="Java_SourceRegistryNamed" xml:space="preserve"><value>注册表（{0}）</value></data>
+
+  <data name="Progress_FileFallback" xml:space="preserve"><value>文件</value></data>
+
+  <data name="Unit_Byte" xml:space="preserve"><value>B</value></data>
+  <data name="Unit_Kilobyte" xml:space="preserve"><value>KB</value></data>
+  <data name="Unit_Megabyte" xml:space="preserve"><value>MB</value></data>
+  <data name="Unit_Gigabyte" xml:space="preserve"><value>GB</value></data>
+
+  <data name="Install_Title" xml:space="preserve"><value>安装 {0}</value></data>
+  <data name="Install_VersionName" xml:space="preserve"><value>版本名称</value></data>
+  <data name="Install_VersionNamePlaceholder" xml:space="preserve"><value>versions/ 下的文件夹名</value></data>
+  <data name="Install_Loader" xml:space="preserve"><value>同时安装</value></data>
+  <data name="Install_LoaderNone" xml:space="preserve"><value>仅原版</value></data>
+  <data name="Install_LoaderFabric" xml:space="preserve"><value>Fabric</value></data>
+  <data name="Install_LoaderForge" xml:space="preserve"><value>Forge</value></data>
+  <data name="Install_LoaderNeoForge" xml:space="preserve"><value>NeoForge</value></data>
+  <data name="Install_LoaderOptiFine" xml:space="preserve"><value>OptiFine</value></data>
+  <data name="Install_LoaderExclusiveHint" xml:space="preserve"><value>Forge、Fabric、NeoForge 与 OptiFine 不能混装 — 最多选一个。</value></data>
+  <data name="Install_LoaderVersion" xml:space="preserve"><value>加载器版本</value></data>
+  <data name="Install_OptiFineVersion" xml:space="preserve"><value>OptiFine 版本</value></data>
+  <data name="Install_LoadingLoaders" xml:space="preserve"><value>正在加载加载器版本…</value></data>
+  <data name="Install_LoadingOptiFine" xml:space="preserve"><value>正在加载 OptiFine 版本…</value></data>
+  <data name="Install_NoLoaders" xml:space="preserve"><value>未找到适用于此 Minecraft 版本的加载器构建。</value></data>
+  <data name="Install_NoOptiFine" xml:space="preserve"><value>未找到适用于此 Minecraft 版本的 OptiFine 构建。</value></data>
+  <data name="Install_LoaderCount" xml:space="preserve"><value>{0} 个可用构建</value></data>
+  <data name="Install_OptiFineCount" xml:space="preserve"><value>{0} 个可用 OptiFine 构建</value></data>
+  <data name="Install_LoaderLoadFailed" xml:space="preserve"><value>无法加载加载器版本：{0}</value></data>
+  <data name="Install_OptiFineLoadFailed" xml:space="preserve"><value>无法加载 OptiFine 版本：{0}</value></data>
+  <data name="Install_SelectLoaderVersion" xml:space="preserve"><value>请选择加载器版本。</value></data>
+  <data name="Install_SelectOptiFineVersion" xml:space="preserve"><value>请选择 OptiFine 版本。</value></data>
+  <data name="Install_FabricApi" xml:space="preserve"><value>同时安装 Fabric API</value></data>
+  <data name="Install_FabricApiHint" xml:space="preserve"><value>将 Fabric API 下载到该版本的 mods 文件夹（优先 Modrinth，其次 CurseForge）。</value></data>
+
+  <data name="Conflict_WithAddon" xml:space="preserve"><value>{0} 与 {1} 不兼容。</value></data>
+  <data name="Conflict_Incompatible" xml:space="preserve"><value>这些附加组件不能一起安装。</value></data>
+
+  <data name="LoaderTag_Stable" xml:space="preserve"><value>稳定</value></data>
+  <data name="LoaderTag_Unstable" xml:space="preserve"><value>不稳定</value></data>
+  <data name="LoaderTag_Recommended" xml:space="preserve"><value>推荐</value></data>
+  <data name="LoaderTag_Latest" xml:space="preserve"><value>最新</value></data>
+  <data name="LoaderTag_Named" xml:space="preserve"><value>{0}（{1}）</value></data>
+
+  <data name="Progress_FileCount" xml:space="preserve"><value>{0}  {1}/{2}</value></data>
+
+  <data name="FabricApi_Resolving" xml:space="preserve"><value>正在查找 Fabric API…</value></data>
+  <data name="FabricApi_Downloading" xml:space="preserve"><value>正在下载 Fabric API（{1}）：{0}</value></data>
+  <data name="FabricApi_Installed" xml:space="preserve"><value>Fabric API 就绪（{1}）：{0}</value></data>
+  <data name="FabricApi_NotFound" xml:space="preserve"><value>未找到适用于 Minecraft {0} 的 Fabric API。</value></data>
+  <data name="FabricApi_ResolveFailed" xml:space="preserve"><value>无法解析 {0} 的 Fabric API：{1}</value></data>
+  <data name="FabricApi_BothFailed" xml:space="preserve"><value>Modrinth：{0}；CurseForge：{1}</value></data>
+  <data name="FabricApi_SourceModrinth" xml:space="preserve"><value>Modrinth</value></data>
+  <data name="FabricApi_SourceCurseForge" xml:space="preserve"><value>CurseForge</value></data>
+
+  <data name="Error_BmclSetupFailed" xml:space="preserve"><value>配置 BMCLAPI 镜像失败。</value></data>
+  <data name="Error_LoaderEmptyId" xml:space="preserve"><value>模组加载器安装返回了空的版本 ID。</value></data>
+  <data name="Error_FabricProfileInvalid" xml:space="preserve"><value>Fabric 配置未正确创建。请使用与 Minecraft 版本 ID 不同的名称后重试。</value></data>
+  <data name="Error_JavaNotFound" xml:space="preserve"><value>配置的 Java 路径不存在。</value></data>
+  <data name="Error_JavaTooOld" xml:space="preserve"><value>Minecraft {0} 需要 Java {1}+，但所选 Java 为 {2}。</value></data>
+  <data name="Error_JavaExeNotFound" xml:space="preserve"><value>未找到 java.exe。</value></data>
+  <data name="Error_JavaProcessStart" xml:space="preserve"><value>无法启动进程：{0}</value></data>
+  <data name="Error_JavaVersionParse" xml:space="preserve"><value>无法从输出解析 Java 版本：{0}{1}</value></data>
+  <data name="Error_ProcessStartFailed" xml:space="preserve"><value>无法启动 Minecraft 进程。</value></data>
+  <data name="Error_VersionFolderNotFound" xml:space="preserve"><value>未找到版本文件夹：{0}</value></data>
+  <data name="Error_VersionAlreadyExists" xml:space="preserve"><value>版本已存在：{0}</value></data>
+  <data name="Error_VersionDeleteLocked" xml:space="preserve"><value>无法删除“{0}” — 请关闭游戏和已打开的文件夹后再试。</value></data>
+  <data name="Error_JavaDownloadFailed" xml:space="preserve"><value>下载 Java {0} 失败：{1}</value></data>
+  <data name="Error_AlreadyInstalling" xml:space="preserve"><value>安装已在进行中。</value></data>
+  <data name="Error_FileDownloadFailed" xml:space="preserve"><value>下载失败：{0}</value></data>
+  <data name="Error_HttpStatus" xml:space="preserve"><value>HTTP {0}</value></data>
+  <data name="Error_TimedOut" xml:space="preserve"><value>超时</value></data>
+  <data name="Error_Unknown" xml:space="preserve"><value>未知</value></data>
+
+  <data name="Validate_VersionEmpty" xml:space="preserve"><value>版本名称不能为空。</value></data>
+  <data name="Validate_NameLeadingSpace" xml:space="preserve"><value>名称不能以空格开头。</value></data>
+  <data name="Validate_NameTrailingSpace" xml:space="preserve"><value>名称不能以空格结尾。</value></data>
+  <data name="Validate_NameTrailingDot" xml:space="preserve"><value>名称不能以句点结尾。</value></data>
+  <data name="Validate_NameTooLong" xml:space="preserve"><value>名称最多 {0} 个字符。</value></data>
+  <data name="Validate_NameInvalidChar" xml:space="preserve"><value>名称不能包含：{0}</value></data>
+  <data name="Validate_NameReserved" xml:space="preserve"><value>名称不能为 {0}。</value></data>
+  <data name="Validate_NameNtfs83" xml:space="preserve"><value>名称不能使用此特殊格式。</value></data>
+  <data name="Validate_VersionExists" xml:space="preserve"><value>已存在同名版本文件夹。</value></data>
+  <data name="Validate_LoaderNameEqualsMc" xml:space="preserve"><value>加载器档案不能与 Minecraft 版本同名（会覆盖原版）。可尝试如 1.21.1-fabric。</value></data>
+  <data name="Validate_PlayerEmpty" xml:space="preserve"><value>玩家名不能为空。</value></data>
+  <data name="Validate_PlayerQuote" xml:space="preserve"><value>玩家名不能包含引号（"）。</value></data>
+  <data name="Validate_PlayerTooLong" xml:space="preserve"><value>玩家名最多 16 个字符。</value></data>
+
+  <data name="Default_PlayerName" xml:space="preserve"><value>玩家</value></data>
+  <data name="Action_Search" xml:space="preserve"><value>搜索</value></data>
+  <data name="Action_Reset" xml:space="preserve"><value>重置</value></data>
+  <data name="Mod_Keyword" xml:space="preserve"><value>关键词</value></data>
+  <data name="Mod_KeywordPlaceholder" xml:space="preserve"><value>名称或标识</value></data>
+  <data name="Mod_Source" xml:space="preserve"><value>来源</value></data>
+  <data name="Mod_Version" xml:space="preserve"><value>游戏版本</value></data>
+  <data name="Mod_Category" xml:space="preserve"><value>分类</value></data>
+  <data name="Mod_Loader" xml:space="preserve"><value>加载器</value></data>
+  <data name="Mod_SourceAll" xml:space="preserve"><value>全部来源</value></data>
+  <data name="Mod_SourceCurseForge" xml:space="preserve"><value>CurseForge</value></data>
+  <data name="Mod_SourceModrinth" xml:space="preserve"><value>Modrinth</value></data>
+  <data name="Mod_VersionAll" xml:space="preserve"><value>任意版本</value></data>
+  <data name="Mod_LoaderAny" xml:space="preserve"><value>任意加载器</value></data>
+  <data name="Mod_LoaderForge" xml:space="preserve"><value>Forge</value></data>
+  <data name="Mod_LoaderNeoForge" xml:space="preserve"><value>NeoForge</value></data>
+  <data name="Mod_LoaderFabric" xml:space="preserve"><value>Fabric</value></data>
+  <data name="Mod_LoaderQuilt" xml:space="preserve"><value>Quilt</value></data>
+  <data name="Mod_LoaderLiteLoader" xml:space="preserve"><value>LiteLoader</value></data>
+  <data name="Mod_CategoryAll" xml:space="preserve"><value>全部分类</value></data>
+  <data name="Mod_CategoryWorldGen" xml:space="preserve"><value>世界生成</value></data>
+  <data name="Mod_CategoryBiomes" xml:space="preserve"><value>生物群系</value></data>
+  <data name="Mod_CategoryDimensions" xml:space="preserve"><value>维度</value></data>
+  <data name="Mod_CategoryOres" xml:space="preserve"><value>矿物与资源</value></data>
+  <data name="Mod_CategoryStructures" xml:space="preserve"><value>结构</value></data>
+  <data name="Mod_CategoryTechnology" xml:space="preserve"><value>科技</value></data>
+  <data name="Mod_CategoryLogistics" xml:space="preserve"><value>物流</value></data>
+  <data name="Mod_CategoryAutomation" xml:space="preserve"><value>自动化</value></data>
+  <data name="Mod_CategoryEnergy" xml:space="preserve"><value>能源</value></data>
+  <data name="Mod_CategoryRedstone" xml:space="preserve"><value>红石</value></data>
+  <data name="Mod_CategoryFood" xml:space="preserve"><value>食物与烹饪</value></data>
+  <data name="Mod_CategoryFarming" xml:space="preserve"><value>农业</value></data>
+  <data name="Mod_CategoryGameMechanics" xml:space="preserve"><value>游戏机制</value></data>
+  <data name="Mod_CategoryTransport" xml:space="preserve"><value>运输</value></data>
+  <data name="Mod_CategoryStorage" xml:space="preserve"><value>仓储</value></data>
+  <data name="Mod_CategoryMagic" xml:space="preserve"><value>魔法</value></data>
+  <data name="Mod_CategoryAdventure" xml:space="preserve"><value>冒险</value></data>
+  <data name="Mod_CategoryDecoration" xml:space="preserve"><value>装饰</value></data>
+  <data name="Mod_CategoryMobs" xml:space="preserve"><value>生物</value></data>
+  <data name="Mod_CategoryUtility" xml:space="preserve"><value>实用</value></data>
+  <data name="Mod_CategoryEquipment" xml:space="preserve"><value>装备与工具</value></data>
+  <data name="Mod_CategoryCreative" xml:space="preserve"><value>创造</value></data>
+  <data name="Mod_CategoryOptimization" xml:space="preserve"><value>性能优化</value></data>
+  <data name="Mod_CategoryInfo" xml:space="preserve"><value>信息显示</value></data>
+  <data name="Mod_CategorySocial" xml:space="preserve"><value>多人 / 服务器</value></data>
+  <data name="Mod_CategoryLibrary" xml:space="preserve"><value>支持库</value></data>
+</root>

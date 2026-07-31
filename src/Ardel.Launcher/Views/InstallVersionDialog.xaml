@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="utf-8"?>
+<UserControl
+    x:Class="Ardel.Launcher.Views.InstallVersionDialog"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:loc="using:Ardel.Launcher.Localization"
+    MinWidth="440"
+    MaxWidth="520">
+
+    <ScrollViewer
+        VerticalScrollBarVisibility="Auto"
+        HorizontalScrollBarVisibility="Disabled"
+        MaxHeight="560">
+        <StackPanel Spacing="12" Padding="4,4,4,8">
+            <TextBox
+                x:Name="VersionNameBox"
+                Header="{loc:String Key=Install_VersionName}"
+                PlaceholderText="{loc:String Key=Install_VersionNamePlaceholder}"
+                MaxLength="100" />
+
+            <TextBlock
+                x:Name="ErrorText"
+                Foreground="{ThemeResource SystemFillColorCriticalBrush}"
+                FontSize="12"
+                TextWrapping="Wrap"
+                Visibility="Collapsed" />
+
+            <StackPanel Spacing="6">
+                <TextBlock
+                    Text="{loc:String Key=Install_Loader}"
+                    FontSize="12"
+                    Opacity="0.7" />
+                <TextBlock
+                    Text="{loc:String Key=Install_LoaderExclusiveHint}"
+                    FontSize="11"
+                    Opacity="0.55"
+                    TextWrapping="Wrap" />
+                <RadioButton
+                    x:Name="LoaderNone"
+                    Content="{loc:String Key=Install_LoaderNone}"
+                    GroupName="ModLoader"
+                    IsChecked="True" />
+                <RadioButton
+                    x:Name="LoaderFabric"
+                    Content="{loc:String Key=Install_LoaderFabric}"
+                    GroupName="ModLoader" />
+                <RadioButton
+                    x:Name="LoaderForge"
+                    Content="{loc:String Key=Install_LoaderForge}"
+                    GroupName="ModLoader" />
+                <RadioButton
+                    x:Name="LoaderNeoForge"
+                    Content="{loc:String Key=Install_LoaderNeoForge}"
+                    GroupName="ModLoader" />
+                <RadioButton
+                    x:Name="LoaderOptiFine"
+                    Content="{loc:String Key=Install_LoaderOptiFine}"
+                    GroupName="ModLoader" />
+            </StackPanel>
+
+            <StackPanel
+                x:Name="LoaderVersionPanel"
+                Spacing="6"
+                Visibility="Collapsed">
+                <ComboBox
+                    x:Name="LoaderVersionBox"
+                    Header="{loc:String Key=Install_LoaderVersion}"
+                    HorizontalAlignment="Stretch"
+                    MinWidth="320"
+                    MaxDropDownHeight="200"
+                    DisplayMemberPath="DisplayName" />
+                <TextBlock
+                    x:Name="LoaderStatusText"
+                    FontSize="12"
+                    Opacity="0.6"
+                    TextWrapping="Wrap" />
+            </StackPanel>
+
+            <StackPanel Spacing="4">
+                <CheckBox
+                    x:Name="FabricApiCheck"
+                    Content="{loc:String Key=Install_FabricApi}"
+                    Visibility="Collapsed"
+                    IsChecked="True" />
+                <TextBlock
+                    x:Name="FabricApiHint"
+                    Text="{loc:String Key=Install_FabricApiHint}"
+                    FontSize="11"
+                    Opacity="0.55"
+                    TextWrapping="Wrap"
+                    Visibility="Collapsed" />
+            </StackPanel>
+        </StackPanel>
+    </ScrollViewer>
+</UserControl>

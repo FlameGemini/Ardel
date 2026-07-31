@@ -1,0 +1,21 @@
+{
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "name": "Ardel Debug (x64)",
+      "type": "coreclr",
+      "request": "launch",
+      "preLaunchTask": "build-debug-x64",
+      "program": "${workspaceFolder}/src/Ardel.Launcher/bin/x64/Debug/net8.0-windows10.0.19041.0/Ardel.Launcher.exe",
+      "cwd": "${workspaceFolder}/src/Ardel.Launcher/bin/x64/Debug/net8.0-windows10.0.19041.0",
+      "console": "internalConsole",
+      "stopAtEntry": false
+    },
+    {
+      "name": "Ardel Debug — no debugger (fast)",
+      "type": "node-terminal",
+      "request": "launch",
+      "command": "powershell -ExecutionPolicy Bypass -File \"${workspaceFolder}/run-debug.ps1\""
+    }
+  ]
+}
