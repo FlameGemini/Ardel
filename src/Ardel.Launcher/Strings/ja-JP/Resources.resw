@@ -266,4 +266,8 @@
   <data name="Mod_DownloadsExact" xml:space="preserve"><value>ダウンロード {0}</value></data>
   <data name="Mod_DownloadsThousands" xml:space="preserve"><value>ダウンロード {0}K</value></data>
   <data name="Mod_DownloadsMillions" xml:space="preserve"><value>ダウンロード {0}M</value></data>
+  <data name="Mod_PagePrevious" xml:space="preserve"><value>前へ</value></data>
+  <data name="Mod_PageNext" xml:space="preserve"><value>次へ</value></data>
+  <data name="Mod_PageLabel" xml:space="preserve"><value>{0} ページ</value></data>
+  <data name="Mod_VersionsEllipsis" xml:space="preserve"><value>{0}…</value></data>
 </root>

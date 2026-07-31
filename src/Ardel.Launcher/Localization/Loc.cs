@@ -173,6 +173,10 @@ public static partial class Loc
         [LocKeys.Mod_DownloadsExact] = "{0} downloads",
         [LocKeys.Mod_DownloadsThousands] = "{0}K downloads",
         [LocKeys.Mod_DownloadsMillions] = "{0}M downloads",
+        [LocKeys.Mod_PagePrevious] = "Previous",
+        [LocKeys.Mod_PageNext] = "Next",
+        [LocKeys.Mod_PageLabel] = "Page {0}",
+        [LocKeys.Mod_VersionsEllipsis] = "{0}…",
 
         [LocKeys.Settings_Title] = "Settings",
         [LocKeys.Settings_Java] = "Java",

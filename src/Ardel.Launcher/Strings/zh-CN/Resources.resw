@@ -286,4 +286,8 @@
   <data name="Mod_DownloadsExact" xml:space="preserve"><value>{0} 次下载</value></data>
   <data name="Mod_DownloadsThousands" xml:space="preserve"><value>{0}K 次下载</value></data>
   <data name="Mod_DownloadsMillions" xml:space="preserve"><value>{0}M 次下载</value></data>
+  <data name="Mod_PagePrevious" xml:space="preserve"><value>上一页</value></data>
+  <data name="Mod_PageNext" xml:space="preserve"><value>下一页</value></data>
+  <data name="Mod_PageLabel" xml:space="preserve"><value>第 {0} 页</value></data>
+  <data name="Mod_VersionsEllipsis" xml:space="preserve"><value>{0}…</value></data>
 </root>

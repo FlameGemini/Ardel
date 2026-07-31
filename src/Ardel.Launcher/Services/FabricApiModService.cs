@@ -123,11 +123,12 @@ public sealed class FabricApiModService
         string minecraftVersionId,
         CancellationToken cancellationToken)
     {
-        // Website JSON API used by curseforge.com (no developer key required).
+        // Official CF Core API shape via community proxy (www.curseforge.com/api rejects anonymous clients).
+        // Use /v1/... (not /v1/cf/...), which avoids an HTTPS→HTTP 302 that HttpClient will not follow.
         var url =
-            $"https://www.curseforge.com/api/v1/mods/{CurseForgeProjectId}/files" +
-            $"?pageIndex=0&pageSize=50&sort=dateCreated&sortOrder=desc" +
-            $"&gameVersion={Uri.EscapeDataString(minecraftVersionId)}&removeAlphas=true";
+            $"https://api.curse.tools/v1/mods/{CurseForgeProjectId}/files" +
+            $"?pageSize=50&index=0" +
+            $"&gameVersion={Uri.EscapeDataString(minecraftVersionId)}";
 
         using var request = new HttpRequestMessage(HttpMethod.Get, url);
         request.Headers.TryAddWithoutValidation("Accept", "application/json");
@@ -157,8 +158,14 @@ public sealed class FabricApiModService
             if (fileId <= 0 || string.IsNullOrWhiteSpace(fileName))
                 continue;
 
-            var downloadUrl =
-                $"https://www.curseforge.com/api/v1/mods/{CurseForgeProjectId}/files/{fileId}/download";
+            var downloadUrl = file.TryGetProperty("downloadUrl", out var dlEl)
+                ? dlEl.GetString()
+                : null;
+            if (string.IsNullOrWhiteSpace(downloadUrl))
+            {
+                downloadUrl =
+                    $"https://api.curse.tools/v1/mods/{CurseForgeProjectId}/files/{fileId}/download";
+            }
 
             return new ModFileHit(
                 fileName,

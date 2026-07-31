@@ -76,6 +76,9 @@ public partial class ModSearchViewModel : ObservableObject
     private readonly DispatcherQueue _dispatcher;
     private readonly ModCatalogService _catalog = new();
     private CancellationTokenSource? _searchCts;
+    private string? _lastWarning;
+    private bool _syncingVersion;
+    private int _currentPage = 1;
 
     public ModSearchViewModel(DispatcherQueue dispatcher)
     {
@@ -108,6 +111,10 @@ public partial class ModSearchViewModel : ObservableObject
     [ObservableProperty] private bool _isLoaderFilterVisible;
     [ObservableProperty] private ModSearchCriteria? _submittedCriteria;
     [ObservableProperty] private bool _isSearching;
+    [ObservableProperty] private bool _canGoPrevious;
+    [ObservableProperty] private bool _canGoNext;
+    [ObservableProperty] private bool _isPagerVisible;
+    [ObservableProperty] private string _pageLabel = string.Empty;
     [ObservableProperty] private string _statusText;
     [ObservableProperty] private bool _hasResults;
 
@@ -128,13 +135,41 @@ public partial class ModSearchViewModel : ObservableObject
 
         if (!IsSearching && Results.Count == 0 && SubmittedCriteria is null)
             StatusText = Loc.Get(LocKeys.Mod_SearchHint);
+
+        if (IsPagerVisible)
+            PageLabel = Loc.Format(LocKeys.Mod_PageLabel, _currentPage);
     }
 
     [RelayCommand]
-    private async Task SearchAsync()
+    private Task SearchAsync() => FetchPageAsync(page: 1, replaceCriteria: true);
+
+    [RelayCommand]
+    private Task PreviousPageAsync() => FetchPageAsync(_currentPage - 1, replaceCriteria: false);
+
+    [RelayCommand]
+    private Task NextPageAsync() => FetchPageAsync(_currentPage + 1, replaceCriteria: false);
+
+    private async Task FetchPageAsync(int page, bool replaceCriteria)
     {
-        var criteria = CaptureCriteria();
-        SubmittedCriteria = criteria;
+        if (page < 1 || IsSearching)
+            return;
+
+        ModSearchCriteria criteria;
+        if (replaceCriteria)
+        {
+            criteria = CaptureCriteria();
+            SubmittedCriteria = criteria;
+        }
+        else
+        {
+            if (SubmittedCriteria is null)
+                return;
+            if (page < _currentPage && !CanGoPrevious)
+                return;
+            if (page > _currentPage && !CanGoNext)
+                return;
+            criteria = SubmittedCriteria;
+        }
 
         _searchCts?.Cancel();
         _searchCts?.Dispose();
@@ -143,11 +178,18 @@ public partial class ModSearchViewModel : ObservableObject
 
         IsSearching = true;
         StatusText = Loc.Get(LocKeys.Mod_Searching);
-        HasResults = false;
+        if (replaceCriteria)
+        {
+            HasResults = false;
+            IsPagerVisible = false;
+            _lastWarning = null;
+        }
+
+        var offset = (page - 1) * ModCatalogService.PageSize;
 
         try
         {
-            var result = await _catalog.SearchAsync(criteria, token).ConfigureAwait(false);
+            var result = await _catalog.SearchAsync(criteria, offset, token).ConfigureAwait(false);
             if (token.IsCancellationRequested)
                 return;
 
@@ -155,12 +197,16 @@ public partial class ModSearchViewModel : ObservableObject
             {
                 Results = result.Items;
                 HasResults = Results.Count > 0;
-                StatusText = result.WarningMessage is not null
-                    ? Loc.Format(LocKeys.Mod_SearchCountWithWarning, Results.Count, result.WarningMessage)
-                    : Results.Count == 0
-                        ? Loc.Get(LocKeys.Mod_SearchEmpty)
-                        : Loc.Format(LocKeys.Mod_SearchCount, Results.Count);
+                _currentPage = page;
+                CanGoPrevious = page > 1;
+                CanGoNext = result.HasMore;
+                IsPagerVisible = HasResults || page > 1 || result.HasMore;
+                PageLabel = Loc.Format(LocKeys.Mod_PageLabel, page);
+                if (result.WarningMessage is not null || replaceCriteria)
+                    _lastWarning = result.WarningMessage;
+                StatusText = FormatStatus(Results.Count, _lastWarning);
                 IsSearching = false;
+                _ = ModIconCache.PrefetchAsync(result.Items, _dispatcher, token);
             });
         }
         catch (OperationCanceledException)
@@ -171,8 +217,15 @@ public partial class ModSearchViewModel : ObservableObject
         {
             RunOnUi(() =>
             {
-                Results = Array.Empty<ModProjectItem>();
-                HasResults = false;
+                if (replaceCriteria)
+                {
+                    Results = Array.Empty<ModProjectItem>();
+                    HasResults = false;
+                    IsPagerVisible = false;
+                    CanGoPrevious = false;
+                    CanGoNext = false;
+                }
+
                 StatusText = Loc.Format(LocKeys.Mod_SearchFailed, ex.Message);
                 IsSearching = false;
             });
@@ -193,18 +246,70 @@ public partial class ModSearchViewModel : ObservableObject
         Results = Array.Empty<ModProjectItem>();
         HasResults = false;
         IsSearching = false;
+        CanGoPrevious = false;
+        CanGoNext = false;
+        IsPagerVisible = false;
+        PageLabel = string.Empty;
+        _currentPage = 1;
+        _lastWarning = null;
         StatusText = Loc.Get(LocKeys.Mod_SearchHint);
         UpdateLoaderVisibility();
     }
 
+    private static string FormatStatus(int count, string? warning) =>
+        warning is not null
+            ? Loc.Format(LocKeys.Mod_SearchCountWithWarning, count, warning)
+            : count == 0
+                ? Loc.Get(LocKeys.Mod_SearchEmpty)
+                : Loc.Format(LocKeys.Mod_SearchCount, count);
+
+    /// <summary>
+    /// Applies version text from the editable ComboBox before search, so focus-loss
+    /// cannot replace a typed custom version with the previous selection.
+    /// </summary>
+    public void CommitVersionInput(string? text)
+    {
+        VersionText = text?.Trim() ?? string.Empty;
+    }
+
     partial void OnSelectedVersionChanged(NamedOption? value)
     {
+        if (_syncingVersion)
+            return;
         if (value is not null)
             VersionText = value.Name;
         UpdateLoaderVisibility();
     }
 
-    partial void OnVersionTextChanged(string value) => UpdateLoaderVisibility();
+    partial void OnVersionTextChanged(string value)
+    {
+        if (!_syncingVersion)
+            SyncSelectedVersionFromText(value);
+        UpdateLoaderVisibility();
+    }
+
+    private void SyncSelectedVersionFromText(string? value)
+    {
+        var trimmed = value?.Trim() ?? string.Empty;
+        NamedOption? match = null;
+        foreach (var opt in VersionOptions)
+        {
+            if (string.Equals(opt.Name, trimmed, StringComparison.OrdinalIgnoreCase) ||
+                (!string.IsNullOrEmpty(opt.Id) &&
+                 string.Equals(opt.Id, trimmed, StringComparison.OrdinalIgnoreCase)))
+            {
+                match = opt;
+                break;
+            }
+        }
+
+        if (ReferenceEquals(SelectedVersion, match))
+            return;
+
+        _syncingVersion = true;
+        SelectedVersion = match;
+        _syncingVersion = false;
+    }
 
     private void UpdateLoaderVisibility()
     {
@@ -222,6 +327,14 @@ public partial class ModSearchViewModel : ObservableObject
         var version = VersionText?.Trim() ?? string.Empty;
         if (string.Equals(version, Loc.Get(LocKeys.Mod_VersionAll), StringComparison.Ordinal))
             version = string.Empty;
+
+        // Prefer the stable id when the typed text matches a preset.
+        if (SelectedVersion is { Id.Length: > 0 } selected &&
+            (string.Equals(selected.Name, version, StringComparison.OrdinalIgnoreCase) ||
+             string.Equals(selected.Id, version, StringComparison.OrdinalIgnoreCase)))
+        {
+            version = selected.Id;
+        }
 
         return new ModSearchCriteria(
             Keyword.Trim(),

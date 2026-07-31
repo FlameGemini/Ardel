@@ -10,11 +10,20 @@ using Ardel.Launcher.ViewModels;
 namespace Ardel.Launcher.Services;
 
 /// <summary>
-/// Searches remote Mod catalogs. Modrinth is queried directly; CurseForge uses the public site API.
+/// Searches remote Mod catalogs. Modrinth is queried directly;
+/// CurseForge uses the Core API via a community proxy (site API returns 403 without a key).
 /// </summary>
 public sealed class ModCatalogService
 {
-    private const int PageSize = 40;
+    public const int PageSize = 40;
+
+    /// <summary>CurseForge Core API shape via community proxy (site /api/v1 rejects unauthenticated clients).</summary>
+    private const string CurseForgeApiBase = "https://api.curse.tools/v1";
+
+    private static readonly HashSet<string> ModrinthLoaderSlugs = new(StringComparer.OrdinalIgnoreCase)
+    {
+        "forge", "neoforge", "fabric", "quilt", "liteloader"
+    };
 
     private static readonly JsonSerializerOptions JsonOptions = new()
     {
@@ -39,14 +48,18 @@ public sealed class ModCatalogService
 
     public async Task<ModCatalogSearchResult> SearchAsync(
         ModSearchCriteria criteria,
+        int offset = 0,
         CancellationToken cancellationToken = default)
     {
         ArgumentNullException.ThrowIfNull(criteria);
+        if (offset < 0)
+            offset = 0;
 
         var hits = new List<ModProjectItem>();
         string? warning = null;
         Exception? modrinthError = null;
         Exception? curseForgeError = null;
+        var anyFullPage = false;
 
         var includeModrinth = criteria.SourceId is ModSearchViewModel.SourceIdAll or ModSearchViewModel.SourceIdModrinth;
         var includeCurseForge = criteria.SourceId is ModSearchViewModel.SourceIdAll or ModSearchViewModel.SourceIdCurseForge;
@@ -55,15 +68,18 @@ public sealed class ModCatalogService
         Task<List<ModProjectItem>>? curseForgeTask = null;
 
         if (includeModrinth)
-            modrinthTask = SearchModrinthAsync(criteria, cancellationToken);
+            modrinthTask = SearchModrinthAsync(criteria, offset, cancellationToken);
         if (includeCurseForge)
-            curseForgeTask = SearchCurseForgeAsync(criteria, cancellationToken);
+            curseForgeTask = SearchCurseForgeAsync(criteria, offset, cancellationToken);
 
         if (modrinthTask is not null)
         {
             try
             {
-                hits.AddRange(await modrinthTask.ConfigureAwait(false));
+                var page = await modrinthTask.ConfigureAwait(false);
+                if (page.Count >= PageSize)
+                    anyFullPage = true;
+                hits.AddRange(page);
             }
             catch (Exception ex) when (ex is not OperationCanceledException)
             {
@@ -75,7 +91,10 @@ public sealed class ModCatalogService
         {
             try
             {
-                hits.AddRange(await curseForgeTask.ConfigureAwait(false));
+                var page = await curseForgeTask.ConfigureAwait(false);
+                if (page.Count >= PageSize)
+                    anyFullPage = true;
+                hits.AddRange(page);
             }
             catch (Exception ex) when (ex is not OperationCanceledException)
             {
@@ -97,7 +116,7 @@ public sealed class ModCatalogService
             if (curseForgeError is not null)
                 throw new InvalidOperationException(Loc.Format(LocKeys.Mod_SearchFailed, curseForgeError.Message), curseForgeError);
 
-            return new ModCatalogSearchResult([], null);
+            return new ModCatalogSearchResult([], null, false, offset);
         }
 
         if (modrinthError is not null)
@@ -111,11 +130,12 @@ public sealed class ModCatalogService
             .ThenBy(h => h.Title, StringComparer.OrdinalIgnoreCase)
             .ToList();
 
-        return new ModCatalogSearchResult(hits, warning);
+        return new ModCatalogSearchResult(hits, warning, anyFullPage, offset + PageSize);
     }
 
     private async Task<List<ModProjectItem>> SearchModrinthAsync(
         ModSearchCriteria criteria,
+        int offset,
         CancellationToken cancellationToken)
     {
         var facets = new List<string> { """["project_type:mod"]""" };
@@ -133,6 +153,8 @@ public sealed class ModCatalogService
 
         var url = new StringBuilder("https://api.modrinth.com/v2/search?limit=")
             .Append(PageSize)
+            .Append("&offset=")
+            .Append(offset)
             .Append("&index=relevance");
 
         if (!string.IsNullOrWhiteSpace(criteria.Keyword))
@@ -154,17 +176,26 @@ public sealed class ModCatalogService
             if (string.IsNullOrWhiteSpace(hit.ProjectId) || string.IsNullOrWhiteSpace(hit.Title))
                 continue;
 
-            list.Add(new ModProjectItem
-            {
-                Id = hit.ProjectId,
-                SourceId = ModSearchViewModel.SourceIdModrinth,
-                Title = hit.Title.Trim(),
-                Description = (hit.Description ?? string.Empty).Trim(),
-                SourceLabel = sourceLabel,
-                IconUrl = hit.IconUrl,
-                Downloads = hit.Downloads,
-                DownloadsLabel = FormatDownloads(hit.Downloads)
-            });
+            var loaders = (hit.Categories ?? [])
+                .Where(c => !string.IsNullOrWhiteSpace(c) && ModrinthLoaderSlugs.Contains(c))
+                .Distinct(StringComparer.OrdinalIgnoreCase)
+                .ToList();
+
+            var versions = hit.Versions ?? [];
+            if (!MatchesGameVersion(versions, criteria.GameVersion))
+                continue;
+
+            list.Add(CreateItem(
+                hit.ProjectId,
+                ModSearchViewModel.SourceIdModrinth,
+                hit.Title.Trim(),
+                (hit.Description ?? string.Empty).Trim(),
+                sourceLabel,
+                hit.IconUrl,
+                hit.Downloads,
+                versions,
+                loaders,
+                criteria.GameVersion));
         }
 
         return list;
@@ -172,11 +203,12 @@ public sealed class ModCatalogService
 
     private async Task<List<ModProjectItem>> SearchCurseForgeAsync(
         ModSearchCriteria criteria,
+        int offset,
         CancellationToken cancellationToken)
     {
-        // Website JSON API used elsewhere in Ardel (no official CF console key required).
-        var url = new StringBuilder("https://www.curseforge.com/api/v1/mods/search")
-            .Append("?gameId=432&classId=6&pageSize=").Append(PageSize)
+        var url = new StringBuilder(CurseForgeApiBase)
+            .Append("/mods/search?gameId=432&classId=6&pageSize=").Append(PageSize)
+            .Append("&index=").Append(offset)
             .Append("&sortField=2&sortOrder=desc");
 
         var categoryId = CategoryCurseForgeId(criteria.CategoryId);
@@ -217,27 +249,148 @@ public sealed class ModCatalogService
                 downloads = dl;
 
             string? icon = null;
-            if (entry.TryGetProperty("logo", out var logo) &&
-                logo.ValueKind == JsonValueKind.Object &&
-                logo.TryGetProperty("thumbnailUrl", out var thumb))
+            if (entry.TryGetProperty("logo", out var logo) && logo.ValueKind == JsonValueKind.Object)
             {
-                icon = thumb.GetString();
+                if (logo.TryGetProperty("thumbnailUrl", out var thumb))
+                    icon = thumb.GetString();
+                if (string.IsNullOrWhiteSpace(icon) && logo.TryGetProperty("url", out var urlEl))
+                    icon = urlEl.GetString();
             }
 
-            list.Add(new ModProjectItem
+            var versions = new List<string>();
+            var loaders = new List<string>();
+            if (entry.TryGetProperty("latestFilesIndexes", out var indexes) && indexes.ValueKind == JsonValueKind.Array)
             {
-                Id = id,
-                SourceId = ModSearchViewModel.SourceIdCurseForge,
-                Title = title.Trim(),
-                Description = summary.Trim(),
-                SourceLabel = sourceLabel,
-                IconUrl = icon,
-                Downloads = downloads,
-                DownloadsLabel = FormatDownloads(downloads)
-            });
+                foreach (var idx in indexes.EnumerateArray())
+                {
+                    if (idx.TryGetProperty("gameVersion", out var gv) && gv.GetString() is { Length: > 0 } version)
+                        versions.Add(version);
+
+                    if (idx.TryGetProperty("modLoader", out var ml) && ml.TryGetInt32(out var loaderCode))
+                    {
+                        var slug = CurseForgeLoaderSlug(loaderCode);
+                        if (slug is not null)
+                            loaders.Add(slug);
+                    }
+                }
+            }
+
+            if (!MatchesGameVersion(versions, criteria.GameVersion))
+                continue;
+
+            list.Add(CreateItem(
+                id,
+                ModSearchViewModel.SourceIdCurseForge,
+                title.Trim(),
+                summary.Trim(),
+                sourceLabel,
+                icon,
+                downloads,
+                versions,
+                loaders,
+                criteria.GameVersion));
         }
 
         return list;
+    }
+
+    private static ModProjectItem CreateItem(
+        string id,
+        string sourceId,
+        string title,
+        string description,
+        string sourceLabel,
+        string? iconUrl,
+        long downloads,
+        IEnumerable<string> versions,
+        IEnumerable<string> loaders,
+        string? preferredGameVersion = null)
+    {
+        // Prefer disk cache so ListView binds to local files. Misses are filled by PrefetchAsync.
+        var iconUri = ModIconCache.TryGetCachedUri(iconUrl);
+
+        return new ModProjectItem
+        {
+            Id = id,
+            SourceId = sourceId,
+            Title = title,
+            Description = description,
+            SourceLabel = sourceLabel,
+            IconUrl = iconUrl,
+            IconUri = iconUri,
+            Downloads = downloads,
+            DownloadsLabel = FormatDownloads(downloads),
+            VersionsLabel = FormatVersions(versions, preferredGameVersion),
+            LoadersLabel = FormatLoaders(loaders)
+        };
+    }
+
+    private static bool MatchesGameVersion(IEnumerable<string> versions, string? gameVersion)
+    {
+        if (string.IsNullOrWhiteSpace(gameVersion))
+            return true;
+
+        foreach (var version in versions)
+        {
+            if (!string.IsNullOrWhiteSpace(version) &&
+                string.Equals(version.Trim(), gameVersion.Trim(), StringComparison.OrdinalIgnoreCase))
+                return true;
+        }
+
+        return false;
+    }
+
+    private static string FormatVersions(IEnumerable<string> versions, string? preferredGameVersion = null)
+    {
+        var list = versions
+            .Where(v => !string.IsNullOrWhiteSpace(v))
+            .Select(v => v.Trim())
+            .Distinct(StringComparer.OrdinalIgnoreCase)
+            .ToList();
+
+        if (list.Count == 0)
+            return string.Empty;
+
+        if (!string.IsNullOrWhiteSpace(preferredGameVersion))
+        {
+            var prefer = preferredGameVersion.Trim();
+            list = list
+                .OrderByDescending(v => string.Equals(v, prefer, StringComparison.OrdinalIgnoreCase))
+                .ToList();
+        }
+
+        var joined = string.Join(", ", list.Take(4));
+        return list.Count > 4
+            ? Loc.Format(LocKeys.Mod_VersionsEllipsis, joined)
+            : joined;
+    }
+
+    private static string FormatLoaders(IEnumerable<string> loaders)
+    {
+        var labels = new List<string>();
+        var seen = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
+        foreach (var raw in loaders)
+        {
+            if (string.IsNullOrWhiteSpace(raw))
+                continue;
+            var slug = raw.Trim().ToLowerInvariant();
+            if (!seen.Add(slug))
+                continue;
+
+            var label = slug switch
+            {
+                "forge" => Loc.Get(LocKeys.Mod_LoaderForge),
+                "neoforge" => Loc.Get(LocKeys.Mod_LoaderNeoForge),
+                "fabric" => Loc.Get(LocKeys.Mod_LoaderFabric),
+                "quilt" => Loc.Get(LocKeys.Mod_LoaderQuilt),
+                "liteloader" => Loc.Get(LocKeys.Mod_LoaderLiteLoader),
+                _ => null
+            };
+            if (label is not null)
+                labels.Add(label);
+        }
+
+        return labels.Count == 0 ? string.Empty : string.Join(" · ", labels);
     }
 
     private static string? CategorySlug(string categoryId)
@@ -280,6 +433,16 @@ public sealed class ModCatalogService
         _ => 0
     };
 
+    private static string? CurseForgeLoaderSlug(int code) => code switch
+    {
+        1 => "forge",
+        3 => "liteloader",
+        4 => "fabric",
+        5 => "quilt",
+        6 => "neoforge",
+        _ => null
+    };
+
     private static string EscapeFacet(string value) =>
         value.Replace("\\", "\\\\", StringComparison.Ordinal).Replace("'", "\\'", StringComparison.Ordinal);
 
@@ -309,9 +472,14 @@ public sealed class ModCatalogService
         public string? IconUrl { get; set; }
 
         public long Downloads { get; set; }
+
+        public List<string>? Versions { get; set; }
+        public List<string>? Categories { get; set; }
     }
 }
 
 public sealed record ModCatalogSearchResult(
     IReadOnlyList<ModProjectItem> Items,
-    string? WarningMessage);
+    string? WarningMessage,
+    bool HasMore,
+    int NextOffset);

@@ -92,6 +92,15 @@ public sealed partial class DownloadPage : Page
             SectionList.SelectedIndex = index;
     }
 
+    private async void ModSearchButton_Click(object sender, RoutedEventArgs e)
+    {
+        // Editable ComboBox often reverts Text to SelectedItem when focus leaves;
+        // commit the control text first so custom versions are not lost.
+        ViewModel.ModSearch.CommitVersionInput(ModVersionCombo.Text);
+        if (ViewModel.ModSearch.SearchCommand.CanExecute(null))
+            await ViewModel.ModSearch.SearchCommand.ExecuteAsync(null);
+    }
+
     private async void VersionList_ItemClick(object sender, ItemClickEventArgs e)
     {
         VersionList.SelectedItem = null;

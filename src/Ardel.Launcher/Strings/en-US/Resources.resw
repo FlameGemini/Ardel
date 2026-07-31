@@ -286,4 +286,8 @@
   <data name="Mod_DownloadsExact" xml:space="preserve"><value>{0} downloads</value></data>
   <data name="Mod_DownloadsThousands" xml:space="preserve"><value>{0}K downloads</value></data>
   <data name="Mod_DownloadsMillions" xml:space="preserve"><value>{0}M downloads</value></data>
+  <data name="Mod_PagePrevious" xml:space="preserve"><value>Previous</value></data>
+  <data name="Mod_PageNext" xml:space="preserve"><value>Next</value></data>
+  <data name="Mod_PageLabel" xml:space="preserve"><value>Page {0}</value></data>
+  <data name="Mod_VersionsEllipsis" xml:space="preserve"><value>{0}…</value></data>
 </root>

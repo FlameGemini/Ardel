@@ -192,10 +192,12 @@
                         HorizontalAlignment="Stretch" />
 
                     <ComboBox
+                        x:Name="ModVersionCombo"
                         Grid.Column="1"
                         Header="{loc:String Key=Mod_Version}"
                         ItemsSource="{x:Bind ViewModel.ModSearch.VersionOptions, Mode=OneWay}"
-                        SelectedItem="{x:Bind ViewModel.ModSearch.SelectedVersion, Mode=TwoWay}"
+                        SelectedItem="{x:Bind ViewModel.ModSearch.SelectedVersion, Mode=OneWay}"
+                        DisplayMemberPath="Name"
                         IsEditable="True"
                         Text="{x:Bind ViewModel.ModSearch.VersionText, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
                         HorizontalAlignment="Stretch" />
@@ -231,7 +233,7 @@
                         MinHeight="40"
                         VerticalAlignment="Bottom"
                         Style="{ThemeResource AccentButtonStyle}"
-                        Command="{x:Bind ViewModel.ModSearch.SearchCommand}" />
+                        Click="ModSearchButton_Click" />
 
                     <Button
                         Grid.Column="2"
@@ -245,6 +247,11 @@
 
             <!-- Results -->
             <Grid Grid.Row="1" Margin="0,16,0,0">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="*" />
+                    <RowDefinition Height="Auto" />
+                </Grid.RowDefinitions>
+
                 <ListView
                     ItemsSource="{x:Bind ViewModel.ModSearch.Results, Mode=OneWay}"
                     SelectionMode="None"
@@ -257,7 +264,7 @@
                     <ListView.ItemContainerStyle>
                         <Style TargetType="ListViewItem">
                             <Setter Property="HorizontalContentAlignment" Value="Stretch" />
-                            <Setter Property="MinHeight" Value="64" />
+                            <Setter Property="MinHeight" Value="72" />
                             <Setter Property="Padding" Value="12,10" />
                         </Style>
                     </ListView.ItemContainerStyle>
@@ -265,14 +272,52 @@
                         <DataTemplate x:DataType="models:ModProjectItem">
                             <Grid ColumnSpacing="14">
                                 <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="Auto" />
                                     <ColumnDefinition Width="*" />
                                     <ColumnDefinition Width="Auto" />
                                 </Grid.ColumnDefinitions>
-                                <StackPanel Spacing="4">
+
+                                <Border
+                                    Width="48"
+                                    Height="48"
+                                    CornerRadius="6"
+                                    Background="{ThemeResource SubtleFillColorSecondaryBrush}"
+                                    VerticalAlignment="Top">
+                                    <Image
+                                        Stretch="UniformToFill"
+                                        Visibility="{x:Bind HasIcon, Mode=OneWay, Converter={StaticResource BoolToVisibility}}">
+                                        <Image.Source>
+                                            <BitmapImage
+                                                UriSource="{x:Bind IconUri, Mode=OneWay}"
+                                                DecodePixelWidth="96"
+                                                DecodePixelHeight="96"
+                                                DecodePixelType="Logical" />
+                                        </Image.Source>
+                                    </Image>
+                                </Border>
+
+                                <StackPanel Grid.Column="1" Spacing="4" VerticalAlignment="Center">
                                     <TextBlock Text="{x:Bind Title}" FontSize="15" FontWeight="SemiBold" TextWrapping="NoWrap" TextTrimming="CharacterEllipsis" />
                                     <TextBlock Text="{x:Bind Description}" FontSize="12" Opacity="0.7" TextWrapping="NoWrap" TextTrimming="CharacterEllipsis" MaxLines="2" />
+                                    <StackPanel Orientation="Horizontal" Spacing="10">
+                                        <TextBlock
+                                            Text="{x:Bind VersionsLabel}"
+                                            FontSize="11"
+                                            Opacity="0.6"
+                                            TextWrapping="NoWrap"
+                                            TextTrimming="CharacterEllipsis"
+                                            Visibility="{x:Bind HasVersions, Converter={StaticResource BoolToVisibility}}" />
+                                        <TextBlock
+                                            Text="{x:Bind LoadersLabel}"
+                                            FontSize="11"
+                                            Opacity="0.6"
+                                            TextWrapping="NoWrap"
+                                            TextTrimming="CharacterEllipsis"
+                                            Visibility="{x:Bind HasLoaders, Converter={StaticResource BoolToVisibility}}" />
+                                    </StackPanel>
                                 </StackPanel>
-                                <StackPanel Grid.Column="1" Spacing="4" VerticalAlignment="Center" HorizontalAlignment="Right">
+
+                                <StackPanel Grid.Column="2" Spacing="4" VerticalAlignment="Center" HorizontalAlignment="Right">
                                     <Border Padding="8,3" CornerRadius="4" Background="{ThemeResource SubtleFillColorSecondaryBrush}" HorizontalAlignment="Right">
                                         <TextBlock Text="{x:Bind SourceLabel}" FontSize="12" Opacity="0.85" />
                                     </Border>
@@ -290,6 +335,32 @@
                     Visibility="{x:Bind ViewModel.ModSearch.IsSearching, Mode=OneWay, Converter={StaticResource BoolToVisibility}}"
                     HorizontalAlignment="Center"
                     VerticalAlignment="Center" />
+
+                <StackPanel
+                    Grid.Row="1"
+                    Margin="0,10,0,0"
+                    Orientation="Horizontal"
+                    HorizontalAlignment="Center"
+                    Spacing="12"
+                    Visibility="{x:Bind ViewModel.ModSearch.IsPagerVisible, Mode=OneWay, Converter={StaticResource BoolToVisibility}}">
+                    <Button
+                        MinWidth="100"
+                        MinHeight="36"
+                        Content="{loc:String Key=Mod_PagePrevious}"
+                        Command="{x:Bind ViewModel.ModSearch.PreviousPageCommand}"
+                        IsEnabled="{x:Bind ViewModel.ModSearch.CanGoPrevious, Mode=OneWay}" />
+                    <TextBlock
+                        Text="{x:Bind ViewModel.ModSearch.PageLabel, Mode=OneWay}"
+                        VerticalAlignment="Center"
+                        Opacity="0.75"
+                        FontSize="13" />
+                    <Button
+                        MinWidth="100"
+                        MinHeight="36"
+                        Content="{loc:String Key=Mod_PageNext}"
+                        Command="{x:Bind ViewModel.ModSearch.NextPageCommand}"
+                        IsEnabled="{x:Bind ViewModel.ModSearch.CanGoNext, Mode=OneWay}" />
+                </StackPanel>
             </Grid>
 
             <TextBlock

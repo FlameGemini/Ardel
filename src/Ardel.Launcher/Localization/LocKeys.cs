@@ -157,6 +157,10 @@ public static class LocKeys
     public const string Mod_DownloadsExact = "Mod_DownloadsExact";
     public const string Mod_DownloadsThousands = "Mod_DownloadsThousands";
     public const string Mod_DownloadsMillions = "Mod_DownloadsMillions";
+    public const string Mod_PagePrevious = "Mod_PagePrevious";
+    public const string Mod_PageNext = "Mod_PageNext";
+    public const string Mod_PageLabel = "Mod_PageLabel";
+    public const string Mod_VersionsEllipsis = "Mod_VersionsEllipsis";
 
     // Settings
     public const string Settings_Title = "Settings_Title";
