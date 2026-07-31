@@ -236,6 +236,60 @@ public sealed partial class DownloadPage : Page
             await ViewModel.ModSearch.SearchCommand.ExecuteAsync(null);
     }
 
+    private async void ModResultList_ItemClick(object sender, ItemClickEventArgs e)
+    {
+        if (e.ClickedItem is not ModProjectItem project)
+            return;
+
+        ViewModel.ModSearch.CommitVersionInput(ModVersionCombo.Text);
+        await ViewModel.ModDetail.OpenAsync(project, ViewModel.ModSearch.GetActiveHint());
+    }
+
+    private async void ModDependencyList_ItemClick(object sender, ItemClickEventArgs e)
+    {
+        if (e.ClickedItem is ModDependencyItem dependency)
+            await ViewModel.ModDetail.OpenDependencyAsync(dependency);
+    }
+
+    private async void ModFileList_ItemClick(object sender, ItemClickEventArgs e)
+    {
+        if (e.ClickedItem is not ModFileVersionItem file ||
+            ViewModel.ModDetail.Detail is null ||
+            XamlRoot is null ||
+            _dialogOpen)
+            return;
+
+        _dialogOpen = true;
+        try
+        {
+            var settings = ViewModel.SnapshotSettingsForInstall();
+            var store = App.Services.GetRequiredService<LocalVersionStore>();
+            var instances = store.GetInstalled(settings.GameDirectory);
+
+            // Prefer detail-page filters, then fall back to search-page hint.
+            var gameHint = ViewModel.ModDetail.SelectedGameVersionFilter is { Id.Length: > 0 } vf
+                ? vf.Id
+                : ViewModel.ModDetail.HintGameVersion;
+            var loaderHint = ViewModel.ModDetail.SelectedLoaderFilter is { Id.Length: > 0 } lf
+                ? lf.Id
+                : ViewModel.ModDetail.HintLoaderSlug;
+
+            await ModInstallDialog.ShowAsync(
+                XamlRoot,
+                ViewModel.ModDetail.Detail,
+                file,
+                instances,
+                settings.GameDirectory,
+                gameHint,
+                loaderHint,
+                ViewModel.StartModInstall);
+        }
+        finally
+        {
+            _dialogOpen = false;
+        }
+    }
+
     private async void VersionList_ItemClick(object sender, ItemClickEventArgs e)
     {
         VersionList.SelectedItem = null;

@@ -1291,13 +1291,28 @@ public sealed class MinecraftLaunchService : IMinecraftLaunchService
 
         try
         {
-            ReportStatus(Loc.Format(LocKeys.Home_Preparing, versionId));
-            // Always verify/repair game files before launch (do not skip when .ardel-ready).
-            await InstallAsync(settings, versionId, fileProgress, byteProgress: null, cancellationToken)
-                .ConfigureAwait(false);
+            var gameDir = string.IsNullOrWhiteSpace(settings.GameDirectory)
+                ? GamePaths.GetMinecraftRoot()
+                : settings.GameDirectory;
 
-            ReportStatus(Loc.Format(LocKeys.Home_Starting, versionId));
-            var launcher = CreateLauncherCore(settings, heavyInstaller: false);
+            MinecraftLauncher launcher;
+            if (GamePaths.IsLaunchReady(versionId, gameDir))
+            {
+                // Fast path: files already installed and marked ready — skip multi-second SHA1.
+                ReportStatus(Loc.Format(LocKeys.Home_Starting, versionId));
+                launcher = CreateLauncherCore(settings, heavyInstaller: false);
+            }
+            else
+            {
+                ReportStatus(Loc.Format(LocKeys.Home_Preparing, versionId));
+                launcher = await EnsureInstalledForLaunchAsync(
+                        settings,
+                        versionId,
+                        fileProgress,
+                        cancellationToken)
+                    .ConfigureAwait(false);
+                ReportStatus(Loc.Format(LocKeys.Home_Starting, versionId));
+            }
 
             var sessionName = string.IsNullOrWhiteSpace(playerName)
                 ? Localization.Loc.Get(Localization.LocKeys.Default_PlayerName)
@@ -1323,6 +1338,14 @@ public sealed class MinecraftLaunchService : IMinecraftLaunchService
                 Path = launchPath
             };
 
+            // Reuse extracted natives when present to avoid Clean+Unzip on every launch.
+            var nativesDir = Path.Combine(root.Versions, versionId, "natives");
+            if (Directory.Exists(nativesDir) &&
+                Directory.EnumerateFileSystemEntries(nativesDir).Any())
+            {
+                option.NativesDirectory = nativesDir;
+            }
+
             var process = await launcher.BuildProcessAsync(versionId, option, cancellationToken)
                 .ConfigureAwait(false);
 
@@ -1342,6 +1365,74 @@ public sealed class MinecraftLaunchService : IMinecraftLaunchService
         {
             Debug.WriteLine($"[MinecraftLaunchService] Launch failed: {ex}");
             throw;
+        }
+    }
+
+    /// <summary>
+    /// Install/repair game files for launch using one launcher instance (avoids a second manifest fetch).
+    /// </summary>
+    private async Task<MinecraftLauncher> EnsureInstalledForLaunchAsync(
+        LauncherSettings settings,
+        string versionId,
+        IProgress<FileProgressInfo>? fileProgress,
+        CancellationToken cancellationToken)
+    {
+        var acquired = false;
+        try
+        {
+            if (!await _installGate.WaitAsync(0, cancellationToken).ConfigureAwait(false))
+            {
+                fileProgress?.Report(new FileProgressInfo(
+                    Loc.Get(LocKeys.Download_WaitingGate), 0, 0));
+                await _installGate.WaitAsync(cancellationToken).ConfigureAwait(false);
+            }
+
+            acquired = true;
+
+            var gameDir = string.IsNullOrWhiteSpace(settings.GameDirectory)
+                ? GamePaths.GetMinecraftRoot()
+                : settings.GameDirectory;
+
+            // Another download may have finished while we waited.
+            if (GamePaths.IsLaunchReady(versionId, gameDir))
+                return CreateLauncherCore(settings, heavyInstaller: false);
+
+            fileProgress?.Report(new FileProgressInfo(
+                Loc.Get(LocKeys.Download_InitLauncher), 0, 0));
+
+            var launcher = CreateLauncher(settings);
+
+            _cmlFileProgress = fileProgress is null
+                ? null
+                : new DirectProgress<InstallerProgressChangedEventArgs>(e =>
+                {
+                    if (e.EventType == InstallerEventType.Queued)
+                        return;
+                    fileProgress.Report(new FileProgressInfo(
+                        e.Name ?? string.Empty,
+                        e.ProgressedTasks,
+                        e.TotalTasks));
+                });
+            _cmlByteProgress = null;
+
+            try
+            {
+                fileProgress?.Report(new FileProgressInfo(
+                    Loc.Get(LocKeys.Download_ResolvingFiles), 0, 0));
+                await InstallVersionFilesAsync(launcher, versionId, cancellationToken)
+                    .ConfigureAwait(false);
+                return launcher;
+            }
+            finally
+            {
+                _cmlFileProgress = null;
+                _cmlByteProgress = null;
+            }
+        }
+        finally
+        {
+            if (acquired)
+                _installGate.Release();
         }
     }
 

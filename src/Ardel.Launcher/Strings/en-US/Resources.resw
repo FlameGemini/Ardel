@@ -295,4 +295,38 @@
   <data name="Mod_LoaderLiteLoaderUnsupported" xml:space="preserve"><value>LiteLoader (unsupported)</value></data>
   <data name="Mod_LiteLoaderUnsupportedHint" xml:space="preserve"><value>LiteLoader only supports Minecraft 1.5.2–1.12.2. It is not available for {0}.</value></data>
   <data name="Mod_LiteLoaderUnsupportedStatus" xml:space="preserve"><value>LiteLoader does not support Minecraft {0}.</value></data>
+  <data name="Mod_DetailBack" xml:space="preserve"><value>Back</value></data>
+  <data name="Mod_DetailTitle" xml:space="preserve"><value>Mod</value></data>
+  <data name="Mod_DetailLoading" xml:space="preserve"><value>Loading Mod details…</value></data>
+  <data name="Mod_DetailLoadFailed" xml:space="preserve"><value>Could not load Mod details.</value></data>
+  <data name="Mod_DetailLoadFailedNamed" xml:space="preserve"><value>Could not load Mod details: {0}</value></data>
+  <data name="Mod_DetailUnknownSource" xml:space="preserve"><value>Unknown Mod source: {0}</value></data>
+  <data name="Mod_DetailInvalidId" xml:space="preserve"><value>Invalid Mod id: {0}</value></data>
+  <data name="Mod_DetailNoFiles" xml:space="preserve"><value>No downloadable files found.</value></data>
+  <data name="Mod_DetailFileCount" xml:space="preserve"><value>{0} files</value></data>
+  <data name="Mod_DetailVersionsHeader" xml:space="preserve"><value>Versions</value></data>
+  <data name="Mod_DetailOpenModrinth" xml:space="preserve"><value>Open on Modrinth</value></data>
+  <data name="Mod_DetailOpenCurseForge" xml:space="preserve"><value>Open on CurseForge</value></data>
+  <data name="Mod_DetailCopyName" xml:space="preserve"><value>Copy name</value></data>
+  <data name="Mod_DetailCopiedName" xml:space="preserve"><value>Name copied</value></data>
+  <data name="Mod_DetailChannelRelease" xml:space="preserve"><value>Release</value></data>
+  <data name="Mod_DetailChannelBeta" xml:space="preserve"><value>Beta</value></data>
+  <data name="Mod_DetailChannelAlpha" xml:space="preserve"><value>Alpha</value></data>
+  <data name="Mod_DetailFilterVersion" xml:space="preserve"><value>Match game version</value></data>
+  <data name="Mod_DetailFilterLoader" xml:space="preserve"><value>Match loader</value></data>
+  <data name="Mod_DetailFilterAllVersions" xml:space="preserve"><value>All versions</value></data>
+  <data name="Mod_DetailFilterAllLoaders" xml:space="preserve"><value>All loaders</value></data>
+  <data name="Mod_DetailDependenciesHeader" xml:space="preserve"><value>Dependencies</value></data>
+  <data name="Mod_InstallDialogTitle" xml:space="preserve"><value>Install Mod</value></data>
+  <data name="Mod_InstallTitle" xml:space="preserve"><value>Install {0}</value></data>
+  <data name="Mod_InstallSubtitle" xml:space="preserve"><value>{0}</value></data>
+  <data name="Mod_InstallPickInstance" xml:space="preserve"><value>Choose a compatible instance (grouped by loader + version)</value></data>
+  <data name="Mod_InstallNoInstances" xml:space="preserve"><value>No instances installed yet — download a game version first.</value></data>
+  <data name="Mod_InstallNoCompatible" xml:space="preserve"><value>No compatible instances. Need a matching game version and loader — vanilla cannot install Mods.</value></data>
+  <data name="Mod_InstallPreferred" xml:space="preserve"><value>Matched</value></data>
+  <data name="Mod_InstallFileName" xml:space="preserve"><value>File name</value></data>
+  <data name="Mod_InstallJobName" xml:space="preserve"><value>{0} → {1}</value></data>
+  <data name="Mod_InstallDownloading" xml:space="preserve"><value>Downloading Mod…</value></data>
+  <data name="Mod_InstallProgress" xml:space="preserve"><value>Downloading {0}</value></data>
+  <data name="Mod_InstallComplete" xml:space="preserve"><value>Installed {0} into {1}</value></data>
 </root>

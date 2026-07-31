@@ -13,7 +13,6 @@
             <RowDefinition Height="Auto" />
             <RowDefinition Height="Auto" />
             <RowDefinition Height="*" />
-            <RowDefinition Height="Auto" />
         </Grid.RowDefinitions>
 
         <Grid>
@@ -133,21 +132,5 @@
                 FontSize="14"
                 Visibility="{x:Bind ViewModel.IsEmpty, Mode=OneWay, Converter={StaticResource BoolToVisibility}}" />
         </Grid>
-
-        <StackPanel Grid.Row="3" Spacing="10" Margin="0,12,0,0">
-            <TextBlock
-                Text="{x:Bind ViewModel.StatusText, Mode=OneWay}"
-                Opacity="0.9"
-                FontSize="15"
-                FontWeight="SemiBold"
-                TextWrapping="Wrap" />
-            <ProgressBar
-                Minimum="0"
-                Maximum="100"
-                Height="8"
-                Value="{x:Bind ViewModel.ProgressValue, Mode=OneWay}"
-                IsIndeterminate="{x:Bind ViewModel.IsIndeterminate, Mode=OneWay}"
-                Visibility="{x:Bind ViewModel.IsBusy, Mode=OneWay, Converter={StaticResource BoolToVisibility}}" />
-        </StackPanel>
     </Grid>
 </Page>

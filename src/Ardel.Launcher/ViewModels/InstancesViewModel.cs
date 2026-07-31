@@ -1,5 +1,4 @@
 using System.Collections.ObjectModel;
-using System.ComponentModel;
 using System.Diagnostics;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
@@ -14,28 +13,21 @@ namespace Ardel.Launcher.ViewModels;
 public partial class InstancesViewModel : ObservableObject
 {
     private readonly LaunchViewModel _launch;
-    private readonly LocalVersionStore _localVersions;
     private readonly SettingsService _settingsService;
     private XamlRoot? _xamlRoot;
 
     public InstancesViewModel(
         LaunchViewModel launch,
-        LocalVersionStore localVersions,
         SettingsService settingsService)
     {
         _launch = launch;
-        _localVersions = localVersions;
         _settingsService = settingsService;
-        _launch.PropertyChanged += OnLaunchPropertyChanged;
     }
 
     public ObservableCollection<GameVersionItem> Instances { get; } = [];
 
-    [ObservableProperty] private string _statusText = string.Empty;
     [ObservableProperty] private bool _isEmpty = true;
     [ObservableProperty] private bool _isBusy;
-    [ObservableProperty] private double _progressValue;
-    [ObservableProperty] private bool _isIndeterminate;
 
     public void AttachXamlRoot(XamlRoot? root)
     {
@@ -54,14 +46,14 @@ public partial class InstancesViewModel : ObservableObject
                 Instances.Add(item);
 
             IsEmpty = Instances.Count == 0;
-            StatusText = IsEmpty
-                ? Loc.Get(LocKeys.Instances_Empty)
-                : Loc.Format(LocKeys.Instances_Count, Instances.Count);
         }
         catch (Exception ex)
         {
-            StatusText = Loc.Format(LocKeys.Instances_LoadFailed, ex.Message);
             Debug.WriteLine(ex);
+            await ShowMessageAsync(
+                    Loc.Get(LocKeys.Instances_Title),
+                    Loc.Format(LocKeys.Instances_LoadFailed, ex.Message))
+                .ConfigureAwait(true);
         }
     }
 
@@ -72,30 +64,26 @@ public partial class InstancesViewModel : ObservableObject
             return;
 
         IsBusy = true;
-        IsIndeterminate = true;
-        ProgressValue = 0;
         try
         {
-            StatusText = Loc.Format(LocKeys.Home_Preparing, item.Id);
             await _launch.LaunchVersionAsync(item).ConfigureAwait(true);
-            StatusText = _launch.StatusText;
-            ProgressValue = _launch.ProgressValue;
-            IsIndeterminate = _launch.IsIndeterminate;
         }
         catch (Exception ex)
         {
-            StatusText = Loc.Format(LocKeys.Home_LaunchFailed, ex.Message);
             Debug.WriteLine(ex);
+            await ShowMessageAsync(
+                    Loc.Get(LocKeys.Instances_Title),
+                    Loc.Format(LocKeys.Home_LaunchFailed, ex.Message))
+                .ConfigureAwait(true);
         }
         finally
         {
             IsBusy = false;
-            IsIndeterminate = false;
         }
     }
 
     [RelayCommand]
-    private void OpenSettings(GameVersionItem? item)
+    private async Task OpenSettings(GameVersionItem? item)
     {
         if (item is null)
             return;
@@ -111,11 +99,13 @@ public partial class InstancesViewModel : ObservableObject
                 Arguments = dir,
                 UseShellExecute = true
             });
-            StatusText = Loc.Format(LocKeys.Instances_OpenedFolder, item.Id);
         }
         catch (Exception ex)
         {
-            StatusText = Loc.Format(LocKeys.Download_CannotOpenFolder, ex.Message);
+            await ShowMessageAsync(
+                    Loc.Get(LocKeys.Instances_Title),
+                    Loc.Format(LocKeys.Download_CannotOpenFolder, ex.Message))
+                .ConfigureAwait(true);
         }
     }
 
@@ -128,7 +118,10 @@ public partial class InstancesViewModel : ObservableObject
         var root = _xamlRoot;
         if (root is null)
         {
-            StatusText = Loc.Get(LocKeys.Instances_DeleteNoUi);
+            await ShowMessageAsync(
+                    Loc.Get(LocKeys.Instances_Title),
+                    Loc.Get(LocKeys.Instances_DeleteNoUi))
+                .ConfigureAwait(true);
             return;
         }
 
@@ -146,7 +139,6 @@ public partial class InstancesViewModel : ObservableObject
             return;
 
         IsBusy = true;
-        StatusText = Loc.Format(LocKeys.Instances_Deleting, item.Id);
         try
         {
             var settings = _settingsService.Load();
@@ -161,12 +153,14 @@ public partial class InstancesViewModel : ObservableObject
             }
 
             await RefreshAsync().ConfigureAwait(true);
-            StatusText = Loc.Format(LocKeys.Instances_Deleted, item.Id);
         }
         catch (Exception ex)
         {
-            StatusText = Loc.Format(LocKeys.Instances_DeleteFailed, item.Id, ex.Message);
             Debug.WriteLine(ex);
+            await ShowMessageAsync(
+                    Loc.Get(LocKeys.Instances_DeleteTitle),
+                    Loc.Format(LocKeys.Instances_DeleteFailed, item.Id, ex.Message))
+                .ConfigureAwait(true);
             await RefreshAsync().ConfigureAwait(true);
         }
         finally
@@ -175,16 +169,19 @@ public partial class InstancesViewModel : ObservableObject
         }
     }
 
-    private void OnLaunchPropertyChanged(object? sender, PropertyChangedEventArgs e)
+    private async Task ShowMessageAsync(string title, string message)
     {
-        if (!IsBusy)
+        var root = _xamlRoot;
+        if (root is null)
             return;
 
-        if (e.PropertyName is nameof(LaunchViewModel.StatusText))
-            StatusText = _launch.StatusText;
-        else if (e.PropertyName is nameof(LaunchViewModel.ProgressValue))
-            ProgressValue = _launch.ProgressValue;
-        else if (e.PropertyName is nameof(LaunchViewModel.IsIndeterminate))
-            IsIndeterminate = _launch.IsIndeterminate;
+        var dialog = new ContentDialog
+        {
+            XamlRoot = root,
+            Title = title,
+            Content = message,
+            CloseButtonText = Loc.Get(LocKeys.Action_Cancel)
+        };
+        await dialog.ShowAsync();
     }
 }

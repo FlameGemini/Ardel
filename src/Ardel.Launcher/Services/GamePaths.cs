@@ -16,7 +16,7 @@ public static class GamePaths
     /// <summary>Marks a versions/ folder as a user-facing instance (always listed).</summary>
     public const string UserInstanceMarker = ".ardel-user";
 
-    /// <summary>Written after a successful file install. Launch still verifies files.</summary>
+    /// <summary>Written after a successful file install. Ready launches skip full SHA1 verify.</summary>
     public const string ReadyMarker = ".ardel-ready";
 
     /// <summary>
@@ -103,8 +103,8 @@ public static class GamePaths
     }
 
     /// <summary>
-    /// Cheap local sanity check (profile + marker + parent chain). Not a substitute for
-    /// launch-time InstallAsync SHA1 verification.
+    /// Cheap local sanity check (profile + marker + parent chain).
+    /// When true, launch skips full InstallAsync SHA1 verification.
     /// </summary>
     public static bool IsLaunchReady(string versionId, string? minecraftRoot = null)
     {
@@ -212,6 +212,27 @@ public static class GamePaths
         }
 
         return null;
+    }
+
+    /// <summary>
+    /// Walks <c>inheritsFrom</c> to the root profile id (usually the vanilla Minecraft version).
+    /// </summary>
+    public static string ResolveBaseGameVersion(string versionId, string? minecraftRoot = null)
+    {
+        if (string.IsNullOrWhiteSpace(versionId))
+            return string.Empty;
+
+        var visited = new HashSet<string>(StringComparer.OrdinalIgnoreCase) { versionId };
+        var current = versionId.Trim();
+        while (true)
+        {
+            var parent = TryGetInheritsFrom(current, minecraftRoot);
+            if (parent is null || !visited.Add(parent))
+                break;
+            current = parent;
+        }
+
+        return current;
     }
 
     public static bool HasMarker(string versionId, string markerFile, string? minecraftRoot = null)

@@ -56,10 +56,14 @@ public partial class DownloadViewModel : ObservableObject
         ActiveDownloads.CollectionChanged += OnActiveDownloadsChanged;
         RefreshGameDirectory();
         ModSearch = new ModSearchViewModel(dispatcher);
+        ModDetail = new ModDetailViewModel(dispatcher);
     }
 
     /// <summary>Mod section filters and catalog results.</summary>
     public ModSearchViewModel ModSearch { get; }
+
+    /// <summary>Opened Mod project detail overlay.</summary>
+    public ModDetailViewModel ModDetail { get; }
 
     public List<GameVersionItem> AllVersions { get; } = [];
 
@@ -217,6 +221,44 @@ public partial class DownloadViewModel : ObservableObject
         _ = RunDownloadAsync(job);
     }
 
+    /// <summary>Enqueue a Mod jar download into an instance mods folder.</summary>
+    public void StartModInstall(ModFileInstallRequest request)
+    {
+        ArgumentNullException.ThrowIfNull(request);
+
+        var display = request.DisplayName.Trim();
+        if (string.IsNullOrEmpty(display))
+            display = request.FileName;
+
+        if (IsModFileBusy(request.ModsDirectory, request.FileName))
+        {
+            StatusText = Loc.Format(LocKeys.Download_AlreadyRunning, display);
+            return;
+        }
+
+        var job = new DownloadJob(request, OnJobCancelFromUi);
+        ActiveDownloads.Insert(0, job);
+        NotifyCanDownload();
+        StatusText = Loc.Format(LocKeys.Download_Started, display, ActiveDownloadCount);
+        _ = RunDownloadAsync(job);
+    }
+
+    private bool IsModFileBusy(string modsDirectory, string fileName)
+    {
+        var target = Path.Combine(modsDirectory, fileName);
+        foreach (var job in ActiveDownloads)
+        {
+            if (!job.IsActive || job.Kind != DownloadJobKind.ModFile || job.ModRequest is null)
+                continue;
+
+            var other = Path.Combine(job.ModRequest.ModsDirectory, job.ModRequest.FileName);
+            if (string.Equals(other, target, StringComparison.OrdinalIgnoreCase))
+                return true;
+        }
+
+        return false;
+    }
+
     [RelayCommand]
     private void Download()
     {
@@ -247,6 +289,12 @@ public partial class DownloadViewModel : ObservableObject
 
     private async Task RunDownloadAsync(DownloadJob job)
     {
+        if (job.Kind == DownloadJobKind.ModFile)
+        {
+            await RunModFileDownloadAsync(job).ConfigureAwait(false);
+            return;
+        }
+
         job.State = DownloadJobState.Running;
         job.IsIndeterminate = true;
         job.StatusText = Loc.Get(LocKeys.Download_Waiting);
@@ -369,6 +417,126 @@ public partial class DownloadViewModel : ObservableObject
         }
     }
 
+    private async Task RunModFileDownloadAsync(DownloadJob job)
+    {
+        var request = job.ModRequest
+                      ?? throw new InvalidOperationException("Missing mod request.");
+
+        job.State = DownloadJobState.Running;
+        job.IsIndeterminate = true;
+        job.StatusText = Loc.Get(LocKeys.Mod_InstallDownloading);
+
+        var catalog = new ModCatalogService();
+        var targetPath = Path.Combine(request.ModsDirectory, request.FileName);
+
+        try
+        {
+            await Task.Run(async () =>
+                {
+                    Directory.CreateDirectory(request.ModsDirectory);
+                    await catalog.DownloadFileAsync(
+                            request.DownloadUrl,
+                            targetPath,
+                            new DirectProgress<double>(p =>
+                            {
+                                RunOnUi(() =>
+                                {
+                                    if (!job.IsRunning)
+                                        return;
+                                    job.ApplyProgress(
+                                        Loc.Format(LocKeys.Mod_InstallProgress, request.FileName),
+                                        p,
+                                        indeterminate: false);
+                                });
+                            }),
+                            job.Token)
+                        .ConfigureAwait(false);
+                },
+                job.Token).ConfigureAwait(false);
+
+            if (job.IsCancelRequested)
+            {
+                TryDeletePartialMod(targetPath);
+                await FinishCancelledAsync(job).ConfigureAwait(false);
+                return;
+            }
+
+            RunOnUi(() =>
+            {
+                job.ProgressValue = 100;
+                job.IsIndeterminate = false;
+                job.State = DownloadJobState.Completed;
+                job.StatusText = Loc.Get(LocKeys.Download_Downloaded);
+                RefreshActiveFlags();
+                StatusText = Loc.Format(LocKeys.Mod_InstallComplete, request.FileName, request.TargetInstanceId);
+                NotifyCanDownload();
+                ToastRequested?.Invoke(this, new DownloadToastEventArgs(
+                    Loc.Format(LocKeys.Mod_InstallComplete, request.FileName, request.TargetInstanceId),
+                    isError: false));
+            });
+
+            await Task.Delay(4200).ConfigureAwait(false);
+            RunOnUi(() => RemoveJob(job));
+        }
+        catch (Exception ex) when (IsCancellation(ex, job))
+        {
+            TryDeletePartialMod(targetPath);
+            await FinishCancelledAsync(job).ConfigureAwait(false);
+        }
+        catch (Exception ex)
+        {
+            var message = UnwrapMessage(ex);
+            Debug.WriteLine(ex);
+            TryDeletePartialMod(targetPath);
+
+            if (job.IsCancelRequested)
+            {
+                await FinishCancelledAsync(job).ConfigureAwait(false);
+                return;
+            }
+
+            RunOnUi(() =>
+            {
+                if (!ActiveDownloads.Contains(job))
+                    return;
+
+                job.State = DownloadJobState.Failed;
+                job.IsIndeterminate = false;
+                job.ProgressValue = 0;
+                job.StatusText = message;
+                RefreshActiveFlags();
+                StatusText = Loc.Format(LocKeys.Download_Failed, job.VersionId, message);
+                NotifyCanDownload();
+                ToastRequested?.Invoke(this, new DownloadToastEventArgs(
+                    Loc.Format(LocKeys.Download_Failed, job.VersionId, message),
+                    isError: true));
+            });
+
+            await Task.Delay(4200).ConfigureAwait(false);
+            RunOnUi(() => RemoveJob(job));
+        }
+        finally
+        {
+            job.DisposeToken();
+        }
+    }
+
+    private static void TryDeletePartialMod(string targetPath)
+    {
+        try
+        {
+            if (File.Exists(targetPath))
+                File.Delete(targetPath);
+            var tmp = targetPath + ".tmp";
+            if (File.Exists(tmp))
+                File.Delete(tmp);
+        }
+        catch
+        {
+            // ignore cleanup failures
+        }
+    }
+
     private async Task FinishCancelledAsync(DownloadJob job)
     {
         if (!job.TryBeginCleanup())
@@ -378,6 +546,21 @@ public partial class DownloadViewModel : ObservableObject
         job.IsIndeterminate = false;
         job.ProgressValue = 0;
         job.StatusText = Loc.Get(LocKeys.Download_Cancelled);
+
+        if (job.Kind == DownloadJobKind.ModFile)
+        {
+            if (job.ModRequest is not null)
+                TryDeletePartialMod(Path.Combine(job.ModRequest.ModsDirectory, job.ModRequest.FileName));
+
+            RunOnUi(() =>
+            {
+                RemoveJob(job);
+                RefreshActiveFlags();
+                StatusText = Loc.Format(LocKeys.Download_CancelledNamed, job.VersionId);
+                NotifyCanDownload();
+            });
+            return;
+        }
 
         // Purge the target folder (respect pre-existing complete installs).
         await GamePaths.PurgeCancelledVersionAsync(

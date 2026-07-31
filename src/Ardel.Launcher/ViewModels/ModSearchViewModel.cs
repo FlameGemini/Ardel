@@ -277,6 +277,18 @@ public partial class ModSearchViewModel : ObservableObject
         UpdateLiteLoaderAvailability();
     }
 
+    /// <summary>
+    /// Current UI filters (even before Search is pressed) for detail / install biasing.
+    /// </summary>
+    public ModSearchHint GetActiveHint()
+    {
+        var version = ResolveConcreteGameVersion();
+        var loaderId = IsLoaderFilterVisible
+            ? (SelectedLoader?.Id ?? LoaderIdAny)
+            : LoaderIdAny;
+        return new ModSearchHint(version, loaderId);
+    }
+
     private static string FormatStatus(int count, string? warning) =>
         warning is not null
             ? Loc.Format(LocKeys.Mod_SearchCountWithWarning, count, warning)

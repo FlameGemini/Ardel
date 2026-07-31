@@ -4,8 +4,14 @@ using Ardel.Launcher.Localization;
 
 namespace Ardel.Launcher.Models;
 
+public enum DownloadJobKind
+{
+    VersionInstall,
+    ModFile
+}
+
 /// <summary>
-/// One in-flight (or recently finished) install task.
+/// One in-flight (or recently finished) install / Mod download task.
 /// </summary>
 public partial class DownloadJob : ObservableObject
 {
@@ -16,7 +22,9 @@ public partial class DownloadJob : ObservableObject
 
     public DownloadJob(InstallRequest request, Action<DownloadJob>? onCancel = null)
     {
-        Request = request;
+        Kind = DownloadJobKind.VersionInstall;
+        VersionRequest = request;
+        ModRequest = null;
         VersionId = request.CustomVersionName;
         MinecraftVersionId = request.MinecraftVersionId;
         _onCancel = onCancel;
@@ -31,9 +39,36 @@ public partial class DownloadJob : ObservableObject
             () => CanCancel);
     }
 
-    public InstallRequest Request { get; }
+    public DownloadJob(ModFileInstallRequest request, Action<DownloadJob>? onCancel = null)
+    {
+        Kind = DownloadJobKind.ModFile;
+        VersionRequest = null;
+        ModRequest = request;
+        VersionId = request.DisplayName;
+        MinecraftVersionId = request.TargetInstanceId;
+        _onCancel = onCancel;
+        StatusText = Loc.Get(LocKeys.Download_Queued);
+        IsIndeterminate = true;
+        CancelCommand = new RelayCommand(
+            () =>
+            {
+                Cancel();
+                _onCancel?.Invoke(this);
+            },
+            () => CanCancel);
+    }
 
-    /// <summary>Target / display version folder name.</summary>
+    public DownloadJobKind Kind { get; }
+
+    public InstallRequest? VersionRequest { get; }
+
+    public ModFileInstallRequest? ModRequest { get; }
+
+    /// <summary>Legacy alias for version installs.</summary>
+    public InstallRequest Request =>
+        VersionRequest ?? throw new InvalidOperationException("Not a version install job.");
+
+    /// <summary>Target / display name in the task flyout.</summary>
     public string VersionId { get; }
 
     public string MinecraftVersionId { get; }

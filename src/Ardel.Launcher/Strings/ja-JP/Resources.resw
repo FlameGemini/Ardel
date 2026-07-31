@@ -275,4 +275,38 @@
   <data name="Mod_LoaderLiteLoaderUnsupported" xml:space="preserve"><value>LiteLoader（非対応）</value></data>
   <data name="Mod_LiteLoaderUnsupportedHint" xml:space="preserve"><value>LiteLoader は Minecraft 1.5.2–1.12.2 のみ対応です。{0} では使えません。</value></data>
   <data name="Mod_LiteLoaderUnsupportedStatus" xml:space="preserve"><value>LiteLoader は Minecraft {0} に対応していません。</value></data>
+  <data name="Mod_DetailBack" xml:space="preserve"><value>戻る</value></data>
+  <data name="Mod_DetailTitle" xml:space="preserve"><value>Mod</value></data>
+  <data name="Mod_DetailLoading" xml:space="preserve"><value>Mod の詳細を読み込み中…</value></data>
+  <data name="Mod_DetailLoadFailed" xml:space="preserve"><value>Mod の詳細を読み込めませんでした。</value></data>
+  <data name="Mod_DetailLoadFailedNamed" xml:space="preserve"><value>Mod の詳細を読み込めませんでした: {0}</value></data>
+  <data name="Mod_DetailUnknownSource" xml:space="preserve"><value>不明な Mod ソース: {0}</value></data>
+  <data name="Mod_DetailInvalidId" xml:space="preserve"><value>無効な Mod ID: {0}</value></data>
+  <data name="Mod_DetailNoFiles" xml:space="preserve"><value>ダウンロード可能なファイルがありません。</value></data>
+  <data name="Mod_DetailFileCount" xml:space="preserve"><value>{0} 件のファイル</value></data>
+  <data name="Mod_DetailVersionsHeader" xml:space="preserve"><value>バージョン</value></data>
+  <data name="Mod_DetailOpenModrinth" xml:space="preserve"><value>Modrinth で開く</value></data>
+  <data name="Mod_DetailOpenCurseForge" xml:space="preserve"><value>CurseForge で開く</value></data>
+  <data name="Mod_DetailCopyName" xml:space="preserve"><value>名前をコピー</value></data>
+  <data name="Mod_DetailCopiedName" xml:space="preserve"><value>名前をコピーしました</value></data>
+  <data name="Mod_DetailChannelRelease" xml:space="preserve"><value>正式版</value></data>
+  <data name="Mod_DetailChannelBeta" xml:space="preserve"><value>ベータ</value></data>
+  <data name="Mod_DetailChannelAlpha" xml:space="preserve"><value>アルファ</value></data>
+  <data name="Mod_DetailFilterVersion" xml:space="preserve"><value>ゲームバージョンで絞り込み</value></data>
+  <data name="Mod_DetailFilterLoader" xml:space="preserve"><value>ローダーで絞り込み</value></data>
+  <data name="Mod_DetailFilterAllVersions" xml:space="preserve"><value>すべてのバージョン</value></data>
+  <data name="Mod_DetailFilterAllLoaders" xml:space="preserve"><value>すべてのローダー</value></data>
+  <data name="Mod_DetailDependenciesHeader" xml:space="preserve"><value>依存関係</value></data>
+  <data name="Mod_InstallDialogTitle" xml:space="preserve"><value>Mod をインストール</value></data>
+  <data name="Mod_InstallTitle" xml:space="preserve"><value>{0} をインストール</value></data>
+  <data name="Mod_InstallSubtitle" xml:space="preserve"><value>{0}</value></data>
+  <data name="Mod_InstallPickInstance" xml:space="preserve"><value>互換インスタンスを選択（ローダー + バージョンで分類）</value></data>
+  <data name="Mod_InstallNoInstances" xml:space="preserve"><value>インスタンスがありません — 先にゲームをダウンロードしてください。</value></data>
+  <data name="Mod_InstallNoCompatible" xml:space="preserve"><value>互換インスタンスがありません。ゲームバージョンとローダーの一致が必要です — バニラには Mod を入れられません。</value></data>
+  <data name="Mod_InstallPreferred" xml:space="preserve"><value>一致</value></data>
+  <data name="Mod_InstallFileName" xml:space="preserve"><value>ファイル名</value></data>
+  <data name="Mod_InstallJobName" xml:space="preserve"><value>{0} → {1}</value></data>
+  <data name="Mod_InstallDownloading" xml:space="preserve"><value>Mod をダウンロード中…</value></data>
+  <data name="Mod_InstallProgress" xml:space="preserve"><value>{0} をダウンロード中</value></data>
+  <data name="Mod_InstallComplete" xml:space="preserve"><value>{0} を {1} にインストールしました</value></data>
 </root>

@@ -8,7 +8,7 @@
 
   <data name="Nav_Play" xml:space="preserve"><value>开始游戏</value></data>
   <data name="Nav_Download" xml:space="preserve"><value>下载</value></data>
-  <data name="Nav_Instances" xml:space="preserve"><value>游戏档案</value></data>
+  <data name="Nav_Instances" xml:space="preserve"><value>实例</value></data>
   <data name="Nav_Settings" xml:space="preserve"><value>设置</value></data>
 
   <data name="Action_Launch" xml:space="preserve"><value>启动</value></data>
@@ -41,19 +41,19 @@
   <data name="Home_Cancelling" xml:space="preserve"><value>正在取消…</value></data>
   <data name="Home_DownloadingBytes" xml:space="preserve"><value>正在下载 {0} / {1}</value></data>
 
-  <data name="Instances_Title" xml:space="preserve"><value>游戏档案</value></data>
+  <data name="Instances_Title" xml:space="preserve"><value>实例</value></data>
   <data name="Instances_Subtitle" xml:space="preserve"><value>本机已安装的游戏版本</value></data>
-  <data name="Instances_Empty" xml:space="preserve"><value>还没有档案 — 请先去下载</value></data>
-  <data name="Instances_Count" xml:space="preserve"><value>{0} 个档案</value></data>
-  <data name="Instances_LoadFailed" xml:space="preserve"><value>无法加载档案：{0}</value></data>
-  <data name="Instances_OpenSettings" xml:space="preserve"><value>打开档案文件夹</value></data>
+  <data name="Instances_Empty" xml:space="preserve"><value>还没有实例 — 请先去下载</value></data>
+  <data name="Instances_Count" xml:space="preserve"><value>{0} 个实例</value></data>
+  <data name="Instances_LoadFailed" xml:space="preserve"><value>无法加载实例：{0}</value></data>
+  <data name="Instances_OpenSettings" xml:space="preserve"><value>打开实例文件夹</value></data>
   <data name="Instances_OpenedFolder" xml:space="preserve"><value>已打开 {0}</value></data>
-  <data name="Instances_DeleteTitle" xml:space="preserve"><value>删除档案</value></data>
+  <data name="Instances_DeleteTitle" xml:space="preserve"><value>删除实例</value></data>
   <data name="Instances_DeleteConfirm" xml:space="preserve"><value>删除“{0}”？将移除该版本文件夹且无法恢复。</value></data>
   <data name="Instances_Deleting" xml:space="preserve"><value>正在删除 {0}…</value></data>
   <data name="Instances_Deleted" xml:space="preserve"><value>已删除 {0}</value></data>
   <data name="Instances_DeleteFailed" xml:space="preserve"><value>无法删除 {0}：{1}</value></data>
-  <data name="Instances_DeleteNoUi" xml:space="preserve"><value>无法显示删除对话框 — 请重新打开游戏档案页后再试。</value></data>
+  <data name="Instances_DeleteNoUi" xml:space="preserve"><value>无法显示删除对话框 — 请重新打开实例页后再试。</value></data>
 
   <data name="Home_ProcessError" xml:space="preserve"><value>进程错误：{0}</value></data>
 
@@ -295,4 +295,38 @@
   <data name="Mod_LoaderLiteLoaderUnsupported" xml:space="preserve"><value>LiteLoader（不支持）</value></data>
   <data name="Mod_LiteLoaderUnsupportedHint" xml:space="preserve"><value>LiteLoader 仅支持 Minecraft 1.5.2–1.12.2，无法用于 {0}。</value></data>
   <data name="Mod_LiteLoaderUnsupportedStatus" xml:space="preserve"><value>LiteLoader 不支持 Minecraft {0}。</value></data>
+  <data name="Mod_DetailBack" xml:space="preserve"><value>返回</value></data>
+  <data name="Mod_DetailTitle" xml:space="preserve"><value>模组</value></data>
+  <data name="Mod_DetailLoading" xml:space="preserve"><value>正在加载模组详情…</value></data>
+  <data name="Mod_DetailLoadFailed" xml:space="preserve"><value>无法加载模组详情。</value></data>
+  <data name="Mod_DetailLoadFailedNamed" xml:space="preserve"><value>无法加载模组详情：{0}</value></data>
+  <data name="Mod_DetailUnknownSource" xml:space="preserve"><value>未知模组来源：{0}</value></data>
+  <data name="Mod_DetailInvalidId" xml:space="preserve"><value>无效的模组 ID：{0}</value></data>
+  <data name="Mod_DetailNoFiles" xml:space="preserve"><value>没有可下载的文件。</value></data>
+  <data name="Mod_DetailFileCount" xml:space="preserve"><value>{0} 个文件</value></data>
+  <data name="Mod_DetailVersionsHeader" xml:space="preserve"><value>版本列表</value></data>
+  <data name="Mod_DetailOpenModrinth" xml:space="preserve"><value>在 Modrinth 打开</value></data>
+  <data name="Mod_DetailOpenCurseForge" xml:space="preserve"><value>在 CurseForge 打开</value></data>
+  <data name="Mod_DetailCopyName" xml:space="preserve"><value>复制名称</value></data>
+  <data name="Mod_DetailCopiedName" xml:space="preserve"><value>已复制名称</value></data>
+  <data name="Mod_DetailChannelRelease" xml:space="preserve"><value>正式版</value></data>
+  <data name="Mod_DetailChannelBeta" xml:space="preserve"><value>Beta</value></data>
+  <data name="Mod_DetailChannelAlpha" xml:space="preserve"><value>Alpha</value></data>
+  <data name="Mod_DetailFilterVersion" xml:space="preserve"><value>匹配游戏版本</value></data>
+  <data name="Mod_DetailFilterLoader" xml:space="preserve"><value>匹配加载器</value></data>
+  <data name="Mod_DetailFilterAllVersions" xml:space="preserve"><value>全部版本</value></data>
+  <data name="Mod_DetailFilterAllLoaders" xml:space="preserve"><value>全部加载器</value></data>
+  <data name="Mod_DetailDependenciesHeader" xml:space="preserve"><value>依赖</value></data>
+  <data name="Mod_InstallDialogTitle" xml:space="preserve"><value>安装模组</value></data>
+  <data name="Mod_InstallTitle" xml:space="preserve"><value>安装 {0}</value></data>
+  <data name="Mod_InstallSubtitle" xml:space="preserve"><value>{0}</value></data>
+  <data name="Mod_InstallPickInstance" xml:space="preserve"><value>选择兼容实例（按加载器 + 版本分组）</value></data>
+  <data name="Mod_InstallNoInstances" xml:space="preserve"><value>还没有实例 — 请先下载游戏版本。</value></data>
+  <data name="Mod_InstallNoCompatible" xml:space="preserve"><value>没有兼容实例。需要匹配的游戏版本与加载器 — 原版不能安装模组。</value></data>
+  <data name="Mod_InstallPreferred" xml:space="preserve"><value>已匹配</value></data>
+  <data name="Mod_InstallFileName" xml:space="preserve"><value>目标文件名</value></data>
+  <data name="Mod_InstallJobName" xml:space="preserve"><value>{0} → {1}</value></data>
+  <data name="Mod_InstallDownloading" xml:space="preserve"><value>正在下载模组…</value></data>
+  <data name="Mod_InstallProgress" xml:space="preserve"><value>正在下载 {0}</value></data>
+  <data name="Mod_InstallComplete" xml:space="preserve"><value>已将 {0} 安装到 {1}</value></data>
 </root>
