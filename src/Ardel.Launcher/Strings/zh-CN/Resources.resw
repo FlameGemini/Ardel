@@ -290,4 +290,7 @@
   <data name="Mod_PageNext" xml:space="preserve"><value>下一页</value></data>
   <data name="Mod_PageLabel" xml:space="preserve"><value>第 {0} 页</value></data>
   <data name="Mod_VersionsEllipsis" xml:space="preserve"><value>{0}…</value></data>
+  <data name="Mod_LoaderLiteLoaderUnsupported" xml:space="preserve"><value>LiteLoader（不支持）</value></data>
+  <data name="Mod_LiteLoaderUnsupportedHint" xml:space="preserve"><value>LiteLoader 仅支持 Minecraft 1.5.2–1.12.2，无法用于 {0}。</value></data>
+  <data name="Mod_LiteLoaderUnsupportedStatus" xml:space="preserve"><value>LiteLoader 不支持 Minecraft {0}。</value></data>
 </root>

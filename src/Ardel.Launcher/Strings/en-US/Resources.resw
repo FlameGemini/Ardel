@@ -290,4 +290,7 @@
   <data name="Mod_PageNext" xml:space="preserve"><value>Next</value></data>
   <data name="Mod_PageLabel" xml:space="preserve"><value>Page {0}</value></data>
   <data name="Mod_VersionsEllipsis" xml:space="preserve"><value>{0}…</value></data>
+  <data name="Mod_LoaderLiteLoaderUnsupported" xml:space="preserve"><value>LiteLoader (unsupported)</value></data>
+  <data name="Mod_LiteLoaderUnsupportedHint" xml:space="preserve"><value>LiteLoader only supports Minecraft 1.5.2–1.12.2. It is not available for {0}.</value></data>
+  <data name="Mod_LiteLoaderUnsupportedStatus" xml:space="preserve"><value>LiteLoader does not support Minecraft {0}.</value></data>
 </root>

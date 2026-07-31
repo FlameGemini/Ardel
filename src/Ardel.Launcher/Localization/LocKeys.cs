@@ -161,6 +161,9 @@ public static class LocKeys
     public const string Mod_PageNext = "Mod_PageNext";
     public const string Mod_PageLabel = "Mod_PageLabel";
     public const string Mod_VersionsEllipsis = "Mod_VersionsEllipsis";
+    public const string Mod_LoaderLiteLoaderUnsupported = "Mod_LoaderLiteLoaderUnsupported";
+    public const string Mod_LiteLoaderUnsupportedHint = "Mod_LiteLoaderUnsupportedHint";
+    public const string Mod_LiteLoaderUnsupportedStatus = "Mod_LiteLoaderUnsupportedStatus";
 
     // Settings
     public const string Settings_Title = "Settings_Title";

@@ -1,6 +1,7 @@
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using Microsoft.UI.Dispatching;
+using Ardel.Launcher.Helpers;
 using Ardel.Launcher.Localization;
 using Ardel.Launcher.Models;
 using Ardel.Launcher.Services;
@@ -117,6 +118,8 @@ public partial class ModSearchViewModel : ObservableObject
     [ObservableProperty] private string _pageLabel = string.Empty;
     [ObservableProperty] private string _statusText;
     [ObservableProperty] private bool _hasResults;
+    [ObservableProperty] private bool _isLiteLoaderUnsupported;
+    [ObservableProperty] private string _liteLoaderHintText = string.Empty;
 
     public void Relocalize()
     {
@@ -132,6 +135,7 @@ public partial class ModSearchViewModel : ObservableObject
             VersionText = SelectedVersion.Name;
 
         UpdateLoaderVisibility();
+        UpdateLiteLoaderAvailability();
 
         if (!IsSearching && Results.Count == 0 && SubmittedCriteria is null)
             StatusText = Loc.Get(LocKeys.Mod_SearchHint);
@@ -171,6 +175,23 @@ public partial class ModSearchViewModel : ObservableObject
             criteria = SubmittedCriteria;
         }
 
+        if (replaceCriteria &&
+            criteria.LoaderId == ModLoaderCompatibility.LiteLoaderId &&
+            !ModLoaderCompatibility.IsLiteLoaderCompatible(criteria.GameVersion))
+        {
+            _searchCts?.Cancel();
+            Results = Array.Empty<ModProjectItem>();
+            HasResults = false;
+            IsPagerVisible = false;
+            CanGoPrevious = false;
+            CanGoNext = false;
+            _currentPage = 1;
+            _lastWarning = null;
+            StatusText = Loc.Format(LocKeys.Mod_LiteLoaderUnsupportedStatus, criteria.GameVersion);
+            IsSearching = false;
+            return;
+        }
+
         _searchCts?.Cancel();
         _searchCts?.Dispose();
         _searchCts = new CancellationTokenSource();
@@ -206,7 +227,6 @@ public partial class ModSearchViewModel : ObservableObject
                     _lastWarning = result.WarningMessage;
                 StatusText = FormatStatus(Results.Count, _lastWarning);
                 IsSearching = false;
-                _ = ModIconCache.PrefetchAsync(result.Items, _dispatcher, token);
             });
         }
         catch (OperationCanceledException)
@@ -254,6 +274,7 @@ public partial class ModSearchViewModel : ObservableObject
         _lastWarning = null;
         StatusText = Loc.Get(LocKeys.Mod_SearchHint);
         UpdateLoaderVisibility();
+        UpdateLiteLoaderAvailability();
     }
 
     private static string FormatStatus(int count, string? warning) =>
@@ -279,6 +300,7 @@ public partial class ModSearchViewModel : ObservableObject
         if (value is not null)
             VersionText = value.Name;
         UpdateLoaderVisibility();
+        UpdateLiteLoaderAvailability();
     }
 
     partial void OnVersionTextChanged(string value)
@@ -286,7 +308,10 @@ public partial class ModSearchViewModel : ObservableObject
         if (!_syncingVersion)
             SyncSelectedVersionFromText(value);
         UpdateLoaderVisibility();
+        UpdateLiteLoaderAvailability();
     }
+
+    partial void OnSelectedLoaderChanged(NamedOption? value) => UpdateLiteLoaderAvailability();
 
     private void SyncSelectedVersionFromText(string? value)
     {
@@ -322,19 +347,46 @@ public partial class ModSearchViewModel : ObservableObject
             SelectedLoader = LoaderOptions[0];
     }
 
-    private ModSearchCriteria CaptureCriteria()
+    private void UpdateLiteLoaderAvailability()
+    {
+        var version = ResolveConcreteGameVersion();
+        var compatible = ModLoaderCompatibility.IsLiteLoaderCompatible(version);
+        var lite = LoaderOptions.FirstOrDefault(o => o.Id == ModLoaderCompatibility.LiteLoaderId);
+        if (lite is not null)
+        {
+            lite.Name = compatible
+                ? Loc.Get(LocKeys.Mod_LoaderLiteLoader)
+                : Loc.Get(LocKeys.Mod_LoaderLiteLoaderUnsupported);
+        }
+
+        var showHint = !compatible &&
+                       IsLoaderFilterVisible &&
+                       SelectedLoader?.Id == ModLoaderCompatibility.LiteLoaderId;
+        IsLiteLoaderUnsupported = showHint;
+        LiteLoaderHintText = showHint
+            ? Loc.Format(LocKeys.Mod_LiteLoaderUnsupportedHint, version)
+            : string.Empty;
+    }
+
+    private string ResolveConcreteGameVersion()
     {
         var version = VersionText?.Trim() ?? string.Empty;
         if (string.Equals(version, Loc.Get(LocKeys.Mod_VersionAll), StringComparison.Ordinal))
-            version = string.Empty;
+            return string.Empty;
 
-        // Prefer the stable id when the typed text matches a preset.
         if (SelectedVersion is { Id.Length: > 0 } selected &&
             (string.Equals(selected.Name, version, StringComparison.OrdinalIgnoreCase) ||
              string.Equals(selected.Id, version, StringComparison.OrdinalIgnoreCase)))
         {
-            version = selected.Id;
+            return selected.Id;
         }
+
+        return version;
+    }
+
+    private ModSearchCriteria CaptureCriteria()
+    {
+        var version = ResolveConcreteGameVersion();
 
         return new ModSearchCriteria(
             Keyword.Trim(),

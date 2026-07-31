@@ -243,6 +243,13 @@
                         VerticalAlignment="Bottom"
                         Command="{x:Bind ViewModel.ModSearch.ResetCommand}" />
                 </Grid>
+
+                <TextBlock
+                    Text="{x:Bind ViewModel.ModSearch.LiteLoaderHintText, Mode=OneWay}"
+                    Opacity="0.75"
+                    FontSize="12"
+                    TextWrapping="Wrap"
+                    Visibility="{x:Bind ViewModel.ModSearch.IsLiteLoaderUnsupported, Mode=OneWay, Converter={StaticResource BoolToVisibility}}" />
             </StackPanel>
 
             <!-- Results -->
@@ -289,8 +296,8 @@
                                         <Image.Source>
                                             <BitmapImage
                                                 UriSource="{x:Bind IconUri, Mode=OneWay}"
-                                                DecodePixelWidth="96"
-                                                DecodePixelHeight="96"
+                                                DecodePixelWidth="64"
+                                                DecodePixelHeight="64"
                                                 DecodePixelType="Logical" />
                                         </Image.Source>
                                     </Image>

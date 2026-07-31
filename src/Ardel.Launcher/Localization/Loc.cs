@@ -177,6 +177,11 @@ public static partial class Loc
         [LocKeys.Mod_PageNext] = "Next",
         [LocKeys.Mod_PageLabel] = "Page {0}",
         [LocKeys.Mod_VersionsEllipsis] = "{0}…",
+        [LocKeys.Mod_LoaderLiteLoaderUnsupported] = "LiteLoader (unsupported)",
+        [LocKeys.Mod_LiteLoaderUnsupportedHint] =
+            "LiteLoader only supports Minecraft 1.5.2–1.12.2. It is not available for {0}.",
+        [LocKeys.Mod_LiteLoaderUnsupportedStatus] =
+            "LiteLoader does not support Minecraft {0}.",
 
         [LocKeys.Settings_Title] = "Settings",
         [LocKeys.Settings_Java] = "Java",

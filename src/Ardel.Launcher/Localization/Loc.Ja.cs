@@ -149,6 +149,11 @@ public static partial class Loc
         [LocKeys.Mod_PageNext] = "次へ",
         [LocKeys.Mod_PageLabel] = "{0} ページ",
         [LocKeys.Mod_VersionsEllipsis] = "{0}…",
+        [LocKeys.Mod_LoaderLiteLoaderUnsupported] = "LiteLoader（非対応）",
+        [LocKeys.Mod_LiteLoaderUnsupportedHint] =
+            "LiteLoader は Minecraft 1.5.2–1.12.2 のみ対応です。{0} では使えません。",
+        [LocKeys.Mod_LiteLoaderUnsupportedStatus] =
+            "LiteLoader は Minecraft {0} に対応していません。",
         [LocKeys.Settings_Title] = "設定",
         [LocKeys.Settings_Java] = "Java",
         [LocKeys.Settings_JavaPlaceholder] = "自動 / 未選択",

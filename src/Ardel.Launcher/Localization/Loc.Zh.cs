@@ -149,6 +149,11 @@ public static partial class Loc
         [LocKeys.Mod_PageNext] = "下一页",
         [LocKeys.Mod_PageLabel] = "第 {0} 页",
         [LocKeys.Mod_VersionsEllipsis] = "{0}…",
+        [LocKeys.Mod_LoaderLiteLoaderUnsupported] = "LiteLoader（不支持）",
+        [LocKeys.Mod_LiteLoaderUnsupportedHint] =
+            "LiteLoader 仅支持 Minecraft 1.5.2–1.12.2，无法用于 {0}。",
+        [LocKeys.Mod_LiteLoaderUnsupportedStatus] =
+            "LiteLoader 不支持 Minecraft {0}。",
         [LocKeys.Settings_Title] = "设置",
         [LocKeys.Settings_Java] = "Java",
         [LocKeys.Settings_JavaPlaceholder] = "自动 / 未选择",

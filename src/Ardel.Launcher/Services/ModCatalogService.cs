@@ -306,8 +306,13 @@ public sealed class ModCatalogService
         IEnumerable<string> loaders,
         string? preferredGameVersion = null)
     {
-        // Prefer disk cache so ListView binds to local files. Misses are filled by PrefetchAsync.
-        var iconUri = ModIconCache.TryGetCachedUri(iconUrl);
+        Uri? iconUri = null;
+        if (!string.IsNullOrWhiteSpace(iconUrl) &&
+            Uri.TryCreate(iconUrl.Trim(), UriKind.Absolute, out var remote) &&
+            (remote.Scheme == Uri.UriSchemeHttp || remote.Scheme == Uri.UriSchemeHttps))
+        {
+            iconUri = remote;
+        }
 
         return new ModProjectItem
         {
