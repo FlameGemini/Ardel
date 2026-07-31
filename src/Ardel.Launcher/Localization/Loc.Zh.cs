@@ -55,6 +55,8 @@ public static partial class Loc
         [LocKeys.Instances_DeleteNoUi] = "无法显示删除对话框 — 请重新打开游戏档案页后再试。",
         [LocKeys.Home_ProcessError] = "进程错误：{0}",
         [LocKeys.Download_Type] = "类型",
+        [LocKeys.Download_SectionMinecraft] = "Minecraft",
+        [LocKeys.Download_SectionMod] = "模组",
         [LocKeys.Download_Search] = "搜索",
         [LocKeys.Download_SearchPlaceholder] = "例如 1.21",
         [LocKeys.Download_Installed] = "已安装",

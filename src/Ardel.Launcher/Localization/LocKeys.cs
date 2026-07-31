@@ -66,6 +66,8 @@ public static class LocKeys
 
     // Download page
     public const string Download_Type = "Download_Type";
+    public const string Download_SectionMinecraft = "Download_SectionMinecraft";
+    public const string Download_SectionMod = "Download_SectionMod";
     public const string Download_Search = "Download_Search";
     public const string Download_SearchPlaceholder = "Download_SearchPlaceholder";
     public const string Download_Installed = "Download_Installed";

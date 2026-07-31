@@ -83,6 +83,8 @@ public static partial class Loc
         [LocKeys.Home_ProcessError] = "Process error: {0}",
 
         [LocKeys.Download_Type] = "Type",
+        [LocKeys.Download_SectionMinecraft] = "Minecraft",
+        [LocKeys.Download_SectionMod] = "Mod",
         [LocKeys.Download_Search] = "Search",
         [LocKeys.Download_SearchPlaceholder] = "e.g. 1.21",
         [LocKeys.Download_Installed] = "Installed",

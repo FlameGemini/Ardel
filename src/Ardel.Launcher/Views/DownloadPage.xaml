@@ -13,7 +13,7 @@
             <ColumnDefinition Width="*" />
         </Grid.ColumnDefinitions>
 
-        <!-- Secondary menu: labels stay Minecraft / Mod in every language. -->
+        <!-- Secondary menu -->
         <Border
             BorderBrush="{ThemeResource DividerStrokeColorDefaultBrush}"
             BorderThickness="0,0,1,0"
@@ -33,8 +33,8 @@
                         <Setter Property="Margin" Value="0,0,0,4" />
                     </Style>
                 </ListView.ItemContainerStyle>
-                <ListViewItem Content="Minecraft" Tag="minecraft" />
-                <ListViewItem Content="Mod" Tag="mod" />
+                <ListViewItem Content="{loc:String Key=Download_SectionMinecraft}" Tag="minecraft" />
+                <ListViewItem Content="{loc:String Key=Download_SectionMod}" Tag="mod" />
             </ListView>
         </Border>
 

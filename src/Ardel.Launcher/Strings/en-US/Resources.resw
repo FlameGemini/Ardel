@@ -58,6 +58,8 @@
   <data name="Home_ProcessError" xml:space="preserve"><value>Process error: {0}</value></data>
 
   <data name="Download_Type" xml:space="preserve"><value>Type</value></data>
+  <data name="Download_SectionMinecraft" xml:space="preserve"><value>Minecraft</value></data>
+  <data name="Download_SectionMod" xml:space="preserve"><value>Mod</value></data>
   <data name="Download_Search" xml:space="preserve"><value>Search</value></data>
   <data name="Download_SearchPlaceholder" xml:space="preserve"><value>e.g. 1.21</value></data>
   <data name="Download_Installed" xml:space="preserve"><value>Installed</value></data>

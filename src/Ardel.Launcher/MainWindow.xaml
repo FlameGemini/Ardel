@@ -5,7 +5,7 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:views="using:Ardel.Launcher.Views"
     xmlns:loc="using:Ardel.Launcher.Localization"
-    Title="Ardel">
+    Title="{loc:String Key=Brand_Name}">
 
     <Grid x:Name="RootGrid">
         <Grid.RowDefinitions>

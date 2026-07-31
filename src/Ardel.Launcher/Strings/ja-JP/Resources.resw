@@ -52,6 +52,8 @@
   <data name="Instances_DeleteNoUi" xml:space="preserve"><value>削除ダイアログを表示できません — プロファイルページを開き直して再試行してください。</value></data>
   <data name="Home_ProcessError" xml:space="preserve"><value>プロセスエラー: {0}</value></data>
   <data name="Download_Type" xml:space="preserve"><value>種類</value></data>
+  <data name="Download_SectionMinecraft" xml:space="preserve"><value>Minecraft</value></data>
+  <data name="Download_SectionMod" xml:space="preserve"><value>Mod</value></data>
   <data name="Download_Search" xml:space="preserve"><value>検索</value></data>
   <data name="Download_SearchPlaceholder" xml:space="preserve"><value>例: 1.21</value></data>
   <data name="Download_Installed" xml:space="preserve"><value>インストール済み</value></data>

@@ -55,6 +55,8 @@ public static partial class Loc
         [LocKeys.Instances_DeleteNoUi] = "削除ダイアログを表示できません — プロファイルページを開き直して再試行してください。",
         [LocKeys.Home_ProcessError] = "プロセスエラー: {0}",
         [LocKeys.Download_Type] = "種類",
+        [LocKeys.Download_SectionMinecraft] = "Minecraft",
+        [LocKeys.Download_SectionMod] = "Mod",
         [LocKeys.Download_Search] = "検索",
         [LocKeys.Download_SearchPlaceholder] = "例: 1.21",
         [LocKeys.Download_Installed] = "インストール済み",
