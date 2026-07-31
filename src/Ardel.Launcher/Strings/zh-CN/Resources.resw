@@ -274,4 +274,16 @@
   <data name="Mod_CategoryInfo" xml:space="preserve"><value>信息显示</value></data>
   <data name="Mod_CategorySocial" xml:space="preserve"><value>多人 / 服务器</value></data>
   <data name="Mod_CategoryLibrary" xml:space="preserve"><value>支持库</value></data>
+  <data name="Mod_SearchHint" xml:space="preserve"><value>设置筛选条件后点击搜索以列出 Mod。</value></data>
+  <data name="Mod_Searching" xml:space="preserve"><value>正在搜索…</value></data>
+  <data name="Mod_SearchEmpty" xml:space="preserve"><value>没有符合条件的 Mod。</value></data>
+  <data name="Mod_SearchCount" xml:space="preserve"><value>{0} 个 Mod</value></data>
+  <data name="Mod_SearchCountWithWarning" xml:space="preserve"><value>{0} 个 Mod — {1}</value></data>
+  <data name="Mod_SearchFailed" xml:space="preserve"><value>搜索失败：{0}</value></data>
+  <data name="Mod_SearchBothFailed" xml:space="preserve"><value>搜索失败。Modrinth：{0}；CurseForge：{1}</value></data>
+  <data name="Mod_SearchPartialModrinth" xml:space="preserve"><value>无法连接 Modrinth（{0}），仅显示 CurseForge。</value></data>
+  <data name="Mod_SearchPartialCurseForge" xml:space="preserve"><value>无法连接 CurseForge（{0}），仅显示 Modrinth。</value></data>
+  <data name="Mod_DownloadsExact" xml:space="preserve"><value>{0} 次下载</value></data>
+  <data name="Mod_DownloadsThousands" xml:space="preserve"><value>{0}K 次下载</value></data>
+  <data name="Mod_DownloadsMillions" xml:space="preserve"><value>{0}M 次下载</value></data>
 </root>

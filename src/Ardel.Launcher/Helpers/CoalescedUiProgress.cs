@@ -5,17 +5,18 @@ using Ardel.Launcher.Localization;
 namespace Ardel.Launcher.Helpers;
 
 /// <summary>
-/// Coalesces high-frequency file progress (~2.5 Hz). Status-only updates flush immediately
-/// so long metadata / gate waits do not look frozen on the last label.
+/// Coalesces high-frequency progress (~2.5 Hz for files, ~8 Hz for status)
+/// so install chatter does not flood the UI thread.
 /// </summary>
 public sealed class CoalescedUiProgress
 {
     private static readonly TimeSpan MinInterval = TimeSpan.FromMilliseconds(400);
+    private static readonly TimeSpan StatusInterval = TimeSpan.FromMilliseconds(120);
 
     private readonly DispatcherQueue _dispatcher;
     private readonly DispatcherQueueTimer _timer;
-    private readonly Action<string, double, bool> _apply;
     private readonly object _gate = new();
+    private readonly Action<string, double, bool> _apply;
     private string _name = string.Empty;
     private int _progressed;
     private int _total;
@@ -24,6 +25,7 @@ public sealed class CoalescedUiProgress
     private int _generation;
     private int _scheduled;
     private long _lastFlushTicks;
+    private bool _statusOnly;
 
     public CoalescedUiProgress(DispatcherQueue dispatcher, Action<string, double, bool> apply)
     {
@@ -40,15 +42,16 @@ public sealed class CoalescedUiProgress
         {
             _name = status;
             _total = 0;
+            _statusOnly = true;
             SetProgressMonotonic(progress);
             _indeterminate = indeterminate && _progress <= 0;
             _generation++;
         }
 
-        ScheduleImmediate();
+        Schedule(StatusInterval);
     }
 
-    /// <summary>Status-only (no bar numbers) — flush right away.</summary>
+    /// <summary>Status-only (no bar numbers) — coalesced to avoid enqueue storms.</summary>
     public void ReportStatus(string status)
     {
         if (string.IsNullOrEmpty(status))
@@ -58,11 +61,12 @@ public sealed class CoalescedUiProgress
         {
             _name = status;
             _total = 0;
+            _statusOnly = true;
             _indeterminate = true;
             _generation++;
         }
 
-        ScheduleImmediate();
+        Schedule(StatusInterval);
     }
 
     /// <summary>File-count progress drives the bar (stable). Status shows current file.</summary>
@@ -79,12 +83,13 @@ public sealed class CoalescedUiProgress
             _name = name;
             _progressed = progressed;
             _total = total;
+            _statusOnly = false;
             _indeterminate = false;
             SetProgressMonotonic(progressed * 100.0 / total);
             _generation++;
         }
 
-        Schedule();
+        Schedule(MinInterval);
     }
 
     public void ReportBytes(long progressed, long total)
@@ -100,25 +105,14 @@ public sealed class CoalescedUiProgress
             _progress = next;
     }
 
-    private void ScheduleImmediate()
-    {
-        _timer.Stop();
-        if (!_dispatcher.TryEnqueue(DispatcherQueuePriority.Normal, Flush))
-        {
-            // Fall back to coalesced path if enqueue fails.
-            Interlocked.Exchange(ref _scheduled, 0);
-            Schedule();
-        }
-    }
-
-    private void Schedule()
+    private void Schedule(TimeSpan minInterval)
     {
         if (Interlocked.CompareExchange(ref _scheduled, 1, 0) != 0)
             return;
 
         var elapsedMs = (Stopwatch.GetTimestamp() - Volatile.Read(ref _lastFlushTicks)) *
                         1000.0 / Stopwatch.Frequency;
-        var waitMs = Math.Max(0, MinInterval.TotalMilliseconds - elapsedMs);
+        var waitMs = Math.Max(0, minInterval.TotalMilliseconds - elapsedMs);
 
         if (waitMs <= 1)
         {
@@ -134,6 +128,7 @@ public sealed class CoalescedUiProgress
     private void Flush()
     {
         int gen;
+        var statusOnly = true;
         try
         {
             string status;
@@ -142,12 +137,13 @@ public sealed class CoalescedUiProgress
 
             lock (_gate)
             {
-                status = _total > 0
+                status = _total > 0 && !_statusOnly
                     ? Loc.Format(LocKeys.Progress_FileCount, _name, _progressed, _total)
                     : _name;
                 progress = _progress;
                 indeterminate = _indeterminate;
                 gen = _generation;
+                statusOnly = _statusOnly;
             }
 
             _apply(status, progress, indeterminate);
@@ -157,6 +153,7 @@ public sealed class CoalescedUiProgress
         {
             Debug.WriteLine($"[CoalescedUiProgress] Apply failed: {ex.Message}");
             gen = Volatile.Read(ref _generation);
+            statusOnly = true;
         }
         finally
         {
@@ -164,7 +161,7 @@ public sealed class CoalescedUiProgress
         }
 
         if (Volatile.Read(ref _generation) != gen)
-            Schedule();
+            Schedule(statusOnly ? StatusInterval : MinInterval);
     }
 }
 

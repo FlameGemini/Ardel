@@ -16,12 +16,14 @@ public partial class LaunchViewModel : ObservableObject
     private readonly LocalVersionStore _localVersions;
     private readonly SettingsService _settingsService;
     private readonly DispatcherQueue _dispatcher;
+    private readonly DispatcherQueueTimer _persistTimer;
     private LauncherSettings _settings = new();
     private CancellationTokenSource? _launchCts;
     private Process? _gameProcess;
     private bool _suppressPersist = true;
     private bool _localReady;
     private bool _settingsLoaded;
+    private int _javaProbeGeneration;
 
     public LaunchViewModel(
         Lazy<IMinecraftLaunchService> launchService,
@@ -33,6 +35,10 @@ public partial class LaunchViewModel : ObservableObject
         _localVersions = localVersions;
         _settingsService = settingsService;
         _dispatcher = dispatcher;
+        _persistTimer = dispatcher.CreateTimer();
+        _persistTimer.IsRepeating = false;
+        _persistTimer.Interval = TimeSpan.FromMilliseconds(400);
+        _persistTimer.Tick += (_, _) => PersistNow();
         // No disk I/O / CmlLib in ctor — first paint stays light
     }
 
@@ -56,19 +62,19 @@ public partial class LaunchViewModel : ObservableObject
         AvatarInitials = string.IsNullOrWhiteSpace(value)
             ? "?"
             : value.Trim()[..1].ToUpperInvariant();
-        Persist();
+        SchedulePersist();
     }
 
     partial void OnSelectedVersionChanged(GameVersionItem? value)
     {
         if (value is not null)
-            EnsureSuitableJavaSelected(value.Id);
+            _ = EnsureSuitableJavaSelectedAsync(value.Id);
 
-        Persist();
+        SchedulePersist();
     }
-    partial void OnMaxRamMbChanged(int value) => Persist();
-    partial void OnUseBmclApiChanged(bool value) => Persist();
-    partial void OnJavaPathChanged(string? value) => Persist();
+    partial void OnMaxRamMbChanged(int value) => SchedulePersist();
+    partial void OnUseBmclApiChanged(bool value) => SchedulePersist();
+    partial void OnJavaPathChanged(string? value) => SchedulePersist();
 
     [RelayCommand]
     private async Task InitializeAsync()
@@ -125,41 +131,39 @@ public partial class LaunchViewModel : ObservableObject
         _settingsLoaded = true;
     }
 
-    public void LoadLocalVersions()
+    public async Task LoadLocalVersionsAsync()
     {
         EnsureSettingsLoaded();
         var gameDir = SnapshotSettings().GameDirectory;
-        var items = _localVersions.GetInstalled(gameDir);
         var saved = _settings.SelectedVersion;
+        var items = await Task.Run(() => _localVersions.GetInstalled(gameDir)).ConfigureAwait(true);
 
-        Versions.Clear();
-        foreach (var item in items)
-            Versions.Add(item);
-
-        _suppressPersist = true;
-        SelectedVersion = Versions.FirstOrDefault(v =>
-                              string.Equals(v.Id, saved, StringComparison.OrdinalIgnoreCase))
-                          ?? Versions.FirstOrDefault();
-        _suppressPersist = false;
+        ApplyInstalledVersions(items, saved);
     }
 
     /// <summary>Reload local instances and select the version that was just installed.</summary>
-    public void SelectInstalledVersion(string versionId)
+    public async Task SelectInstalledVersionAsync(string versionId)
     {
         EnsureSettingsLoaded();
         var gameDir = SnapshotSettings().GameDirectory;
-        var items = _localVersions.GetInstalled(gameDir);
+        var items = await Task.Run(() => _localVersions.GetInstalled(gameDir)).ConfigureAwait(true);
 
+        ApplyInstalledVersions(items, versionId);
+        PersistNow();
+    }
+
+    private void ApplyInstalledVersions(IReadOnlyList<GameVersionItem> items, string? preferredId)
+    {
         Versions.Clear();
         foreach (var item in items)
             Versions.Add(item);
 
         _suppressPersist = true;
         SelectedVersion = Versions.FirstOrDefault(v =>
-                              string.Equals(v.Id, versionId, StringComparison.OrdinalIgnoreCase))
+                              !string.IsNullOrEmpty(preferredId) &&
+                              string.Equals(v.Id, preferredId, StringComparison.OrdinalIgnoreCase))
                           ?? Versions.FirstOrDefault();
         _suppressPersist = false;
-        Persist();
     }
 
     [RelayCommand(CanExecute = nameof(CanLaunch))]
@@ -314,7 +318,7 @@ public partial class LaunchViewModel : ObservableObject
             JavaInstallations.Add(java);
 
         if (SelectedVersion is not null)
-            EnsureSuitableJavaSelected(SelectedVersion.Id);
+            _ = EnsureSuitableJavaSelectedAsync(SelectedVersion.Id);
     }
 
     /// <summary>
@@ -322,42 +326,64 @@ public partial class LaunchViewModel : ObservableObject
     /// Empty path means launch will download a matching Temurin runtime.
     /// Uses official <c>javaVersion.majorVersion</c> when already cached/local; otherwise waits for launch.
     /// </summary>
-    private void EnsureSuitableJavaSelected(string? versionId = null, int? requiredMajor = null)
+    private async Task EnsureSuitableJavaSelectedAsync(string? versionId = null, int? requiredMajor = null)
     {
-        int required;
-        if (requiredMajor is int explicitMajor)
+        var probeId = Interlocked.Increment(ref _javaProbeGeneration);
+        var currentPath = JavaPath;
+        var installations = JavaInstallations.ToList();
+
+        string? best;
+        try
         {
-            required = explicitMajor;
+            best = await Task.Run(() =>
+            {
+                int required;
+                if (requiredMajor is int explicitMajor)
+                {
+                    required = explicitMajor;
+                }
+                else if (!string.IsNullOrWhiteSpace(versionId))
+                {
+                    if (OfficialJavaRequirements.TryGetCached(versionId, out var cached))
+                        required = cached;
+                    else if (OfficialJavaRequirements.TryReadLocal(versionId) is int local)
+                        required = local;
+                    else
+                        return currentPath;
+                }
+                else
+                {
+                    return currentPath;
+                }
+
+                if (!string.IsNullOrWhiteSpace(currentPath) && File.Exists(currentPath))
+                {
+                    try
+                    {
+                        if (JavaLocator.GetJavaVersion(currentPath) >= required)
+                            return currentPath;
+                    }
+                    catch (Exception ex)
+                    {
+                        Debug.WriteLine($"[LaunchViewModel] Java probe failed: {ex.Message}");
+                    }
+                }
+
+                return JavaLocator.FindBestMatch(required, installations)?.JavaExePath
+                       ?? JavaRuntimeInstaller.TryFindInstalled(required);
+            }).ConfigureAwait(true);
         }
-        else if (!string.IsNullOrWhiteSpace(versionId))
+        catch (Exception ex)
         {
-            if (OfficialJavaRequirements.TryGetCached(versionId, out var cached))
-                required = cached;
-            else if (OfficialJavaRequirements.TryReadLocal(versionId) is int local)
-                required = local;
-            else
-                return;
-        }
-        else
-        {
+            Debug.WriteLine($"[LaunchViewModel] Java select failed: {ex.Message}");
             return;
         }
 
-        if (!string.IsNullOrWhiteSpace(JavaPath) && File.Exists(JavaPath))
-        {
-            try
-            {
-                if (JavaLocator.GetJavaVersion(JavaPath) >= required)
-                    return;
-            }
-            catch (Exception ex)
-            {
-                Debug.WriteLine($"[LaunchViewModel] Java probe failed: {ex.Message}");
-            }
-        }
+        if (probeId != Volatile.Read(ref _javaProbeGeneration))
+            return;
 
-        var best = JavaLocator.FindBestMatch(required, JavaInstallations)?.JavaExePath
-                   ?? JavaRuntimeInstaller.TryFindInstalled(required);
+        if (string.Equals(best, JavaPath, StringComparison.OrdinalIgnoreCase))
+            return;
 
         _suppressPersist = true;
         JavaPath = best;
@@ -367,6 +393,8 @@ public partial class LaunchViewModel : ObservableObject
     public LauncherSettings SnapshotSettings()
     {
         EnsureSettingsLoaded();
+        // Flush any debounced edits before launch / install snapshots.
+        PersistNow();
         _settings.PlayerName = PlayerName;
         _settings.MaxRamMb = MaxRamMb;
         _settings.UseBmclApi = UseBmclApi;
@@ -377,19 +405,54 @@ public partial class LaunchViewModel : ObservableObject
         return _settings;
     }
 
-    private void Persist(LauncherSettings? settings = null)
+    private void SchedulePersist()
     {
         if (_suppressPersist || !_settingsLoaded)
             return;
 
+        _persistTimer.Stop();
+        _persistTimer.Start();
+    }
+
+    private void Persist(LauncherSettings? settings = null)
+    {
+        if (settings is not null)
+        {
+            PersistNow(settings);
+            return;
+        }
+
+        SchedulePersist();
+    }
+
+    private void PersistNow(LauncherSettings? settings = null)
+    {
+        if (_suppressPersist || !_settingsLoaded)
+            return;
+
+        _persistTimer.Stop();
+
         try
         {
-            _settingsService.Save(settings ?? SnapshotSettings());
+            _settingsService.Save(settings ?? SnapshotSettingsWithoutFlush());
         }
         catch (Exception ex)
         {
             Debug.WriteLine($"[LaunchViewModel] Persist failed: {ex}");
         }
+    }
+
+    private LauncherSettings SnapshotSettingsWithoutFlush()
+    {
+        EnsureSettingsLoaded();
+        _settings.PlayerName = PlayerName;
+        _settings.MaxRamMb = MaxRamMb;
+        _settings.UseBmclApi = UseBmclApi;
+        _settings.JavaPath = JavaPath;
+        _settings.SelectedVersion = SelectedVersion?.Id;
+        _settings.GameDirectory = GamePaths.GetMinecraftRoot();
+        _settings.ForceVersionIsolation = true;
+        return _settings;
     }
 
     /// <summary>

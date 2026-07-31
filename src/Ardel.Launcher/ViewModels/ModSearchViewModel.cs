@@ -1,12 +1,14 @@
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
+using Microsoft.UI.Dispatching;
 using Ardel.Launcher.Localization;
 using Ardel.Launcher.Models;
+using Ardel.Launcher.Services;
 
 namespace Ardel.Launcher.ViewModels;
 
 /// <summary>
-/// Filter state for the Mod download section. Does not load results.
+/// Filter state and catalog results for the Mod download section.
 /// </summary>
 public partial class ModSearchViewModel : ObservableObject
 {
@@ -71,8 +73,13 @@ public partial class ModSearchViewModel : ObservableObject
         "26.1", "1.21.11", "1.21.8", "1.21.4", "1.21.1", "1.20.1", "1.19.2", "1.18.2", "1.16.5", "1.12.2", "1.7.10"
     ];
 
-    public ModSearchViewModel()
+    private readonly DispatcherQueue _dispatcher;
+    private readonly ModCatalogService _catalog = new();
+    private CancellationTokenSource? _searchCts;
+
+    public ModSearchViewModel(DispatcherQueue dispatcher)
     {
+        _dispatcher = dispatcher;
         SourceOptions = SourceDefs.Select(d => new NamedOption { Id = d.Id, Name = Loc.Get(d.LocKey) }).ToList();
         LoaderOptions = LoaderDefs.Select(d => new NamedOption { Id = d.Id, Name = Loc.Get(d.LocKey) }).ToList();
         CategoryOptions = CategoryDefs.Select(d => new NamedOption { Id = d.Id, Name = Loc.Get(d.LocKey) }).ToList();
@@ -83,6 +90,7 @@ public partial class ModSearchViewModel : ObservableObject
         _selectedCategory = CategoryOptions[0];
         _selectedVersion = VersionOptions[0];
         _versionText = VersionOptions[0].Name;
+        _statusText = Loc.Get(LocKeys.Mod_SearchHint);
     }
 
     public IReadOnlyList<NamedOption> SourceOptions { get; }
@@ -90,6 +98,7 @@ public partial class ModSearchViewModel : ObservableObject
     public IReadOnlyList<NamedOption> CategoryOptions { get; }
     public IReadOnlyList<NamedOption> VersionOptions { get; private set; }
 
+    [ObservableProperty] private IReadOnlyList<ModProjectItem> _results = Array.Empty<ModProjectItem>();
     [ObservableProperty] private string _keyword = string.Empty;
     [ObservableProperty] private NamedOption? _selectedSource;
     [ObservableProperty] private NamedOption? _selectedCategory;
@@ -98,6 +107,9 @@ public partial class ModSearchViewModel : ObservableObject
     [ObservableProperty] private string _versionText = string.Empty;
     [ObservableProperty] private bool _isLoaderFilterVisible;
     [ObservableProperty] private ModSearchCriteria? _submittedCriteria;
+    [ObservableProperty] private bool _isSearching;
+    [ObservableProperty] private string _statusText;
+    [ObservableProperty] private bool _hasResults;
 
     public void Relocalize()
     {
@@ -113,17 +125,64 @@ public partial class ModSearchViewModel : ObservableObject
             VersionText = SelectedVersion.Name;
 
         UpdateLoaderVisibility();
+
+        if (!IsSearching && Results.Count == 0 && SubmittedCriteria is null)
+            StatusText = Loc.Get(LocKeys.Mod_SearchHint);
     }
 
     [RelayCommand]
-    private void Search()
+    private async Task SearchAsync()
     {
-        SubmittedCriteria = CaptureCriteria();
+        var criteria = CaptureCriteria();
+        SubmittedCriteria = criteria;
+
+        _searchCts?.Cancel();
+        _searchCts?.Dispose();
+        _searchCts = new CancellationTokenSource();
+        var token = _searchCts.Token;
+
+        IsSearching = true;
+        StatusText = Loc.Get(LocKeys.Mod_Searching);
+        HasResults = false;
+
+        try
+        {
+            var result = await _catalog.SearchAsync(criteria, token).ConfigureAwait(false);
+            if (token.IsCancellationRequested)
+                return;
+
+            RunOnUi(() =>
+            {
+                Results = result.Items;
+                HasResults = Results.Count > 0;
+                StatusText = result.WarningMessage is not null
+                    ? Loc.Format(LocKeys.Mod_SearchCountWithWarning, Results.Count, result.WarningMessage)
+                    : Results.Count == 0
+                        ? Loc.Get(LocKeys.Mod_SearchEmpty)
+                        : Loc.Format(LocKeys.Mod_SearchCount, Results.Count);
+                IsSearching = false;
+            });
+        }
+        catch (OperationCanceledException)
+        {
+            // Superseded by a newer search.
+        }
+        catch (Exception ex)
+        {
+            RunOnUi(() =>
+            {
+                Results = Array.Empty<ModProjectItem>();
+                HasResults = false;
+                StatusText = Loc.Format(LocKeys.Mod_SearchFailed, ex.Message);
+                IsSearching = false;
+            });
+        }
     }
 
     [RelayCommand]
     private void Reset()
     {
+        _searchCts?.Cancel();
         Keyword = string.Empty;
         SelectedSource = SourceOptions[0];
         SelectedCategory = CategoryOptions[0];
@@ -131,6 +190,10 @@ public partial class ModSearchViewModel : ObservableObject
         SelectedVersion = VersionOptions[0];
         VersionText = VersionOptions[0].Name;
         SubmittedCriteria = null;
+        Results = Array.Empty<ModProjectItem>();
+        HasResults = false;
+        IsSearching = false;
+        StatusText = Loc.Get(LocKeys.Mod_SearchHint);
         UpdateLoaderVisibility();
     }
 
@@ -166,6 +229,14 @@ public partial class ModSearchViewModel : ObservableObject
             version,
             SelectedCategory?.Id ?? string.Empty,
             IsLoaderFilterVisible ? (SelectedLoader?.Id ?? LoaderIdAny) : LoaderIdAny);
+    }
+
+    private void RunOnUi(Action action)
+    {
+        if (_dispatcher.HasThreadAccess)
+            action();
+        else
+            _dispatcher.TryEnqueue(() => action());
     }
 
     private static List<NamedOption> BuildVersionOptions()

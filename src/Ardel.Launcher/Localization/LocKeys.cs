@@ -145,6 +145,18 @@ public static class LocKeys
     public const string Mod_CategoryInfo = "Mod_CategoryInfo";
     public const string Mod_CategorySocial = "Mod_CategorySocial";
     public const string Mod_CategoryLibrary = "Mod_CategoryLibrary";
+    public const string Mod_SearchHint = "Mod_SearchHint";
+    public const string Mod_Searching = "Mod_Searching";
+    public const string Mod_SearchEmpty = "Mod_SearchEmpty";
+    public const string Mod_SearchCount = "Mod_SearchCount";
+    public const string Mod_SearchCountWithWarning = "Mod_SearchCountWithWarning";
+    public const string Mod_SearchFailed = "Mod_SearchFailed";
+    public const string Mod_SearchBothFailed = "Mod_SearchBothFailed";
+    public const string Mod_SearchPartialModrinth = "Mod_SearchPartialModrinth";
+    public const string Mod_SearchPartialCurseForge = "Mod_SearchPartialCurseForge";
+    public const string Mod_DownloadsExact = "Mod_DownloadsExact";
+    public const string Mod_DownloadsThousands = "Mod_DownloadsThousands";
+    public const string Mod_DownloadsMillions = "Mod_DownloadsMillions";
 
     // Settings
     public const string Settings_Title = "Settings_Title";

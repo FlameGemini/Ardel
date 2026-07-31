@@ -55,10 +55,10 @@ public partial class DownloadViewModel : ObservableObject
         _statusText = Loc.Get(LocKeys.Download_SelectHint);
         ActiveDownloads.CollectionChanged += OnActiveDownloadsChanged;
         RefreshGameDirectory();
-        ModSearch = new ModSearchViewModel();
+        ModSearch = new ModSearchViewModel(dispatcher);
     }
 
-    /// <summary>Mod section filter state (results are owned separately).</summary>
+    /// <summary>Mod section filters and catalog results.</summary>
     public ModSearchViewModel ModSearch { get; }
 
     public List<GameVersionItem> AllVersions { get; } = [];
@@ -90,6 +90,15 @@ public partial class DownloadViewModel : ObservableObject
     {
         OnPropertyChanged(nameof(IsMinecraftSection));
         OnPropertyChanged(nameof(IsModSection));
+
+        // First visit: load a default catalog page so the Mod pane is not empty.
+        if (value == DownloadSection.Mod &&
+            ModSearch.Results.Count == 0 &&
+            !ModSearch.IsSearching &&
+            ModSearch.SearchCommand.CanExecute(null))
+        {
+            _ = ModSearch.SearchCommand.ExecuteAsync(null);
+        }
     }
 
     /// <summary>Refresh localized labels after <see cref="Loc.SetLanguage"/>.</summary>
@@ -193,13 +202,11 @@ public partial class DownloadViewModel : ObservableObject
             return;
         }
 
-        var preexisting = new HashSet<string>(
-            GamePaths.ListVersionFolderNames(GameDirectory),
-            StringComparer.OrdinalIgnoreCase);
+        var preexisting = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
 
         var job = new DownloadJob(request, OnJobCancelFromUi)
         {
-            WasAlreadyInstalled = GamePaths.IsVersionFullyInstalled(targetId, GameDirectory),
+            WasAlreadyInstalled = false,
             PreexistingVersionFolders = preexisting
         };
 
@@ -243,6 +250,17 @@ public partial class DownloadViewModel : ObservableObject
         job.State = DownloadJobState.Running;
         job.IsIndeterminate = true;
         job.StatusText = Loc.Get(LocKeys.Download_Waiting);
+
+        // Snapshot folders off the UI thread before install mutates versions/.
+        var gameDir = GameDirectory;
+        var targetId = job.VersionId;
+        var snapshot = await Task.Run(() => (
+            WasInstalled: GamePaths.IsVersionFullyInstalled(targetId, gameDir),
+            Folders: (IReadOnlySet<string>)new HashSet<string>(
+                GamePaths.ListVersionFolderNames(gameDir),
+                StringComparer.OrdinalIgnoreCase))).ConfigureAwait(false);
+        job.WasAlreadyInstalled = snapshot.WasInstalled;
+        job.PreexistingVersionFolders = snapshot.Folders;
 
         var uiProgress = new CoalescedUiProgress(_dispatcher, (status, progress, indeterminate) =>
         {
@@ -298,7 +316,7 @@ public partial class DownloadViewModel : ObservableObject
                 RefreshGameDirectory();
                 SetInstalledFlag(job.MinecraftVersionId, installed: true);
                 // Must stay on UI thread — ObservableCollection + WinUI bindings throw COMException off-thread.
-                _launchViewModel.SelectInstalledVersion(installedId);
+                _ = _launchViewModel.SelectInstalledVersionAsync(installedId);
                 StatusText = Loc.Format(LocKeys.Download_DownloadedNamed, installedId);
                 NotifyCanDownload();
                 ToastRequested?.Invoke(this, new DownloadToastEventArgs(
@@ -394,9 +412,8 @@ public partial class DownloadViewModel : ObservableObject
             RefreshActiveFlags();
             StatusText = Loc.Format(LocKeys.Download_CancelledNamed, job.VersionId);
             NotifyCanDownload();
+            _ = _launchViewModel.LoadLocalVersionsAsync();
         });
-
-        _launchViewModel.LoadLocalVersions();
     }
 
     private static bool IsCancellation(Exception ex, DownloadJob job)

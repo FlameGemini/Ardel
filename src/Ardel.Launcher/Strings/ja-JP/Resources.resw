@@ -254,4 +254,16 @@
   <data name="Mod_CategoryInfo" xml:space="preserve"><value>情報表示</value></data>
   <data name="Mod_CategorySocial" xml:space="preserve"><value>マルチプレイ</value></data>
   <data name="Mod_CategoryLibrary" xml:space="preserve"><value>ライブラリ</value></data>
+  <data name="Mod_SearchHint" xml:space="preserve"><value>条件を指定して検索すると Mod 一覧が表示されます。</value></data>
+  <data name="Mod_Searching" xml:space="preserve"><value>検索中…</value></data>
+  <data name="Mod_SearchEmpty" xml:space="preserve"><value>条件に一致する Mod がありません。</value></data>
+  <data name="Mod_SearchCount" xml:space="preserve"><value>Mod {0} 件</value></data>
+  <data name="Mod_SearchCountWithWarning" xml:space="preserve"><value>Mod {0} 件 — {1}</value></data>
+  <data name="Mod_SearchFailed" xml:space="preserve"><value>検索に失敗しました: {0}</value></data>
+  <data name="Mod_SearchBothFailed" xml:space="preserve"><value>検索に失敗しました。Modrinth: {0}; CurseForge: {1}</value></data>
+  <data name="Mod_SearchPartialModrinth" xml:space="preserve"><value>Modrinth に接続できません（{0}）。CurseForge のみ表示します。</value></data>
+  <data name="Mod_SearchPartialCurseForge" xml:space="preserve"><value>CurseForge に接続できません（{0}）。Modrinth のみ表示します。</value></data>
+  <data name="Mod_DownloadsExact" xml:space="preserve"><value>ダウンロード {0}</value></data>
+  <data name="Mod_DownloadsThousands" xml:space="preserve"><value>ダウンロード {0}K</value></data>
+  <data name="Mod_DownloadsMillions" xml:space="preserve"><value>ダウンロード {0}M</value></data>
 </root>

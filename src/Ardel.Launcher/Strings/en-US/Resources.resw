@@ -274,4 +274,16 @@
   <data name="Mod_CategoryInfo" xml:space="preserve"><value>Information</value></data>
   <data name="Mod_CategorySocial" xml:space="preserve"><value>Multiplayer</value></data>
   <data name="Mod_CategoryLibrary" xml:space="preserve"><value>Libraries</value></data>
+  <data name="Mod_SearchHint" xml:space="preserve"><value>Set filters, then search to list Mods.</value></data>
+  <data name="Mod_Searching" xml:space="preserve"><value>Searching…</value></data>
+  <data name="Mod_SearchEmpty" xml:space="preserve"><value>No Mods matched these filters.</value></data>
+  <data name="Mod_SearchCount" xml:space="preserve"><value>{0} Mods</value></data>
+  <data name="Mod_SearchCountWithWarning" xml:space="preserve"><value>{0} Mods — {1}</value></data>
+  <data name="Mod_SearchFailed" xml:space="preserve"><value>Search failed: {0}</value></data>
+  <data name="Mod_SearchBothFailed" xml:space="preserve"><value>Search failed. Modrinth: {0}; CurseForge: {1}</value></data>
+  <data name="Mod_SearchPartialModrinth" xml:space="preserve"><value>Modrinth unavailable ({0}); showing CurseForge only.</value></data>
+  <data name="Mod_SearchPartialCurseForge" xml:space="preserve"><value>CurseForge unavailable ({0}); showing Modrinth only.</value></data>
+  <data name="Mod_DownloadsExact" xml:space="preserve"><value>{0} downloads</value></data>
+  <data name="Mod_DownloadsThousands" xml:space="preserve"><value>{0}K downloads</value></data>
+  <data name="Mod_DownloadsMillions" xml:space="preserve"><value>{0}M downloads</value></data>
 </root>

@@ -44,11 +44,11 @@ public partial class InstancesViewModel : ObservableObject
     }
 
     [RelayCommand]
-    private void Refresh()
+    private async Task RefreshAsync()
     {
         try
         {
-            _launch.LoadLocalVersions();
+            await _launch.LoadLocalVersionsAsync().ConfigureAwait(true);
             Instances.Clear();
             foreach (var item in _launch.Versions)
                 Instances.Add(item);
@@ -160,14 +160,14 @@ public partial class InstancesViewModel : ObservableObject
                 _launch.SelectedVersion = null;
             }
 
-            Refresh();
+            await RefreshAsync().ConfigureAwait(true);
             StatusText = Loc.Format(LocKeys.Instances_Deleted, item.Id);
         }
         catch (Exception ex)
         {
             StatusText = Loc.Format(LocKeys.Instances_DeleteFailed, item.Id, ex.Message);
             Debug.WriteLine(ex);
-            Refresh();
+            await RefreshAsync().ConfigureAwait(true);
         }
         finally
         {

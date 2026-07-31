@@ -50,13 +50,13 @@ public partial class DownloadJob : ObservableObject
 
     public bool CanCancel => State is DownloadJobState.Queued or DownloadJobState.Running;
 
-    public bool WasAlreadyInstalled { get; init; }
+    public bool WasAlreadyInstalled { get; set; }
 
     /// <summary>
     /// Version folder names present before this job started.
     /// Used on cancel to purge Forge/NeoForge intermediates left behind.
     /// </summary>
-    public IReadOnlySet<string> PreexistingVersionFolders { get; init; } =
+    public IReadOnlySet<string> PreexistingVersionFolders { get; set; } =
         new HashSet<string>(StringComparer.OrdinalIgnoreCase);
 
     /// <summary>Returns true once — used so cancel UI and install finally do not double-purge.</summary>
