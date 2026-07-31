@@ -24,6 +24,7 @@ Package.StoreAssociation.xml
 
 ## IDE / OS
 .idea/
+.vscode/
 *.swp
 Thumbs.db
 Desktop.ini
