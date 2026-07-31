@@ -20,6 +20,11 @@ public sealed class ModCatalogService
     /// <summary>CurseForge Core API shape via community proxy (site /api/v1 rejects unauthenticated clients).</summary>
     private const string CurseForgeApiBase = "https://api.curse.tools/v1";
 
+    /// <summary>
+    /// Soft weight so Modrinth remains visible when merged with CurseForge's larger raw download totals.
+    /// </summary>
+    private const double ModrinthDownloadWeight = 4.0;
+
     private static readonly HashSet<string> ModrinthLoaderSlugs = new(StringComparer.OrdinalIgnoreCase)
     {
         "forge", "neoforge", "fabric", "quilt", "liteloader"
@@ -55,7 +60,6 @@ public sealed class ModCatalogService
         if (offset < 0)
             offset = 0;
 
-        var hits = new List<ModProjectItem>();
         string? warning = null;
         Exception? modrinthError = null;
         Exception? curseForgeError = null;
@@ -63,6 +67,9 @@ public sealed class ModCatalogService
 
         var includeModrinth = criteria.SourceId is ModSearchViewModel.SourceIdAll or ModSearchViewModel.SourceIdModrinth;
         var includeCurseForge = criteria.SourceId is ModSearchViewModel.SourceIdAll or ModSearchViewModel.SourceIdCurseForge;
+
+        List<ModProjectItem> modrinthHits = [];
+        List<ModProjectItem> curseForgeHits = [];
 
         Task<List<ModProjectItem>>? modrinthTask = null;
         Task<List<ModProjectItem>>? curseForgeTask = null;
@@ -76,10 +83,9 @@ public sealed class ModCatalogService
         {
             try
             {
-                var page = await modrinthTask.ConfigureAwait(false);
-                if (page.Count >= PageSize)
+                modrinthHits = await modrinthTask.ConfigureAwait(false);
+                if (modrinthHits.Count >= PageSize)
                     anyFullPage = true;
-                hits.AddRange(page);
             }
             catch (Exception ex) when (ex is not OperationCanceledException)
             {
@@ -91,16 +97,24 @@ public sealed class ModCatalogService
         {
             try
             {
-                var page = await curseForgeTask.ConfigureAwait(false);
-                if (page.Count >= PageSize)
+                curseForgeHits = await curseForgeTask.ConfigureAwait(false);
+                if (curseForgeHits.Count >= PageSize)
                     anyFullPage = true;
-                hits.AddRange(page);
             }
             catch (Exception ex) when (ex is not OperationCanceledException)
             {
                 curseForgeError = ex;
             }
         }
+
+        var hasKeyword = !string.IsNullOrWhiteSpace(criteria.Keyword);
+        List<ModProjectItem> hits;
+        if (includeModrinth && includeCurseForge)
+            hits = MergeCatalogPages(modrinthHits, curseForgeHits, hasKeyword);
+        else if (includeModrinth)
+            hits = modrinthHits; // Keep Modrinth API order (relevance).
+        else
+            hits = curseForgeHits; // Keep CurseForge API order (popularity).
 
         if (hits.Count == 0)
         {
@@ -124,14 +138,87 @@ public sealed class ModCatalogService
         else if (curseForgeError is not null)
             warning = Loc.Format(LocKeys.Mod_SearchPartialCurseForge, curseForgeError.Message);
 
-        // Stable ordering: higher downloads first within this page.
-        hits = hits
-            .OrderByDescending(h => h.Downloads)
-            .ThenBy(h => h.Title, StringComparer.OrdinalIgnoreCase)
-            .ToList();
-
         return new ModCatalogSearchResult(hits, warning, anyFullPage, offset + PageSize);
     }
+
+    /// <summary>
+    /// Merge dual-source pages: drop near-duplicate projects (prefer Modrinth),
+    /// then rank with keyword relevance + weighted downloads so CurseForge raw counts
+    /// do not bury Modrinth hits.
+    /// </summary>
+    private static List<ModProjectItem> MergeCatalogPages(
+        IReadOnlyList<ModProjectItem> modrinth,
+        IReadOnlyList<ModProjectItem> curseForge,
+        bool hasKeyword)
+    {
+        var slots = new List<MergeSlot>(modrinth.Count + curseForge.Count);
+        var indexByKey = new Dictionary<string, int>(StringComparer.Ordinal);
+
+        void Consider(ModProjectItem item, int sourceIndex, bool isModrinth)
+        {
+            var key = ProjectMergeKey(item);
+            if (key.Length == 0)
+            {
+                slots.Add(new MergeSlot(item, sourceIndex, isModrinth));
+                return;
+            }
+
+            if (!indexByKey.TryGetValue(key, out var existing))
+            {
+                indexByKey[key] = slots.Count;
+                slots.Add(new MergeSlot(item, sourceIndex, isModrinth));
+                return;
+            }
+
+            // Same project on both catalogs → keep Modrinth.
+            if (!slots[existing].IsModrinth && isModrinth)
+                slots[existing] = new MergeSlot(item, sourceIndex, isModrinth);
+        }
+
+        for (var i = 0; i < modrinth.Count; i++)
+            Consider(modrinth[i], i, isModrinth: true);
+        for (var i = 0; i < curseForge.Count; i++)
+            Consider(curseForge[i], i, isModrinth: false);
+
+        return slots
+            .OrderByDescending(s => RankMergedHit(s, hasKeyword))
+            .ThenBy(s => s.Item.Title, StringComparer.OrdinalIgnoreCase)
+            .Select(s => s.Item)
+            .ToList();
+    }
+
+    private static double RankMergedHit(MergeSlot slot, bool hasKeyword)
+    {
+        // CurseForge download totals are often much larger; weight Modrinth so "All"
+        // still surfaces relevant Modrinth projects.
+        var downloads = Math.Log10(1d + Math.Max(0, slot.Item.Downloads));
+        var weightedDownloads = downloads * (slot.IsModrinth ? ModrinthDownloadWeight : 1d);
+
+        if (!hasKeyword)
+            return weightedDownloads;
+
+        // Modrinth search is relevance-ordered; earlier ranks should stay ahead.
+        var relevance = Math.Max(0, 400 - slot.SourceIndex);
+        return relevance + weightedDownloads;
+    }
+
+    private static string ProjectMergeKey(ModProjectItem item)
+    {
+        if (string.IsNullOrWhiteSpace(item.Title))
+            return string.Empty;
+
+        Span<char> buffer = stackalloc char[item.Title.Length];
+        var n = 0;
+        foreach (var ch in item.Title)
+        {
+            if (char.IsLetterOrDigit(ch))
+                buffer[n++] = char.ToLowerInvariant(ch);
+        }
+
+        return n == 0 ? string.Empty : new string(buffer[..n]);
+    }
+
+    private readonly record struct MergeSlot(ModProjectItem Item, int SourceIndex, bool IsModrinth);
 
     private async Task<List<ModProjectItem>> SearchModrinthAsync(
         ModSearchCriteria criteria,

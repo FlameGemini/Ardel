@@ -38,15 +38,18 @@
             </ListView>
         </Border>
 
-        <Grid
-            Grid.Column="1"
-            Padding="28,28,40,24"
-            Visibility="{x:Bind ViewModel.IsMinecraftSection, Mode=OneWay, Converter={StaticResource BoolToVisibility}}">
-            <Grid.RowDefinitions>
-                <RowDefinition Height="Auto" />
-                <RowDefinition Height="*" />
-                <RowDefinition Height="Auto" />
-            </Grid.RowDefinitions>
+        <Grid Grid.Column="1">
+            <Grid
+                x:Name="MinecraftPane"
+                Padding="28,28,40,24">
+                <Grid.RenderTransform>
+                    <TranslateTransform x:Name="MinecraftPaneOffset" />
+                </Grid.RenderTransform>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="*" />
+                    <RowDefinition Height="Auto" />
+                </Grid.RowDefinitions>
 
             <Grid ColumnSpacing="12" RowSpacing="12">
                 <Grid.ColumnDefinitions>
@@ -159,23 +162,29 @@
                     FontSize="13"
                     TextWrapping="Wrap" />
             </StackPanel>
-        </Grid>
+            </Grid>
 
-        <Grid
-            Grid.Column="1"
-            Padding="28,28,40,24"
-            Visibility="{x:Bind ViewModel.IsModSection, Mode=OneWay, Converter={StaticResource BoolToVisibility}}">
-            <Grid.RowDefinitions>
-                <RowDefinition Height="Auto" />
-                <RowDefinition Height="*" />
-                <RowDefinition Height="Auto" />
-            </Grid.RowDefinitions>
+            <Grid
+                x:Name="ModPane"
+                Padding="28,28,40,24"
+                Opacity="0"
+                Visibility="Collapsed"
+                IsHitTestVisible="False">
+                <Grid.RenderTransform>
+                    <TranslateTransform x:Name="ModPaneOffset" />
+                </Grid.RenderTransform>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="*" />
+                    <RowDefinition Height="Auto" />
+                </Grid.RowDefinitions>
 
             <StackPanel Spacing="12">
                 <TextBox
                     Header="{loc:String Key=Mod_Keyword}"
                     PlaceholderText="{loc:String Key=Mod_KeywordPlaceholder}"
-                    Text="{x:Bind ViewModel.ModSearch.Keyword, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+                    Text="{x:Bind ViewModel.ModSearch.Keyword, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                    KeyDown="ModKeywordBox_KeyDown" />
 
                 <Grid ColumnSpacing="12">
                     <Grid.ColumnDefinitions>
@@ -377,6 +386,7 @@
                 Opacity="0.7"
                 FontSize="13"
                 TextWrapping="Wrap" />
+            </Grid>
         </Grid>
     </Grid>
 </Page>

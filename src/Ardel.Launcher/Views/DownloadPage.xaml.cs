@@ -1,8 +1,11 @@
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Input;
+using Microsoft.UI.Xaml.Media;
 using Microsoft.UI.Xaml.Media.Animation;
 using Microsoft.UI.Xaml.Navigation;
+using Windows.System;
 using Ardel.Launcher.Models;
 using Ardel.Launcher.Services;
 using Ardel.Launcher.ViewModels;
@@ -11,8 +14,13 @@ namespace Ardel.Launcher.Views;
 
 public sealed partial class DownloadPage : Page
 {
+    private static readonly TimeSpan SectionAnimDuration = TimeSpan.FromMilliseconds(220);
+
     private bool _dialogOpen;
     private bool _listRevealed;
+    private DownloadSection? _displayedSection;
+    private Storyboard? _sectionStoryboard;
+    private int _sectionAnimGeneration;
 
     public DownloadViewModel ViewModel { get; }
 
@@ -21,6 +29,7 @@ public sealed partial class DownloadPage : Page
         ViewModel = App.Services.GetRequiredService<DownloadViewModel>();
         InitializeComponent();
         ViewModel.PropertyChanged += OnViewModelPropertyChanged;
+        Loaded += (_, _) => EnsureSectionVisual(animate: false);
     }
 
     private void OnViewModelPropertyChanged(object? sender, System.ComponentModel.PropertyChangedEventArgs e)
@@ -28,6 +37,11 @@ public sealed partial class DownloadPage : Page
         if (e.PropertyName is nameof(DownloadViewModel.IsLoadingVersions)
             or nameof(DownloadViewModel.FilteredVersions))
             UpdateListReveal();
+
+        if (e.PropertyName is nameof(DownloadViewModel.SelectedSection)
+            or nameof(DownloadViewModel.IsMinecraftSection)
+            or nameof(DownloadViewModel.IsModSection))
+            EnsureSectionVisual(animate: true);
     }
 
     private void UpdateListReveal()
@@ -61,6 +75,7 @@ public sealed partial class DownloadPage : Page
     {
         base.OnNavigatedTo(e);
         SyncSectionListSelection();
+        EnsureSectionVisual(animate: false);
         ViewModel.RefreshGameDirectory();
 
         // Yield so the page can paint before the first list load / CmlLib touch.
@@ -92,7 +107,127 @@ public sealed partial class DownloadPage : Page
             SectionList.SelectedIndex = index;
     }
 
-    private async void ModSearchButton_Click(object sender, RoutedEventArgs e)
+    private void EnsureSectionVisual(bool animate)
+    {
+        var target = ViewModel.SelectedSection;
+        if (_displayedSection == target)
+            return;
+
+        if (!animate || _displayedSection is null)
+        {
+            StopSectionAnimation();
+            ApplySectionInstant(target);
+            _displayedSection = target;
+            return;
+        }
+
+        AnimateSectionSwitch(_displayedSection.Value, target);
+        _displayedSection = target;
+    }
+
+    private void ApplySectionInstant(DownloadSection section)
+    {
+        var showMod = section == DownloadSection.Mod;
+        MinecraftPane.Opacity = showMod ? 0 : 1;
+        MinecraftPane.Visibility = showMod ? Visibility.Collapsed : Visibility.Visible;
+        MinecraftPane.IsHitTestVisible = !showMod;
+        MinecraftPaneOffset.X = 0;
+
+        ModPane.Opacity = showMod ? 1 : 0;
+        ModPane.Visibility = showMod ? Visibility.Visible : Visibility.Collapsed;
+        ModPane.IsHitTestVisible = showMod;
+        ModPaneOffset.X = 0;
+    }
+
+    private void AnimateSectionSwitch(DownloadSection from, DownloadSection to)
+    {
+        StopSectionAnimation();
+
+        var showMod = to == DownloadSection.Mod;
+        var incoming = showMod ? ModPane : MinecraftPane;
+        var outgoing = showMod ? MinecraftPane : ModPane;
+        var incomingOffset = showMod ? ModPaneOffset : MinecraftPaneOffset;
+        var outgoingOffset = showMod ? MinecraftPaneOffset : ModPaneOffset;
+        var slideInFrom = showMod ? 18d : -18d;
+        var slideOutTo = showMod ? -12d : 12d;
+
+        outgoing.IsHitTestVisible = false;
+        incoming.Visibility = Visibility.Visible;
+        incoming.Opacity = 0;
+        incoming.IsHitTestVisible = false;
+        incomingOffset.X = slideInFrom;
+        outgoingOffset.X = 0;
+
+        var ease = new CubicEase { EasingMode = EasingMode.EaseOut };
+        var duration = new Duration(SectionAnimDuration);
+        var sb = new Storyboard();
+        sb.Children.Add(CreateDoubleAnimation(outgoing, "Opacity", outgoing.Opacity, 0, duration, ease));
+        sb.Children.Add(CreateDoubleAnimation(outgoingOffset, "X", outgoingOffset.X, slideOutTo, duration, ease));
+        sb.Children.Add(CreateDoubleAnimation(incoming, "Opacity", 0, 1, duration, ease));
+        sb.Children.Add(CreateDoubleAnimation(incomingOffset, "X", slideInFrom, 0, duration, ease));
+
+        var generation = ++_sectionAnimGeneration;
+        sb.Completed += (_, _) =>
+        {
+            if (generation != _sectionAnimGeneration)
+                return;
+
+            outgoing.Visibility = Visibility.Collapsed;
+            outgoing.Opacity = 0;
+            outgoingOffset.X = 0;
+            incoming.Opacity = 1;
+            incomingOffset.X = 0;
+            incoming.IsHitTestVisible = true;
+            _sectionStoryboard = null;
+        };
+
+        _sectionStoryboard = sb;
+        sb.Begin();
+    }
+
+    private void StopSectionAnimation()
+    {
+        _sectionAnimGeneration++;
+        if (_sectionStoryboard is null)
+            return;
+
+        try { _sectionStoryboard.Stop(); } catch { /* ignore */ }
+        _sectionStoryboard = null;
+    }
+
+    private static DoubleAnimation CreateDoubleAnimation(
+        DependencyObject target,
+        string propertyPath,
+        double from,
+        double to,
+        Duration duration,
+        EasingFunctionBase easing)
+    {
+        var anim = new DoubleAnimation
+        {
+            From = from,
+            To = to,
+            Duration = duration,
+            EasingFunction = easing
+        };
+        Storyboard.SetTarget(anim, target);
+        Storyboard.SetTargetProperty(anim, propertyPath);
+        return anim;
+    }
+
+    private async void ModSearchButton_Click(object sender, RoutedEventArgs e) =>
+        await RunModSearchAsync();
+
+    private async void ModKeywordBox_KeyDown(object sender, KeyRoutedEventArgs e)
+    {
+        if (e.Key != VirtualKey.Enter)
+            return;
+
+        e.Handled = true;
+        await RunModSearchAsync();
+    }
+
+    private async Task RunModSearchAsync()
     {
         // Editable ComboBox often reverts Text to SelectedItem when focus leaves;
         // commit the control text first so custom versions are not lost.

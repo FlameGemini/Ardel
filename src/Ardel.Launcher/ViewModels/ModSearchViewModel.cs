@@ -23,8 +23,8 @@ public partial class ModSearchViewModel : ObservableObject
     private static readonly (string Id, string LocKey)[] SourceDefs =
     [
         (SourceIdAll, LocKeys.Mod_SourceAll),
-        (SourceIdCurseForge, LocKeys.Mod_SourceCurseForge),
-        (SourceIdModrinth, LocKeys.Mod_SourceModrinth)
+        (SourceIdModrinth, LocKeys.Mod_SourceModrinth),
+        (SourceIdCurseForge, LocKeys.Mod_SourceCurseForge)
     ];
 
     private static readonly (string Id, string LocKey)[] LoaderDefs =
