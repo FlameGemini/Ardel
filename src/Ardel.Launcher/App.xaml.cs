@@ -40,7 +40,7 @@ public partial class App : Application
             }
 
             Loc.SetLanguage(tag);
-            LogLanguage($"ApplyUiLanguage pref='{preference}' -> '{tag}' nav='{Loc.Get(LocKeys.Nav_Play)}'");
+            LogLanguage($"ApplyUiLanguage pref='{preference}' -> '{tag}' nav='{Loc.Get(LocKeys.Nav_Instances)}'");
         }
         catch (Exception ex)
         {

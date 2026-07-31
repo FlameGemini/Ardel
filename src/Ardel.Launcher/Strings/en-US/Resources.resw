@@ -317,6 +317,8 @@
   <data name="Mod_DetailFilterAllVersions" xml:space="preserve"><value>All versions</value></data>
   <data name="Mod_DetailFilterAllLoaders" xml:space="preserve"><value>All loaders</value></data>
   <data name="Mod_DetailDependenciesHeader" xml:space="preserve"><value>Dependencies</value></data>
+  <data name="Mod_DependencyRequired" xml:space="preserve"><value>Required</value></data>
+  <data name="Mod_DependencyOptional" xml:space="preserve"><value>Optional</value></data>
   <data name="Mod_InstallDialogTitle" xml:space="preserve"><value>Install Mod</value></data>
   <data name="Mod_InstallTitle" xml:space="preserve"><value>Install {0}</value></data>
   <data name="Mod_InstallSubtitle" xml:space="preserve"><value>{0}</value></data>

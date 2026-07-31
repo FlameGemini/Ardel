@@ -36,12 +36,7 @@
             SelectionChanged="NavView_SelectionChanged">
 
             <NavigationView.MenuItems>
-                <NavigationViewItem Content="{loc:String Key=Nav_Play}" Tag="home" Margin="0,4,0,0">
-                    <NavigationViewItem.Icon>
-                        <FontIcon Glyph="&#xE768;" FontSize="16" />
-                    </NavigationViewItem.Icon>
-                </NavigationViewItem>
-                <NavigationViewItem Content="{loc:String Key=Nav_Download}" Tag="download">
+                <NavigationViewItem Content="{loc:String Key=Nav_Download}" Tag="download" Margin="0,4,0,0">
                     <NavigationViewItem.Icon>
                         <FontIcon Glyph="&#xE896;" FontSize="16" />
                     </NavigationViewItem.Icon>

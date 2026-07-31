@@ -188,6 +188,8 @@ public static class LocKeys
     public const string Mod_DetailFilterAllVersions = "Mod_DetailFilterAllVersions";
     public const string Mod_DetailFilterAllLoaders = "Mod_DetailFilterAllLoaders";
     public const string Mod_DetailDependenciesHeader = "Mod_DetailDependenciesHeader";
+    public const string Mod_DependencyRequired = "Mod_DependencyRequired";
+    public const string Mod_DependencyOptional = "Mod_DependencyOptional";
     public const string Mod_InstallDialogTitle = "Mod_InstallDialogTitle";
     public const string Mod_InstallTitle = "Mod_InstallTitle";
     public const string Mod_InstallSubtitle = "Mod_InstallSubtitle";

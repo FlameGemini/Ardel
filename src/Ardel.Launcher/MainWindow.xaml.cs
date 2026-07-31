@@ -77,7 +77,6 @@ public sealed partial class MainWindow : Window
 
             item.Content = tag switch
             {
-                "home" => Loc.Get(LocKeys.Nav_Play),
                 "download" => Loc.Get(LocKeys.Nav_Download),
                 "instances" => Loc.Get(LocKeys.Nav_Instances),
                 "settings" => Loc.Get(LocKeys.Nav_Settings),
@@ -99,11 +98,7 @@ public sealed partial class MainWindow : Window
             return;
         }
 
-        if (NavView.MenuItems.Count > 0 && NavView.MenuItems[0] is NavigationViewItem home)
-        {
-            NavView.SelectedItem = home;
-            NavigateTo("home");
-        }
+        NavigateToInstances();
     }
 
     private void NavView_SelectionChanged(NavigationView sender, NavigationViewSelectionChangedEventArgs args)
@@ -117,47 +112,44 @@ public sealed partial class MainWindow : Window
 
     public void NavigateToDownload()
     {
-        foreach (var obj in NavView.MenuItems)
-        {
-            if (obj is NavigationViewItem item && item.Tag is string tag && tag == "download")
-            {
-                if (!ReferenceEquals(NavView.SelectedItem, item))
-                    NavView.SelectedItem = item;
-                else
-                    NavigateTo("download");
-                return;
-            }
-        }
+        SelectNavTag("download");
+    }
 
-        NavigateTo("download");
+    public void NavigateToInstances()
+    {
+        SelectNavTag("instances");
     }
 
     public void NavigateToSettings()
     {
+        SelectNavTag("settings");
+    }
+
+    private void SelectNavTag(string targetTag)
+    {
         foreach (var obj in NavView.MenuItems)
         {
-            if (obj is NavigationViewItem item && item.Tag is string tag && tag == "settings")
+            if (obj is NavigationViewItem item && item.Tag is string tag && tag == targetTag)
             {
                 if (!ReferenceEquals(NavView.SelectedItem, item))
                     NavView.SelectedItem = item;
                 else
-                    NavigateTo("settings");
+                    NavigateTo(targetTag);
                 return;
             }
         }
 
-        NavigateTo("settings");
+        NavigateTo(targetTag);
     }
 
     private void NavigateTo(string tag)
     {
         var pageType = tag switch
         {
-            "home" => typeof(HomePage),
             "download" => typeof(DownloadPage),
             "instances" => typeof(InstancesPage),
             "settings" => typeof(SettingsPage),
-            _ => typeof(HomePage)
+            _ => typeof(InstancesPage)
         };
 
         ContentFrame.Navigate(pageType, null, new SuppressNavigationTransitionInfo());

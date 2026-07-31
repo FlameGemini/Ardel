@@ -593,11 +593,24 @@
                                                 </Image>
                                             </Border>
                                             <StackPanel Grid.Column="1" Spacing="2" VerticalAlignment="Center">
-                                                <TextBlock
-                                                    Text="{x:Bind Title}"
-                                                    FontSize="13"
-                                                    FontWeight="SemiBold"
-                                                    TextTrimming="CharacterEllipsis" />
+                                                <StackPanel Orientation="Horizontal" Spacing="8">
+                                                    <TextBlock
+                                                        Text="{x:Bind Title}"
+                                                        FontSize="13"
+                                                        FontWeight="SemiBold"
+                                                        TextTrimming="CharacterEllipsis"
+                                                        VerticalAlignment="Center" />
+                                                    <Border
+                                                        Padding="6,2"
+                                                        CornerRadius="3"
+                                                        VerticalAlignment="Center"
+                                                        Background="{ThemeResource SubtleFillColorSecondaryBrush}">
+                                                        <TextBlock
+                                                            Text="{x:Bind KindLabel}"
+                                                            FontSize="10"
+                                                            Opacity="0.85" />
+                                                    </Border>
+                                                </StackPanel>
                                                 <StackPanel Orientation="Horizontal" Spacing="8">
                                                     <TextBlock
                                                         Text="{x:Bind VersionsLabel}"

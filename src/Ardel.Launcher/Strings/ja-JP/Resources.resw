@@ -297,6 +297,8 @@
   <data name="Mod_DetailFilterAllVersions" xml:space="preserve"><value>すべてのバージョン</value></data>
   <data name="Mod_DetailFilterAllLoaders" xml:space="preserve"><value>すべてのローダー</value></data>
   <data name="Mod_DetailDependenciesHeader" xml:space="preserve"><value>依存関係</value></data>
+  <data name="Mod_DependencyRequired" xml:space="preserve"><value>必須</value></data>
+  <data name="Mod_DependencyOptional" xml:space="preserve"><value>任意</value></data>
   <data name="Mod_InstallDialogTitle" xml:space="preserve"><value>Mod をインストール</value></data>
   <data name="Mod_InstallTitle" xml:space="preserve"><value>{0} をインストール</value></data>
   <data name="Mod_InstallSubtitle" xml:space="preserve"><value>{0}</value></data>

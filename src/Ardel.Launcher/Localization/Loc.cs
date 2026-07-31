@@ -206,6 +206,8 @@ public static partial class Loc
         [LocKeys.Mod_DetailFilterAllVersions] = "All versions",
         [LocKeys.Mod_DetailFilterAllLoaders] = "All loaders",
         [LocKeys.Mod_DetailDependenciesHeader] = "Dependencies",
+        [LocKeys.Mod_DependencyRequired] = "Required",
+        [LocKeys.Mod_DependencyOptional] = "Optional",
         [LocKeys.Mod_InstallDialogTitle] = "Install Mod",
         [LocKeys.Mod_InstallTitle] = "Install {0}",
         [LocKeys.Mod_InstallSubtitle] = "{0}",

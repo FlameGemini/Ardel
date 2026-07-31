@@ -218,7 +218,7 @@ public partial class SettingsViewModel : ObservableObject
             StatusText = Loc.Format(
                 LocKeys.Settings_LanguageApplied,
                 Loc.ActiveLanguageTag,
-                Loc.Get(LocKeys.Nav_Play));
+                Loc.Get(LocKeys.Nav_Instances));
         }
         catch (Exception ex)
         {

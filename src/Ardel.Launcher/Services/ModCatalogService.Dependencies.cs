@@ -24,7 +24,9 @@ public sealed partial class ModCatalogService
         var unique = refs
             .Where(r => !string.IsNullOrWhiteSpace(r.ProjectId))
             .GroupBy(r => r.SourceId + "|" + r.ProjectId, StringComparer.OrdinalIgnoreCase)
-            .Select(g => g.First())
+            .Select(g => g
+                .OrderBy(r => r.Kind == ModDependencyKind.Required ? 0 : 1)
+                .First())
             .Take(24)
             .ToList();
 
@@ -34,7 +36,12 @@ public sealed partial class ModCatalogService
             preferredLoaderSlug,
             cancellationToken));
         var results = await Task.WhenAll(tasks).ConfigureAwait(false);
-        return results.Where(x => x is not null).Select(x => x!).ToList();
+        return results
+            .Where(x => x is not null)
+            .Select(x => x!)
+            .OrderBy(x => x.Kind == ModDependencyKind.Required ? 0 : 1)
+            .ThenBy(x => x.Title, StringComparer.OrdinalIgnoreCase)
+            .ToList();
     }
 
     private async Task<ModDependencyItem?> ResolveOneDependencyAsync(
@@ -175,7 +182,8 @@ public sealed partial class ModCatalogService
             title,
             versionsLabel,
             loadersLabel,
-            iconUrl);
+            iconUrl,
+            dep.Kind);
     }
 
     private async Task<ModDependencyItem?> ResolveCurseForgeDependencyAsync(
@@ -253,7 +261,8 @@ public sealed partial class ModCatalogService
             title,
             FormatVersions(versions, preferredGameVersion),
             FormatLoaders(loaders),
-            iconUrl);
+            iconUrl,
+            dep.Kind);
     }
 
     private static ModDependencyItem CreateDependencyItem(
@@ -262,7 +271,8 @@ public sealed partial class ModCatalogService
         string title,
         string versionsLabel,
         string loadersLabel,
-        string? iconUrl)
+        string? iconUrl,
+        ModDependencyKind kind)
     {
         Uri? iconUri = null;
         if (!string.IsNullOrWhiteSpace(iconUrl) &&
@@ -279,6 +289,7 @@ public sealed partial class ModCatalogService
             Title = title,
             VersionsLabel = versionsLabel,
             LoadersLabel = loadersLabel,
+            Kind = kind,
             IconUrl = iconUrl,
             IconUri = iconUri
         };
@@ -293,21 +304,29 @@ public sealed partial class ModCatalogService
         var list = new List<ModDependencyRef>();
         foreach (var dep in dependencies)
         {
-            if (!string.Equals(dep.DependencyType, "required", StringComparison.OrdinalIgnoreCase))
-                continue;
-            if (string.IsNullOrWhiteSpace(dep.ProjectId))
+            var kind = ParseModrinthDependencyKind(dep.DependencyType);
+            if (kind is null || string.IsNullOrWhiteSpace(dep.ProjectId))
                 continue;
 
             list.Add(new ModDependencyRef
             {
                 ProjectId = dep.ProjectId.Trim(),
                 VersionId = string.IsNullOrWhiteSpace(dep.VersionId) ? null : dep.VersionId.Trim(),
-                SourceId = ModSearchViewModel.SourceIdModrinth
+                SourceId = ModSearchViewModel.SourceIdModrinth,
+                Kind = kind.Value
             });
         }
 
         return list;
     }
+
+    private static ModDependencyKind? ParseModrinthDependencyKind(string? type) =>
+        type?.Trim().ToLowerInvariant() switch
+        {
+            "required" => ModDependencyKind.Required,
+            "optional" => ModDependencyKind.Optional,
+            _ => null
+        };
 
     private static IReadOnlyList<ModDependencyRef> ParseCurseForgeDependencies(JsonElement file)
     {
@@ -317,10 +336,17 @@ public sealed partial class ModCatalogService
         var list = new List<ModDependencyRef>();
         foreach (var dep in deps.EnumerateArray())
         {
-            // 3 = RequiredDependency
+            // 2 = OptionalDependency, 3 = RequiredDependency
             if (!dep.TryGetProperty("relationType", out var rel) ||
-                !rel.TryGetInt32(out var relationType) ||
-                relationType != 3)
+                !rel.TryGetInt32(out var relationType))
+                continue;
+
+            ModDependencyKind kind;
+            if (relationType == 3)
+                kind = ModDependencyKind.Required;
+            else if (relationType == 2)
+                kind = ModDependencyKind.Optional;
+            else
                 continue;
 
             if (!dep.TryGetProperty("modId", out var modIdEl))
@@ -335,7 +361,8 @@ public sealed partial class ModCatalogService
             list.Add(new ModDependencyRef
             {
                 ProjectId = modId.Trim(),
-                SourceId = ModSearchViewModel.SourceIdCurseForge
+                SourceId = ModSearchViewModel.SourceIdCurseForge,
+                Kind = kind
             });
         }
 

@@ -178,6 +178,8 @@ public static partial class Loc
         [LocKeys.Mod_DetailFilterAllVersions] = "すべてのバージョン",
         [LocKeys.Mod_DetailFilterAllLoaders] = "すべてのローダー",
         [LocKeys.Mod_DetailDependenciesHeader] = "依存関係",
+        [LocKeys.Mod_DependencyRequired] = "必須",
+        [LocKeys.Mod_DependencyOptional] = "任意",
         [LocKeys.Mod_InstallDialogTitle] = "Mod をインストール",
         [LocKeys.Mod_InstallTitle] = "{0} をインストール",
         [LocKeys.Mod_InstallSubtitle] = "{0}",

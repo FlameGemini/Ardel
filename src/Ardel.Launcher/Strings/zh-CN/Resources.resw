@@ -317,6 +317,8 @@
   <data name="Mod_DetailFilterAllVersions" xml:space="preserve"><value>全部版本</value></data>
   <data name="Mod_DetailFilterAllLoaders" xml:space="preserve"><value>全部加载器</value></data>
   <data name="Mod_DetailDependenciesHeader" xml:space="preserve"><value>依赖</value></data>
+  <data name="Mod_DependencyRequired" xml:space="preserve"><value>必要</value></data>
+  <data name="Mod_DependencyOptional" xml:space="preserve"><value>可选</value></data>
   <data name="Mod_InstallDialogTitle" xml:space="preserve"><value>安装模组</value></data>
   <data name="Mod_InstallTitle" xml:space="preserve"><value>安装 {0}</value></data>
   <data name="Mod_InstallSubtitle" xml:space="preserve"><value>{0}</value></data>

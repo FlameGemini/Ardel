@@ -178,6 +178,8 @@ public static partial class Loc
         [LocKeys.Mod_DetailFilterAllVersions] = "全部版本",
         [LocKeys.Mod_DetailFilterAllLoaders] = "全部加载器",
         [LocKeys.Mod_DetailDependenciesHeader] = "依赖",
+        [LocKeys.Mod_DependencyRequired] = "必要",
+        [LocKeys.Mod_DependencyOptional] = "可选",
         [LocKeys.Mod_InstallDialogTitle] = "安装模组",
         [LocKeys.Mod_InstallTitle] = "安装 {0}",
         [LocKeys.Mod_InstallSubtitle] = "{0}",
