@@ -2,10 +2,10 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Input;
-using Microsoft.UI.Xaml.Media;
 using Microsoft.UI.Xaml.Media.Animation;
 using Microsoft.UI.Xaml.Navigation;
 using Windows.System;
+using Ardel.Launcher.Localization;
 using Ardel.Launcher.Models;
 using Ardel.Launcher.Services;
 using Ardel.Launcher.ViewModels;
@@ -87,24 +87,48 @@ public sealed partial class DownloadPage : Page
             UpdateListReveal();
     }
 
+    private bool _syncingSectionSelection;
+
     private void SectionList_SelectionChanged(object sender, SelectionChangedEventArgs e)
     {
+        if (_syncingSectionSelection)
+            return;
+
         if (SectionList.SelectedItem is not ListViewItem { Tag: string tag })
             return;
 
         ViewModel.SelectedSection = tag switch
         {
             "mod" => DownloadSection.Mod,
+            "resourcepack" => DownloadSection.ResourcePack,
+            "datapack" => DownloadSection.Datapack,
+            "shaderpack" => DownloadSection.ShaderPack,
+            "modpack" => DownloadSection.Modpack,
             _ => DownloadSection.Minecraft
         };
     }
 
     private void SyncSectionListSelection()
     {
-        var wantMod = ViewModel.SelectedSection == DownloadSection.Mod;
-        var index = wantMod ? 1 : 0;
-        if (SectionList.SelectedIndex != index)
-            SectionList.SelectedIndex = index;
+        _syncingSectionSelection = true;
+        try
+        {
+            var index = ViewModel.SelectedSection switch
+            {
+                DownloadSection.Mod => 1,
+                DownloadSection.ResourcePack => 2,
+                DownloadSection.Datapack => 3,
+                DownloadSection.ShaderPack => 4,
+                DownloadSection.Modpack => 5,
+                _ => 0
+            };
+            if (SectionList.SelectedIndex != index)
+                SectionList.SelectedIndex = index;
+        }
+        finally
+        {
+            _syncingSectionSelection = false;
+        }
     }
 
     private void EnsureSectionVisual(bool animate)
@@ -125,17 +149,21 @@ public sealed partial class DownloadPage : Page
         _displayedSection = target;
     }
 
+    private static bool IsCatalog(DownloadSection section) =>
+        section is DownloadSection.Mod or DownloadSection.ResourcePack or DownloadSection.Datapack
+            or DownloadSection.ShaderPack or DownloadSection.Modpack;
+
     private void ApplySectionInstant(DownloadSection section)
     {
-        var showMod = section == DownloadSection.Mod;
-        MinecraftPane.Opacity = showMod ? 0 : 1;
-        MinecraftPane.Visibility = showMod ? Visibility.Collapsed : Visibility.Visible;
-        MinecraftPane.IsHitTestVisible = !showMod;
+        var showCatalog = IsCatalog(section);
+        MinecraftPane.Opacity = showCatalog ? 0 : 1;
+        MinecraftPane.Visibility = showCatalog ? Visibility.Collapsed : Visibility.Visible;
+        MinecraftPane.IsHitTestVisible = !showCatalog;
         MinecraftPaneOffset.X = 0;
 
-        ModPane.Opacity = showMod ? 1 : 0;
-        ModPane.Visibility = showMod ? Visibility.Visible : Visibility.Collapsed;
-        ModPane.IsHitTestVisible = showMod;
+        ModPane.Opacity = showCatalog ? 1 : 0;
+        ModPane.Visibility = showCatalog ? Visibility.Visible : Visibility.Collapsed;
+        ModPane.IsHitTestVisible = showCatalog;
         ModPaneOffset.X = 0;
     }
 
@@ -143,13 +171,20 @@ public sealed partial class DownloadPage : Page
     {
         StopSectionAnimation();
 
-        var showMod = to == DownloadSection.Mod;
-        var incoming = showMod ? ModPane : MinecraftPane;
-        var outgoing = showMod ? MinecraftPane : ModPane;
-        var incomingOffset = showMod ? ModPaneOffset : MinecraftPaneOffset;
-        var outgoingOffset = showMod ? MinecraftPaneOffset : ModPaneOffset;
-        var slideInFrom = showMod ? 18d : -18d;
-        var slideOutTo = showMod ? -12d : 12d;
+        // Catalog sections share ModPane — only animate Minecraft <-> catalog.
+        if (IsCatalog(from) && IsCatalog(to))
+        {
+            ApplySectionInstant(to);
+            return;
+        }
+
+        var showCatalog = IsCatalog(to);
+        var incoming = showCatalog ? ModPane : MinecraftPane;
+        var outgoing = showCatalog ? MinecraftPane : ModPane;
+        var incomingOffset = showCatalog ? ModPaneOffset : MinecraftPaneOffset;
+        var outgoingOffset = showCatalog ? MinecraftPaneOffset : ModPaneOffset;
+        var slideInFrom = showCatalog ? 18d : -18d;
+        var slideOutTo = showCatalog ? -12d : 12d;
 
         outgoing.IsHitTestVisible = false;
         incoming.Visibility = Visibility.Visible;
@@ -242,7 +277,10 @@ public sealed partial class DownloadPage : Page
             return;
 
         ViewModel.ModSearch.CommitVersionInput(ModVersionCombo.Text);
-        await ViewModel.ModDetail.OpenAsync(project, ViewModel.ModSearch.GetActiveHint());
+        await ViewModel.ModDetail.OpenAsync(
+            project,
+            ViewModel.ModSearch.GetActiveHint(),
+            ViewModel.ModSearch.ProjectKind);
     }
 
     private async void ModDependencyList_ItemClick(object sender, ItemClickEventArgs e)
@@ -258,6 +296,28 @@ public sealed partial class DownloadPage : Page
             XamlRoot is null ||
             _dialogOpen)
             return;
+
+        // Modpack install: pick an instance name, then create loader profile + pack files.
+        if (ViewModel.ModDetail.ProjectKind == CatalogProjectKind.Modpack)
+        {
+            _dialogOpen = true;
+            try
+            {
+                var settings = ViewModel.SnapshotSettingsForInstall();
+                await ModpackInstallDialog.ShowAsync(
+                    XamlRoot,
+                    ViewModel.ModDetail.Detail,
+                    file,
+                    settings.GameDirectory,
+                    ViewModel.StartModpackInstall);
+            }
+            finally
+            {
+                _dialogOpen = false;
+            }
+
+            return;
+        }
 
         _dialogOpen = true;
         try
@@ -282,7 +342,8 @@ public sealed partial class DownloadPage : Page
                 settings.GameDirectory,
                 gameHint,
                 loaderHint,
-                ViewModel.StartModInstall);
+                ViewModel.StartModInstall,
+                ViewModel.ModDetail.ProjectKind);
         }
         finally
         {

@@ -74,7 +74,9 @@ public static class GamePaths
             "saves",
             "config",
             "resourcepacks",
+            "datapacks",
             "shaderpacks",
+            "modpacks",
             "screenshots",
             "logs"
         ];

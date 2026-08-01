@@ -1,6 +1,7 @@
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using Microsoft.UI.Dispatching;
+using Microsoft.UI.Xaml.Media;
 using Windows.ApplicationModel.DataTransfer;
 using Ardel.Launcher.Helpers;
 using Ardel.Launcher.Localization;
@@ -9,14 +10,14 @@ using Ardel.Launcher.Services;
 
 namespace Ardel.Launcher.ViewModels;
 
-/// <summary>In-page Mod project detail (opened from catalog results).</summary>
+/// <summary>In-page catalog project detail (opened from search results).</summary>
 public partial class ModDetailViewModel : ObservableObject
 {
     public const string FilterIdAll = "";
 
     private readonly DispatcherQueue _dispatcher;
     private readonly ModCatalogService _catalog = new();
-    private readonly Stack<(ModProjectItem Project, ModSearchHint Hint)> _backStack = new();
+    private readonly Stack<(ModProjectItem Project, ModSearchHint Hint, CatalogProjectKind Kind)> _backStack = new();
     private CancellationTokenSource? _loadCts;
     private CancellationTokenSource? _depsCts;
     private ModProjectDetail? _detail;
@@ -26,6 +27,8 @@ public partial class ModDetailViewModel : ObservableObject
     private string _hintLoaderSlug = string.Empty;
     private bool _suppressFilterApply;
     private int _depsGeneration;
+    private string? _resolvedDepsFileId;
+    private CatalogProjectKind _kind = CatalogProjectKind.Mod;
 
     public ModDetailViewModel(DispatcherQueue dispatcher)
     {
@@ -33,6 +36,7 @@ public partial class ModDetailViewModel : ObservableObject
     }
 
     public ModProjectDetail? Detail => _detail;
+    public CatalogProjectKind ProjectKind => _kind;
 
     /// <summary>Search-page version / loader carried into install matching.</summary>
     public string HintGameVersion => _hintGameVersion;
@@ -49,12 +53,11 @@ public partial class ModDetailViewModel : ObservableObject
     [ObservableProperty] private string _title = string.Empty;
     [ObservableProperty] private string _description = string.Empty;
     [ObservableProperty] private string _sourceLabel = string.Empty;
-    [ObservableProperty] private string _versionsLabel = string.Empty;
-    [ObservableProperty] private string _loadersLabel = string.Empty;
-    [ObservableProperty] private bool _hasVersions;
-    [ObservableProperty] private bool _hasLoaders;
     [ObservableProperty] private Uri? _iconUri;
     [ObservableProperty] private bool _hasIcon;
+    [ObservableProperty] private ImageSource? _iconImage;
+    [ObservableProperty] private bool _showLoaderFilter = true;
+    [ObservableProperty] private bool _showDependencies = true;
 
     [ObservableProperty] private IReadOnlyList<NamedOption> _gameVersionFilters = Array.Empty<NamedOption>();
     [ObservableProperty] private IReadOnlyList<NamedOption> _loaderFilters = Array.Empty<NamedOption>();
@@ -66,28 +69,38 @@ public partial class ModDetailViewModel : ObservableObject
     [ObservableProperty] private bool _hasDependencies;
     [ObservableProperty] private bool _isLoadingDependencies;
 
-    public async Task OpenAsync(ModProjectItem project, ModSearchHint? searchHint = null)
+    public async Task OpenAsync(
+        ModProjectItem project,
+        ModSearchHint? searchHint = null,
+        CatalogProjectKind kind = CatalogProjectKind.Mod)
     {
         _backStack.Clear();
-        await OpenCoreAsync(project, searchHint, pushCurrent: false).ConfigureAwait(true);
+        await OpenCoreAsync(project, searchHint, kind, pushCurrent: false).ConfigureAwait(true);
     }
 
     public async Task OpenDependencyAsync(ModDependencyItem dependency)
     {
         ArgumentNullException.ThrowIfNull(dependency);
-        await OpenCoreAsync(dependency.ToProjectItem(), BuildCurrentHint(), pushCurrent: true)
+        await OpenCoreAsync(dependency.ToProjectItem(), BuildCurrentHint(), CatalogProjectKind.Mod, pushCurrent: true)
             .ConfigureAwait(true);
     }
 
-    private async Task OpenCoreAsync(ModProjectItem project, ModSearchHint? searchHint, bool pushCurrent)
+    private async Task OpenCoreAsync(
+        ModProjectItem project,
+        ModSearchHint? searchHint,
+        CatalogProjectKind kind,
+        bool pushCurrent)
     {
         ArgumentNullException.ThrowIfNull(project);
 
         if (pushCurrent && _currentProject is not null)
-            _backStack.Push((_currentProject, BuildCurrentHint()));
+            _backStack.Push((_currentProject, BuildCurrentHint(), _kind));
 
         _currentProject = project;
+        _kind = kind;
         ApplyHint(searchHint);
+        ShowLoaderFilter = kind == CatalogProjectKind.Mod;
+        ShowDependencies = kind == CatalogProjectKind.Mod;
 
         _loadCts?.Cancel();
         _loadCts?.Dispose();
@@ -96,15 +109,25 @@ public partial class ModDetailViewModel : ObservableObject
 
         IsOpen = true;
         IsLoading = true;
-        ClearDetailContent();
+        _resolvedDepsFileId = null;
         ActionFeedback = string.Empty;
         StatusText = Loc.Get(LocKeys.Mod_DetailLoading);
         IsModrinthSource = project.SourceId == ModSearchViewModel.SourceIdModrinth;
         IsCurseForgeSource = project.SourceId == ModSearchViewModel.SourceIdCurseForge;
 
+        // Paint list-row metadata immediately so the page does not feel blank.
+        ApplyShell(project);
+
         try
         {
-            var detail = await _catalog.GetProjectDetailAsync(project, token).ConfigureAwait(false);
+            var detail = await _catalog
+                .GetProjectDetailAsync(
+                    project,
+                    token,
+                    _hintGameVersion,
+                    _hintLoaderSlug,
+                    kind)
+                .ConfigureAwait(false);
             if (token.IsCancellationRequested)
                 return;
 
@@ -133,7 +156,8 @@ public partial class ModDetailViewModel : ObservableObject
         if (_backStack.Count > 0)
         {
             var previous = _backStack.Pop();
-            await OpenCoreAsync(previous.Project, previous.Hint, pushCurrent: false).ConfigureAwait(true);
+            await OpenCoreAsync(previous.Project, previous.Hint, previous.Kind, pushCurrent: false)
+                .ConfigureAwait(true);
             return;
         }
 
@@ -162,11 +186,11 @@ public partial class ModDetailViewModel : ObservableObject
     [RelayCommand]
     private void CopyName()
     {
-        if (_detail is null)
+        if (_detail is null && string.IsNullOrWhiteSpace(Title))
             return;
 
         var package = new DataPackage();
-        package.SetText(_detail.Title);
+        package.SetText(_detail?.Title ?? Title);
         Clipboard.SetContent(package);
         ActionFeedback = Loc.Get(LocKeys.Mod_DetailCopiedName);
     }
@@ -198,6 +222,21 @@ public partial class ModDetailViewModel : ObservableObject
     private static bool IsKnownLoaderSlug(string value) =>
         value is "forge" or "neoforge" or "fabric" or "quilt" or "liteloader";
 
+    private void ApplyShell(ModProjectItem project)
+    {
+        Title = project.Title;
+        Description = project.Description;
+        SourceLabel = project.SourceLabel;
+        IconUri = project.IconUri;
+        HasIcon = project.HasIcon;
+        IconImage = CatalogIconCache.Get(project.IconUri, decodePixels: 96);
+        HasDetail = true;
+        VisibleFiles = Array.Empty<ModFileVersionItem>();
+        Dependencies = Array.Empty<ModDependencyItem>();
+        HasDependencies = false;
+        IsLoadingDependencies = false;
+    }
+
     private void ApplyDetail(ModProjectDetail detail)
     {
         _detail = detail;
@@ -205,12 +244,9 @@ public partial class ModDetailViewModel : ObservableObject
         Title = detail.Title;
         Description = detail.Description;
         SourceLabel = detail.SourceLabel;
-        VersionsLabel = detail.VersionsLabel;
-        LoadersLabel = detail.LoadersLabel;
-        HasVersions = detail.HasVersions;
-        HasLoaders = detail.HasLoaders;
         IconUri = detail.IconUri;
         HasIcon = detail.HasIcon;
+        IconImage = CatalogIconCache.Get(detail.IconUri, decodePixels: 96);
         _allFiles = detail.Files;
         HasDetail = true;
         IsModrinthSource = detail.SourceId == ModSearchViewModel.SourceIdModrinth;
@@ -228,7 +264,7 @@ public partial class ModDetailViewModel : ObservableObject
             .Where(v => !string.IsNullOrWhiteSpace(v))
             .Select(v => v.Trim())
             .Distinct(StringComparer.OrdinalIgnoreCase)
-            .OrderByDescending(v => v, StringComparer.OrdinalIgnoreCase)
+            .OrderByDescending(v => v, MinecraftVersionOrder.Ascending)
             .ToList();
 
         var loaders = files
@@ -283,7 +319,9 @@ public partial class ModDetailViewModel : ObservableObject
             return;
 
         var versionId = SelectedGameVersionFilter?.Id ?? FilterIdAll;
-        var loaderId = SelectedLoaderFilter?.Id ?? FilterIdAll;
+        var loaderId = ShowLoaderFilter
+            ? (SelectedLoaderFilter?.Id ?? FilterIdAll)
+            : FilterIdAll;
 
         IEnumerable<ModFileVersionItem> query = _allFiles;
         if (!string.IsNullOrEmpty(versionId))
@@ -315,20 +353,33 @@ public partial class ModDetailViewModel : ObservableObject
 
     private async Task RefreshDependenciesAsync()
     {
-        var generation = ++_depsGeneration;
-        _depsCts?.Cancel();
-        _depsCts?.Dispose();
-        _depsCts = new CancellationTokenSource();
-        var token = _depsCts.Token;
-
-        var file = VisibleFiles.FirstOrDefault();
-        if (file is null || file.Dependencies.Count == 0)
+        if (!ShowDependencies)
         {
             Dependencies = Array.Empty<ModDependencyItem>();
             HasDependencies = false;
             IsLoadingDependencies = false;
             return;
         }
+
+        var file = VisibleFiles.FirstOrDefault();
+        if (file is null || file.Dependencies.Count == 0)
+        {
+            _resolvedDepsFileId = file?.Id;
+            Dependencies = Array.Empty<ModDependencyItem>();
+            HasDependencies = false;
+            IsLoadingDependencies = false;
+            return;
+        }
+
+        if (string.Equals(_resolvedDepsFileId, file.Id, StringComparison.Ordinal) &&
+            HasDependencies)
+            return;
+
+        var generation = ++_depsGeneration;
+        _depsCts?.Cancel();
+        _depsCts?.Dispose();
+        _depsCts = new CancellationTokenSource();
+        var token = _depsCts.Token;
 
         IsLoadingDependencies = true;
         var versionId = SelectedGameVersionFilter is { Id.Length: > 0 } vf ? vf.Id : _hintGameVersion;
@@ -344,6 +395,7 @@ public partial class ModDetailViewModel : ObservableObject
 
             RunOnUi(() =>
             {
+                _resolvedDepsFileId = file.Id;
                 Dependencies = deps;
                 HasDependencies = deps.Count > 0;
                 IsLoadingDependencies = false;
@@ -396,12 +448,9 @@ public partial class ModDetailViewModel : ObservableObject
         Title = string.Empty;
         Description = string.Empty;
         SourceLabel = string.Empty;
-        VersionsLabel = string.Empty;
-        LoadersLabel = string.Empty;
-        HasVersions = false;
-        HasLoaders = false;
         IconUri = null;
         HasIcon = false;
+        IconImage = null;
         _allFiles = Array.Empty<ModFileVersionItem>();
         VisibleFiles = Array.Empty<ModFileVersionItem>();
         GameVersionFilters = Array.Empty<NamedOption>();
@@ -411,6 +460,7 @@ public partial class ModDetailViewModel : ObservableObject
         Dependencies = Array.Empty<ModDependencyItem>();
         HasDependencies = false;
         IsLoadingDependencies = false;
+        _resolvedDepsFileId = null;
     }
 
     private void RunOnUi(Action action)
@@ -422,5 +472,5 @@ public partial class ModDetailViewModel : ObservableObject
     }
 }
 
-/// <summary>Active Mod search filters used to bias detail + install matching.</summary>
+/// <summary>Active catalog search filters used to bias detail + install matching.</summary>
 public sealed record ModSearchHint(string GameVersion, string LoaderId);

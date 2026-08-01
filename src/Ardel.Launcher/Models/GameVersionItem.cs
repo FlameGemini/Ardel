@@ -20,6 +20,7 @@ public enum VersionKind
 public sealed class GameVersionItem : INotifyPropertyChanged
 {
     private int? _officialJavaMajor;
+    private string? _cachedJavaLabel;
 
     public required string Id { get; init; }
     public string Type { get; init; } = "release";
@@ -41,6 +42,7 @@ public sealed class GameVersionItem : INotifyPropertyChanged
             if (_officialJavaMajor == value)
                 return;
             _officialJavaMajor = value;
+            _cachedJavaLabel = null;
             OnPropertyChanged();
             OnPropertyChanged(nameof(RequiredJavaMajor));
             OnPropertyChanged(nameof(JavaRequirementLabel));
@@ -76,11 +78,18 @@ public sealed class GameVersionItem : INotifyPropertyChanged
     {
         get
         {
+            if (_cachedJavaLabel is not null)
+                return _cachedJavaLabel;
+
             if (OfficialJavaMajor is int official and > 0)
-                return Loc.Format(LocKeys.Download_JavaTag, official);
+            {
+                _cachedJavaLabel = Loc.Format(LocKeys.Download_JavaTag, official);
+                return _cachedJavaLabel;
+            }
 
             // Heuristic only — never block the Download list on per-version HTTP.
-            return Loc.Format(LocKeys.Download_JavaTag, Helpers.JavaLocator.GetRequiredJavaMajor(Id));
+            _cachedJavaLabel = Loc.Format(LocKeys.Download_JavaTag, Helpers.JavaLocator.GetRequiredJavaMajor(Id));
+            return _cachedJavaLabel;
         }
     }
 

@@ -13,6 +13,7 @@
             <RowDefinition Height="Auto" />
             <RowDefinition Height="Auto" />
             <RowDefinition Height="*" />
+            <RowDefinition Height="Auto" />
         </Grid.RowDefinitions>
 
         <Grid>
@@ -131,6 +132,42 @@
                 Opacity="0.5"
                 FontSize="14"
                 Visibility="{x:Bind ViewModel.IsEmpty, Mode=OneWay, Converter={StaticResource BoolToVisibility}}" />
+        </Grid>
+
+        <!-- Launch / Java download progress (restored after Home page removal) -->
+        <Grid
+            Grid.Row="3"
+            Margin="0,16,0,0"
+            Padding="0,16,0,0"
+            BorderBrush="{ThemeResource DividerStrokeColorDefaultBrush}"
+            BorderThickness="0,1,0,0"
+            ColumnSpacing="16">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="Auto" />
+            </Grid.ColumnDefinitions>
+            <StackPanel Spacing="10" VerticalAlignment="Center">
+                <TextBlock
+                    Text="{x:Bind ViewModel.Launch.StatusText, Mode=OneWay}"
+                    FontSize="14"
+                    Opacity="0.55"
+                    TextWrapping="WrapWholeWords" />
+                <ProgressBar
+                    Minimum="0"
+                    Maximum="100"
+                    Height="3"
+                    Value="{x:Bind ViewModel.Launch.ProgressValue, Mode=OneWay}"
+                    IsIndeterminate="{x:Bind ViewModel.Launch.IsIndeterminate, Mode=OneWay}"
+                    Visibility="{x:Bind ViewModel.Launch.IsLaunching, Mode=OneWay, Converter={StaticResource BoolToVisibility}}" />
+            </StackPanel>
+            <Button
+                Grid.Column="1"
+                Content="{loc:String Key=Action_Cancel}"
+                MinWidth="120"
+                MinHeight="36"
+                VerticalAlignment="Center"
+                Command="{x:Bind ViewModel.Launch.CancelLaunchCommand}"
+                Visibility="{x:Bind ViewModel.Launch.IsLaunching, Mode=OneWay, Converter={StaticResource BoolToVisibility}}" />
         </Grid>
     </Grid>
 </Page>

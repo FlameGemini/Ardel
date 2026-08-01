@@ -68,6 +68,11 @@ public static class LocKeys
     public const string Download_Type = "Download_Type";
     public const string Download_SectionMinecraft = "Download_SectionMinecraft";
     public const string Download_SectionMod = "Download_SectionMod";
+    public const string Download_SectionResourcePack = "Download_SectionResourcePack";
+    public const string Download_SectionDatapack = "Download_SectionDatapack";
+    public const string Download_SectionShaderPack = "Download_SectionShaderPack";
+    public const string Download_SectionModpack = "Download_SectionModpack";
+    public const string Catalog_DetailTitle = "Catalog_DetailTitle";
     public const string Download_Search = "Download_Search";
     public const string Download_SearchPlaceholder = "Download_SearchPlaceholder";
     public const string Download_Installed = "Download_Installed";
@@ -202,6 +207,29 @@ public static class LocKeys
     public const string Mod_InstallDownloading = "Mod_InstallDownloading";
     public const string Mod_InstallProgress = "Mod_InstallProgress";
     public const string Mod_InstallComplete = "Mod_InstallComplete";
+    public const string Mod_InstallModpackUnavailable = "Mod_InstallModpackUnavailable";
+    public const string Modpack_DialogTitle = "Modpack_DialogTitle";
+    public const string Modpack_InstallTitle = "Modpack_InstallTitle";
+    public const string Modpack_InstallSubtitle = "Modpack_InstallSubtitle";
+    public const string Modpack_InstanceName = "Modpack_InstanceName";
+    public const string Modpack_InstanceNamePlaceholder = "Modpack_InstanceNamePlaceholder";
+    public const string Modpack_InstallHint = "Modpack_InstallHint";
+    public const string Modpack_JobName = "Modpack_JobName";
+    public const string Modpack_Installing = "Modpack_Installing";
+    public const string Modpack_DownloadingPack = "Modpack_DownloadingPack";
+    public const string Modpack_Parsing = "Modpack_Parsing";
+    public const string Modpack_InstallingLoader = "Modpack_InstallingLoader";
+    public const string Modpack_ApplyingOverrides = "Modpack_ApplyingOverrides";
+    public const string Modpack_InstallComplete = "Modpack_InstallComplete";
+    public const string Modpack_InvalidManifest = "Modpack_InvalidManifest";
+    public const string Modpack_MissingManifest = "Modpack_MissingManifest";
+    public const string Modpack_MissingMrpackIndex = "Modpack_MissingMrpackIndex";
+    public const string Modpack_MissingMinecraft = "Modpack_MissingMinecraft";
+    public const string Modpack_UnsupportedLoader = "Modpack_UnsupportedLoader";
+    public const string Modpack_UnsafePath = "Modpack_UnsafePath";
+    public const string Modpack_HashMismatch = "Modpack_HashMismatch";
+    public const string Modpack_FileDownloadFailed = "Modpack_FileDownloadFailed";
+    public const string Modpack_FileDownloadFailedGeneric = "Modpack_FileDownloadFailedGeneric";
 
     // Settings
     public const string Settings_Title = "Settings_Title";

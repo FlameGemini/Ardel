@@ -33,10 +33,15 @@ public static class ModInstanceMatcher
         ModFileVersionItem file,
         string? minecraftRoot,
         string? preferredGameVersion = null,
-        string? preferredLoaderSlug = null)
+        string? preferredLoaderSlug = null,
+        CatalogProjectKind kind = CatalogProjectKind.Mod)
     {
         ArgumentNullException.ThrowIfNull(instances);
         ArgumentNullException.ThrowIfNull(file);
+
+        if (kind is CatalogProjectKind.ResourcePack or CatalogProjectKind.Datapack
+            or CatalogProjectKind.ShaderPack or CatalogProjectKind.Modpack)
+            return BuildPackGroups(instances, file, minecraftRoot, preferredGameVersion);
 
         var buckets = new Dictionary<string, (string Header, bool Preferred, List<GameVersionItem> Items)>(
             StringComparer.OrdinalIgnoreCase);
@@ -81,8 +86,66 @@ public static class ModInstanceMatcher
                 return group;
             })
             .OrderByDescending(g => PreferenceScore(g, preferredGameVersion, preferredLoaderSlug))
+            .ThenByDescending(g => GroupGameVersion(g.Key), MinecraftVersionOrder.Ascending)
             .ThenBy(g => g.Header, StringComparer.OrdinalIgnoreCase)
             .ToList();
+    }
+
+    private static IReadOnlyList<ModInstanceGroup> BuildPackGroups(
+        IReadOnlyList<GameVersionItem> instances,
+        ModFileVersionItem file,
+        string? minecraftRoot,
+        string? preferredGameVersion)
+    {
+        var buckets = new Dictionary<string, (string Header, bool Preferred, List<GameVersionItem> Items)>(
+            StringComparer.OrdinalIgnoreCase);
+
+        foreach (var instance in instances)
+        {
+            if (file.GameVersions.Count > 0 &&
+                !MatchesGameVersion(instance, file.GameVersions, minecraftRoot))
+                continue;
+
+            var baseMc = GamePaths.ResolveBaseGameVersion(instance.Id, minecraftRoot);
+            if (string.IsNullOrWhiteSpace(baseMc))
+                baseMc = instance.Id;
+
+            var preferred = !string.IsNullOrWhiteSpace(preferredGameVersion) &&
+                            string.Equals(baseMc, preferredGameVersion.Trim(), StringComparison.OrdinalIgnoreCase);
+            if (!buckets.TryGetValue(baseMc, out var bucket))
+            {
+                bucket = (baseMc, preferred, []);
+                buckets[baseMc] = bucket;
+            }
+            else if (preferred && !bucket.Preferred)
+            {
+                bucket = (bucket.Header, true, bucket.Items);
+                buckets[baseMc] = bucket;
+            }
+
+            bucket.Items.Add(instance);
+        }
+
+        return buckets
+            .Select(kv =>
+            {
+                var (header, preferred, items) = kv.Value;
+                items.Sort((a, b) => string.Compare(a.Id, b.Id, StringComparison.OrdinalIgnoreCase));
+                var group = new ModInstanceGroup(kv.Key, header, preferred);
+                group.AddRange(items);
+                return group;
+            })
+            .OrderByDescending(g => g.IsPreferred)
+            .ThenByDescending(g => g.Header, MinecraftVersionOrder.Ascending)
+            .ThenBy(g => g.Header, StringComparer.OrdinalIgnoreCase)
+            .ToList();
+    }
+
+    /// <summary>Group keys are <c>loader|gameVersion</c>.</summary>
+    private static string GroupGameVersion(string key)
+    {
+        var sep = key.IndexOf('|');
+        return sep >= 0 && sep < key.Length - 1 ? key[(sep + 1)..] : key;
     }
 
     public static bool IsCompatible(

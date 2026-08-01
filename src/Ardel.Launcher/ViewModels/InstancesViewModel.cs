@@ -24,6 +24,9 @@ public partial class InstancesViewModel : ObservableObject
         _settingsService = settingsService;
     }
 
+    /// <summary>Shared launch state (status / progress / cancel) for the page footer.</summary>
+    public LaunchViewModel Launch => _launch;
+
     public ObservableCollection<GameVersionItem> Instances { get; } = [];
 
     [ObservableProperty] private bool _isEmpty = true;
@@ -46,6 +49,12 @@ public partial class InstancesViewModel : ObservableObject
                 Instances.Add(item);
 
             IsEmpty = Instances.Count == 0;
+            if (!_launch.IsLaunching)
+            {
+                _launch.StatusText = Instances.Count > 0
+                    ? Loc.Get(LocKeys.Home_Ready)
+                    : Loc.Get(LocKeys.Home_GoDownload);
+            }
         }
         catch (Exception ex)
         {

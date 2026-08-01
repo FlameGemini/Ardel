@@ -1,4 +1,6 @@
 using CommunityToolkit.Mvvm.ComponentModel;
+using Microsoft.UI.Xaml.Media;
+using Ardel.Launcher.Helpers;
 using Ardel.Launcher.Localization;
 
 namespace Ardel.Launcher.Models;
@@ -33,6 +35,7 @@ public sealed partial class ModDependencyItem : ObservableObject
     private Uri? _iconUri;
 
     public bool HasIcon => IconUri is not null;
+    public ImageSource? IconImage => CatalogIconCache.Get(IconUri, decodePixels: 48);
     public bool HasVersions => !string.IsNullOrEmpty(VersionsLabel);
     public bool HasLoaders => !string.IsNullOrEmpty(LoadersLabel);
 
@@ -40,7 +43,11 @@ public sealed partial class ModDependencyItem : ObservableObject
         ? Loc.Get(LocKeys.Mod_DependencyRequired)
         : Loc.Get(LocKeys.Mod_DependencyOptional);
 
-    partial void OnIconUriChanged(Uri? value) => OnPropertyChanged(nameof(HasIcon));
+    partial void OnIconUriChanged(Uri? value)
+    {
+        OnPropertyChanged(nameof(HasIcon));
+        OnPropertyChanged(nameof(IconImage));
+    }
 
     public ModProjectItem ToProjectItem() => new()
     {

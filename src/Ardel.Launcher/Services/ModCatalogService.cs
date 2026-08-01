@@ -3,6 +3,7 @@ using System.Net.Http.Json;
 using System.Text;
 using System.Text.Json;
 using System.Text.Json.Serialization;
+using Ardel.Launcher.Helpers;
 using Ardel.Launcher.Localization;
 using Ardel.Launcher.Models;
 using Ardel.Launcher.ViewModels;
@@ -110,11 +111,21 @@ public sealed partial class ModCatalogService
         var hasKeyword = !string.IsNullOrWhiteSpace(criteria.Keyword);
         List<ModProjectItem> hits;
         if (includeModrinth && includeCurseForge)
-            hits = MergeCatalogPages(modrinthHits, curseForgeHits, hasKeyword);
+        {
+            // Packs: keep Modrinth API order first so CurseForge download totals
+            // cannot bury Modrinth hits. Mods keep the weighted merge.
+            hits = criteria.Kind == CatalogProjectKind.Mod
+                ? MergeCatalogPages(modrinthHits, curseForgeHits, hasKeyword)
+                : MergePreferModrinthOrder(modrinthHits, curseForgeHits);
+        }
         else if (includeModrinth)
             hits = modrinthHits; // Keep Modrinth API order (relevance).
         else
             hits = curseForgeHits; // Keep CurseForge API order (popularity).
+
+        // One page of rows only — dual-source merge can otherwise yield ~80 icon binds.
+        if (hits.Count > PageSize)
+            hits = hits.Take(PageSize).ToList();
 
         if (hits.Count == 0)
         {
@@ -146,7 +157,7 @@ public sealed partial class ModCatalogService
     /// then rank with keyword relevance + weighted downloads so CurseForge raw counts
     /// do not bury Modrinth hits.
     /// </summary>
-    private static List<ModProjectItem> MergeCatalogPages(
+    public static List<ModProjectItem> MergeCatalogPages(
         IReadOnlyList<ModProjectItem> modrinth,
         IReadOnlyList<ModProjectItem> curseForge,
         bool hasKeyword)
@@ -187,6 +198,36 @@ public sealed partial class ModCatalogService
             .ToList();
     }
 
+    /// <summary>
+    /// Pack catalogs: preserve Modrinth relevance order first, then append unique
+    /// CurseForge hits. Download-weighted ranking buries Modrinth resource/datapacks.
+    /// </summary>
+    public static List<ModProjectItem> MergePreferModrinthOrder(
+        IReadOnlyList<ModProjectItem> modrinth,
+        IReadOnlyList<ModProjectItem> curseForge)
+    {
+        var seen = new HashSet<string>(StringComparer.Ordinal);
+        var merged = new List<ModProjectItem>(modrinth.Count + curseForge.Count);
+
+        foreach (var item in modrinth)
+        {
+            var key = ProjectMergeKey(item);
+            if (key.Length > 0 && !seen.Add(key))
+                continue;
+            merged.Add(item);
+        }
+
+        foreach (var item in curseForge)
+        {
+            var key = ProjectMergeKey(item);
+            if (key.Length > 0 && !seen.Add(key))
+                continue;
+            merged.Add(item);
+        }
+
+        return merged;
+    }
+
     private static double RankMergedHit(MergeSlot slot, bool hasKeyword)
     {
         // CurseForge download totals are often much larger; weight Modrinth so "All"
@@ -225,18 +266,19 @@ public sealed partial class ModCatalogService
         int offset,
         CancellationToken cancellationToken)
     {
-        var facets = new List<string> { """["project_type:mod"]""" };
+        var facets = new List<string>();
+        AppendModrinthTypeFacets(facets, criteria.Kind);
 
         var category = CategorySlug(criteria.CategoryId);
-        if (!string.IsNullOrEmpty(category))
-            facets.Add($"""["categories:'{EscapeFacet(category)}'"]""");
+        if (!string.IsNullOrEmpty(category) && criteria.Kind == CatalogProjectKind.Mod)
+            facets.Add($"""["categories:{EscapeFacetValue(category)}"]""");
 
         var loader = ModrinthLoader(criteria.LoaderId);
-        if (!string.IsNullOrEmpty(loader))
-            facets.Add($"""["categories:'{EscapeFacet(loader)}'"]""");
+        if (criteria.Kind == CatalogProjectKind.Mod && !string.IsNullOrEmpty(loader))
+            facets.Add($"""["categories:{EscapeFacetValue(loader)}"]""");
 
         if (!string.IsNullOrWhiteSpace(criteria.GameVersion))
-            facets.Add($"""["versions:'{EscapeFacet(criteria.GameVersion)}'"]""");
+            facets.Add($"""["versions:{EscapeFacetValue(criteria.GameVersion.Trim())}"]""");
 
         var url = new StringBuilder("https://api.modrinth.com/v2/search?limit=")
             .Append(PageSize)
@@ -257,20 +299,44 @@ public sealed partial class ModCatalogService
             .ConfigureAwait(false);
 
         var sourceLabel = Loc.Get(LocKeys.Mod_SourceModrinth);
+        var projectType = ModrinthProjectType(criteria.Kind);
         var list = new List<ModProjectItem>();
         foreach (var hit in payload?.Hits ?? [])
         {
             if (string.IsNullOrWhiteSpace(hit.ProjectId) || string.IsNullOrWhiteSpace(hit.Title))
                 continue;
 
-            var loaders = (hit.Categories ?? [])
-                .Where(c => !string.IsNullOrWhiteSpace(c) && ModrinthLoaderSlugs.Contains(c))
-                .Distinct(StringComparer.OrdinalIgnoreCase)
-                .ToList();
+            var categories = hit.Categories ?? [];
+
+            // Datapacks on Modrinth are mods tagged "datapack" (project_type stays "mod").
+            if (criteria.Kind == CatalogProjectKind.Datapack)
+            {
+                if (!categories.Any(c => string.Equals(c, "datapack", StringComparison.OrdinalIgnoreCase)))
+                    continue;
+            }
+            else if (!string.IsNullOrWhiteSpace(hit.ProjectType) &&
+                     !string.Equals(hit.ProjectType, projectType, StringComparison.OrdinalIgnoreCase))
+            {
+                continue;
+            }
+
+            if (!string.IsNullOrEmpty(category) &&
+                !categories.Any(c => string.Equals(c, category, StringComparison.OrdinalIgnoreCase)))
+                continue;
+
+            if (criteria.Kind == CatalogProjectKind.Mod &&
+                !string.IsNullOrEmpty(loader) &&
+                !categories.Any(c => string.Equals(c, loader, StringComparison.OrdinalIgnoreCase)))
+                continue;
 
             var versions = hit.Versions ?? [];
             if (!MatchesGameVersion(versions, criteria.GameVersion))
                 continue;
+
+            var loaders = categories
+                .Where(c => !string.IsNullOrWhiteSpace(c) && ModrinthLoaderSlugs.Contains(c))
+                .Distinct(StringComparer.OrdinalIgnoreCase)
+                .ToList();
 
             list.Add(CreateItem(
                 hit.ProjectId,
@@ -288,21 +354,37 @@ public sealed partial class ModCatalogService
         return list;
     }
 
+    private static void AppendModrinthTypeFacets(List<string> facets, CatalogProjectKind kind)
+    {
+        if (kind == CatalogProjectKind.Datapack)
+        {
+            // Modrinth no longer exposes a dedicated datapack project_type in search hits;
+            // filter by category instead (hits still report project_type=mod).
+            facets.Add("""["categories:datapack"]""");
+            return;
+        }
+
+        facets.Add($"""["project_type:{ModrinthProjectType(kind)}"]""");
+    }
+
     private async Task<List<ModProjectItem>> SearchCurseForgeAsync(
         ModSearchCriteria criteria,
         int offset,
         CancellationToken cancellationToken)
     {
         var url = new StringBuilder(CurseForgeApiBase)
-            .Append("/mods/search?gameId=432&classId=6&pageSize=").Append(PageSize)
+            .Append("/mods/search?gameId=432&classId=").Append(CurseForgeClassId(criteria.Kind))
+            .Append("&pageSize=").Append(PageSize)
             .Append("&index=").Append(offset)
             .Append("&sortField=2&sortOrder=desc");
 
         var categoryId = CategoryCurseForgeId(criteria.CategoryId);
-        if (categoryId > 0)
+        if (categoryId > 0 && criteria.Kind == CatalogProjectKind.Mod)
             url.Append("&categoryId=").Append(categoryId);
 
-        var loaderType = CurseForgeLoaderType(criteria.LoaderId);
+        var loaderType = criteria.Kind == CatalogProjectKind.Mod
+            ? CurseForgeLoaderType(criteria.LoaderId)
+            : 0;
         if (loaderType > 0)
             url.Append("&modLoaderType=").Append(loaderType);
 
@@ -346,23 +428,38 @@ public sealed partial class ModCatalogService
 
             var versions = new List<string>();
             var loaders = new List<string>();
+            var matchedFilter = string.IsNullOrWhiteSpace(criteria.GameVersion);
             if (entry.TryGetProperty("latestFilesIndexes", out var indexes) && indexes.ValueKind == JsonValueKind.Array)
             {
+                var seenVersions = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
+                var seenLoaders = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
+                var prefer = criteria.GameVersion?.Trim();
                 foreach (var idx in indexes.EnumerateArray())
                 {
-                    if (idx.TryGetProperty("gameVersion", out var gv) && gv.GetString() is { Length: > 0 } version)
-                        versions.Add(version);
+                    if (idx.TryGetProperty("gameVersion", out var gv) &&
+                        gv.GetString() is { Length: > 0 } version)
+                    {
+                        if (!matchedFilter &&
+                            prefer is not null &&
+                            string.Equals(version, prefer, StringComparison.OrdinalIgnoreCase))
+                        {
+                            matchedFilter = true;
+                        }
+
+                        if (seenVersions.Count < 48 && seenVersions.Add(version))
+                            versions.Add(version);
+                    }
 
                     if (idx.TryGetProperty("modLoader", out var ml) && ml.TryGetInt32(out var loaderCode))
                     {
                         var slug = CurseForgeLoaderSlug(loaderCode);
-                        if (slug is not null)
+                        if (slug is not null && seenLoaders.Add(slug))
                             loaders.Add(slug);
                     }
                 }
             }
 
-            if (!MatchesGameVersion(versions, criteria.GameVersion))
+            if (!matchedFilter)
                 continue;
 
             list.Add(CreateItem(
@@ -383,16 +480,21 @@ public sealed partial class ModCatalogService
 
     public async Task<ModProjectDetail> GetProjectDetailAsync(
         ModProjectItem project,
-        CancellationToken cancellationToken = default)
+        CancellationToken cancellationToken = default,
+        string? preferredGameVersion = null,
+        string? preferredLoaderSlug = null,
+        CatalogProjectKind kind = CatalogProjectKind.Mod)
     {
         ArgumentNullException.ThrowIfNull(project);
 
         return project.SourceId switch
         {
             ModSearchViewModel.SourceIdModrinth =>
-                await GetModrinthDetailAsync(project, cancellationToken).ConfigureAwait(false),
+                await GetModrinthDetailAsync(
+                        project, preferredGameVersion, preferredLoaderSlug, kind, cancellationToken)
+                    .ConfigureAwait(false),
             ModSearchViewModel.SourceIdCurseForge =>
-                await GetCurseForgeDetailAsync(project, cancellationToken).ConfigureAwait(false),
+                await GetCurseForgeDetailAsync(project, kind, cancellationToken).ConfigureAwait(false),
             _ => throw new InvalidOperationException(Loc.Format(LocKeys.Mod_DetailUnknownSource, project.SourceId))
         };
     }
@@ -460,12 +562,36 @@ public sealed partial class ModCatalogService
 
     private async Task<ModProjectDetail> GetModrinthDetailAsync(
         ModProjectItem project,
+        string? preferredGameVersion,
+        string? preferredLoaderSlug,
+        CatalogProjectKind kind,
         CancellationToken cancellationToken)
     {
-        using var projectResponse = await _http
-            .GetAsync($"https://api.modrinth.com/v2/project/{Uri.EscapeDataString(project.Id)}", cancellationToken)
-            .ConfigureAwait(false);
+        var projectUrlTask = _http.GetAsync(
+            $"https://api.modrinth.com/v2/project/{Uri.EscapeDataString(project.Id)}",
+            cancellationToken);
+
+        var versionsQuery = new StringBuilder("https://api.modrinth.com/v2/project/")
+            .Append(Uri.EscapeDataString(project.Id))
+            .Append("/version?limit=100");
+        if (!string.IsNullOrWhiteSpace(preferredGameVersion))
+        {
+            versionsQuery.Append("&game_versions=")
+                .Append(Uri.EscapeDataString($"[\"{preferredGameVersion.Trim()}\"]"));
+        }
+
+        if (kind == CatalogProjectKind.Mod && !string.IsNullOrWhiteSpace(preferredLoaderSlug))
+        {
+            versionsQuery.Append("&loaders=")
+                .Append(Uri.EscapeDataString($"[\"{preferredLoaderSlug.Trim().ToLowerInvariant()}\"]"));
+        }
+
+        var versionsUrlTask = _http.GetAsync(versionsQuery.ToString(), cancellationToken);
+
+        using var projectResponse = await projectUrlTask.ConfigureAwait(false);
+        using var versionsResponse = await versionsUrlTask.ConfigureAwait(false);
         projectResponse.EnsureSuccessStatusCode();
+        versionsResponse.EnsureSuccessStatusCode();
 
         await using var projectStream = await projectResponse.Content
             .ReadAsStreamAsync(cancellationToken)
@@ -504,20 +630,30 @@ public sealed partial class ModCatalogService
         }
 
         var projectUrl = !string.IsNullOrWhiteSpace(slug)
-            ? $"https://modrinth.com/mod/{slug}"
-            : $"https://modrinth.com/mod/{project.Id}";
-
-        using var versionsResponse = await _http
-            .GetAsync(
-                $"https://api.modrinth.com/v2/project/{Uri.EscapeDataString(project.Id)}/version",
-                cancellationToken)
-            .ConfigureAwait(false);
-        versionsResponse.EnsureSuccessStatusCode();
+            ? $"https://modrinth.com/{ModrinthUrlSegment(kind)}/{slug}"
+            : $"https://modrinth.com/{ModrinthUrlSegment(kind)}/{project.Id}";
 
         var versionPayload = await versionsResponse.Content
             .ReadFromJsonAsync<List<ModrinthVersionDto>>(JsonOptions, cancellationToken)
             .ConfigureAwait(false);
 
+        // If filtered query returned nothing, retry once without filters.
+        if ((versionPayload is null || versionPayload.Count == 0) &&
+            (!string.IsNullOrWhiteSpace(preferredGameVersion) ||
+             !string.IsNullOrWhiteSpace(preferredLoaderSlug)))
+        {
+            using var fallbackResponse = await _http
+                .GetAsync(
+                    $"https://api.modrinth.com/v2/project/{Uri.EscapeDataString(project.Id)}/version?limit=100",
+                    cancellationToken)
+                .ConfigureAwait(false);
+            fallbackResponse.EnsureSuccessStatusCode();
+            versionPayload = await fallbackResponse.Content
+                .ReadFromJsonAsync<List<ModrinthVersionDto>>(JsonOptions, cancellationToken)
+                .ConfigureAwait(false);
+        }
+
+        var defaultExt = kind == CatalogProjectKind.Mod ? ".jar" : ".zip";
         var files = new List<ModFileVersionItem>();
         foreach (var ver in versionPayload ?? [])
         {
@@ -530,18 +666,21 @@ public sealed partial class ModCatalogService
             {
                 Id = ver.Id ?? Guid.NewGuid().ToString("N"),
                 DisplayName = string.IsNullOrWhiteSpace(ver.VersionNumber)
-                    ? (ver.Name ?? file.Filename ?? "mod")
+                    ? (ver.Name ?? file.Filename ?? "file")
                     : ver.VersionNumber.Trim(),
                 FileName = string.IsNullOrWhiteSpace(file.Filename)
-                    ? $"{title}.jar"
+                    ? $"{title}{defaultExt}"
                     : file.Filename.Trim(),
                 DownloadUrl = file.Url,
                 Channel = ParseModrinthChannel(ver.VersionType),
                 GameVersions = ver.GameVersions ?? [],
                 Loaders = fileLoaders,
                 LoadersLabel = FormatLoaders(fileLoaders),
+                GameVersionsLabel = FormatVersions(ver.GameVersions ?? []),
                 Published = ver.DatePublished,
-                Dependencies = ParseModrinthDependencies(ver.Dependencies)
+                Dependencies = kind == CatalogProjectKind.Mod
+                    ? ParseModrinthDependencies(ver.Dependencies)
+                    : []
             });
         }
 
@@ -560,15 +699,21 @@ public sealed partial class ModCatalogService
 
     private async Task<ModProjectDetail> GetCurseForgeDetailAsync(
         ModProjectItem project,
+        CatalogProjectKind kind,
         CancellationToken cancellationToken)
     {
         if (!int.TryParse(project.Id, out var modId))
             throw new InvalidOperationException(Loc.Format(LocKeys.Mod_DetailInvalidId, project.Id));
 
-        using var projectResponse = await _http
-            .GetAsync($"{CurseForgeApiBase}/mods/{modId}", cancellationToken)
-            .ConfigureAwait(false);
+        var projectTask = _http.GetAsync($"{CurseForgeApiBase}/mods/{modId}", cancellationToken);
+        var filesTask = _http.GetAsync(
+            $"{CurseForgeApiBase}/mods/{modId}/files?pageSize=50&index=0",
+            cancellationToken);
+
+        using var projectResponse = await projectTask.ConfigureAwait(false);
+        using var filesResponse = await filesTask.ConfigureAwait(false);
         projectResponse.EnsureSuccessStatusCode();
+        filesResponse.EnsureSuccessStatusCode();
 
         await using var projectStream = await projectResponse.Content
             .ReadAsStreamAsync(cancellationToken)
@@ -595,7 +740,7 @@ public sealed partial class ModCatalogService
                 iconUrl = urlEl.GetString();
         }
 
-        var projectUrl = $"https://www.curseforge.com/minecraft/mc-mods/{project.Id}";
+        var projectUrl = $"https://www.curseforge.com/minecraft/{CurseForgeUrlSegment(kind)}/{project.Id}";
         if (data.TryGetProperty("links", out var links) &&
             links.ValueKind == JsonValueKind.Object &&
             links.TryGetProperty("websiteUrl", out var web) &&
@@ -606,97 +751,24 @@ public sealed partial class ModCatalogService
         else if (data.TryGetProperty("slug", out var slugEl) &&
                  slugEl.GetString() is { Length: > 0 } slug)
         {
-            projectUrl = $"https://www.curseforge.com/minecraft/mc-mods/{slug}";
+            projectUrl = $"https://www.curseforge.com/minecraft/{CurseForgeUrlSegment(kind)}/{slug}";
         }
 
         var files = new List<ModFileVersionItem>();
-        var index = 0;
-        while (index < 150 && files.Count < 120)
+        await AppendCurseForgeFilesAsync(files, filesResponse, modId, kind, cancellationToken)
+            .ConfigureAwait(false);
+
+        // One extra page max — enough for filtered browsing without long waits.
+        if (files.Count >= 50)
         {
-            var pageUrl =
-                $"{CurseForgeApiBase}/mods/{modId}/files?pageSize=50&index={index}";
-            using var filesResponse = await _http.GetAsync(pageUrl, cancellationToken).ConfigureAwait(false);
-            filesResponse.EnsureSuccessStatusCode();
-
-            await using var filesStream = await filesResponse.Content
-                .ReadAsStreamAsync(cancellationToken)
+            using var page2 = await _http
+                .GetAsync($"{CurseForgeApiBase}/mods/{modId}/files?pageSize=50&index=50", cancellationToken)
                 .ConfigureAwait(false);
-            using var filesDoc = await JsonDocument.ParseAsync(filesStream, cancellationToken: cancellationToken)
-                .ConfigureAwait(false);
-
-            if (!filesDoc.RootElement.TryGetProperty("data", out var page) ||
-                page.ValueKind != JsonValueKind.Array)
-                break;
-
-            var pageCount = 0;
-            foreach (var file in page.EnumerateArray())
+            if (page2.IsSuccessStatusCode)
             {
-                pageCount++;
-                var fileId = file.TryGetProperty("id", out var idEl) ? idEl.GetInt64() : 0;
-                var fileName = file.TryGetProperty("fileName", out var fnEl) ? fnEl.GetString() : null;
-                if (fileId <= 0 || string.IsNullOrWhiteSpace(fileName))
-                    continue;
-
-                var downloadUrl = file.TryGetProperty("downloadUrl", out var dlEl)
-                    ? dlEl.GetString()
-                    : null;
-                if (string.IsNullOrWhiteSpace(downloadUrl))
-                    downloadUrl = $"{CurseForgeApiBase}/mods/{modId}/files/{fileId}/download";
-
-                var displayName = file.TryGetProperty("displayName", out var dnEl)
-                    ? dnEl.GetString()
-                    : null;
-                if (string.IsNullOrWhiteSpace(displayName))
-                    displayName = fileName;
-
-                var releaseType = file.TryGetProperty("releaseType", out var rtEl) && rtEl.TryGetInt32(out var rt)
-                    ? rt
-                    : 1;
-
-                var gameVersions = new List<string>();
-                var loaders = new List<string>();
-                if (file.TryGetProperty("gameVersions", out var gv) && gv.ValueKind == JsonValueKind.Array)
-                {
-                    foreach (var entry in gv.EnumerateArray())
-                    {
-                        var s = entry.GetString();
-                        if (string.IsNullOrWhiteSpace(s))
-                            continue;
-                        var trimmed = s.Trim();
-                        var loaderSlug = GuessLoaderSlug(trimmed);
-                        if (loaderSlug is not null)
-                            loaders.Add(loaderSlug);
-                        else
-                            gameVersions.Add(trimmed);
-                    }
-                }
-
-                DateTimeOffset? published = null;
-                if (file.TryGetProperty("fileDate", out var dateEl) &&
-                    dateEl.GetString() is { Length: > 0 } dateText &&
-                    DateTimeOffset.TryParse(dateText, out var parsed))
-                {
-                    published = parsed;
-                }
-
-                files.Add(new ModFileVersionItem
-                {
-                    Id = fileId.ToString(),
-                    DisplayName = displayName.Trim(),
-                    FileName = fileName.Trim(),
-                    DownloadUrl = downloadUrl,
-                    Channel = ParseCurseForgeChannel(releaseType),
-                    GameVersions = gameVersions,
-                    Loaders = loaders,
-                    LoadersLabel = FormatLoaders(loaders),
-                    Published = published,
-                    Dependencies = ParseCurseForgeDependencies(file)
-                });
+                await AppendCurseForgeFilesAsync(files, page2, modId, kind, cancellationToken)
+                    .ConfigureAwait(false);
             }
-
-            if (pageCount < 50)
-                break;
-            index += pageCount;
         }
 
         var allGame = files.SelectMany(f => f.GameVersions).Distinct(StringComparer.OrdinalIgnoreCase);
@@ -713,6 +785,91 @@ public sealed partial class ModCatalogService
             allGame,
             allLoaders,
             files);
+    }
+
+    private static async Task AppendCurseForgeFilesAsync(
+        List<ModFileVersionItem> files,
+        HttpResponseMessage filesResponse,
+        int modId,
+        CatalogProjectKind kind,
+        CancellationToken cancellationToken)
+    {
+        await using var filesStream = await filesResponse.Content
+            .ReadAsStreamAsync(cancellationToken)
+            .ConfigureAwait(false);
+        using var filesDoc = await JsonDocument.ParseAsync(filesStream, cancellationToken: cancellationToken)
+            .ConfigureAwait(false);
+
+        if (!filesDoc.RootElement.TryGetProperty("data", out var page) ||
+            page.ValueKind != JsonValueKind.Array)
+            return;
+
+        foreach (var file in page.EnumerateArray())
+        {
+            var fileId = file.TryGetProperty("id", out var idEl) ? idEl.GetInt64() : 0;
+            var fileName = file.TryGetProperty("fileName", out var fnEl) ? fnEl.GetString() : null;
+            if (fileId <= 0 || string.IsNullOrWhiteSpace(fileName))
+                continue;
+
+            var downloadUrl = file.TryGetProperty("downloadUrl", out var dlEl)
+                ? dlEl.GetString()
+                : null;
+            if (string.IsNullOrWhiteSpace(downloadUrl))
+                downloadUrl = $"{CurseForgeApiBase}/mods/{modId}/files/{fileId}/download";
+
+            var displayName = file.TryGetProperty("displayName", out var dnEl)
+                ? dnEl.GetString()
+                : null;
+            if (string.IsNullOrWhiteSpace(displayName))
+                displayName = fileName;
+
+            var releaseType = file.TryGetProperty("releaseType", out var rtEl) && rtEl.TryGetInt32(out var rt)
+                ? rt
+                : 1;
+
+            var gameVersions = new List<string>();
+            var loaders = new List<string>();
+            if (file.TryGetProperty("gameVersions", out var gv) && gv.ValueKind == JsonValueKind.Array)
+            {
+                foreach (var entry in gv.EnumerateArray())
+                {
+                    var s = entry.GetString();
+                    if (string.IsNullOrWhiteSpace(s))
+                        continue;
+                    var trimmed = s.Trim();
+                    var loaderSlug = GuessLoaderSlug(trimmed);
+                    if (loaderSlug is not null)
+                        loaders.Add(loaderSlug);
+                    else if (!IsCurseForgeNonVersionTag(trimmed))
+                        gameVersions.Add(trimmed);
+                }
+            }
+
+            DateTimeOffset? published = null;
+            if (file.TryGetProperty("fileDate", out var dateEl) &&
+                dateEl.GetString() is { Length: > 0 } dateText &&
+                DateTimeOffset.TryParse(dateText, out var parsed))
+            {
+                published = parsed;
+            }
+
+            files.Add(new ModFileVersionItem
+            {
+                Id = fileId.ToString(),
+                DisplayName = displayName.Trim(),
+                FileName = fileName.Trim(),
+                DownloadUrl = downloadUrl,
+                Channel = ParseCurseForgeChannel(releaseType),
+                GameVersions = gameVersions,
+                Loaders = loaders,
+                LoadersLabel = FormatLoaders(loaders),
+                GameVersionsLabel = FormatVersions(gameVersions),
+                Published = published,
+                Dependencies = kind == CatalogProjectKind.Mod
+                    ? ParseCurseForgeDependencies(file)
+                    : []
+            });
+        }
     }
 
     private static ModProjectDetail BuildDetail(
@@ -780,6 +937,24 @@ public sealed partial class ModCatalogService
         };
     }
 
+    /// <summary>CF file tags that are not Minecraft versions (Client/Server/Java 21…).</summary>
+    private static bool IsCurseForgeNonVersionTag(string token)
+    {
+        if (string.IsNullOrWhiteSpace(token))
+            return true;
+
+        var t = token.Trim();
+        if (t.Equals("Client", StringComparison.OrdinalIgnoreCase) ||
+            t.Equals("Server", StringComparison.OrdinalIgnoreCase))
+            return true;
+
+        if (t.StartsWith("Java ", StringComparison.OrdinalIgnoreCase) ||
+            t.StartsWith("Java-", StringComparison.OrdinalIgnoreCase))
+            return true;
+
+        return false;
+    }
+
     private static ModProjectItem CreateItem(
         string id,
         string sourceId,
@@ -833,25 +1008,50 @@ public sealed partial class ModCatalogService
 
     private static string FormatVersions(IEnumerable<string> versions, string? preferredGameVersion = null)
     {
-        var list = versions
-            .Where(v => !string.IsNullOrWhiteSpace(v))
-            .Select(v => v.Trim())
-            .Distinct(StringComparer.OrdinalIgnoreCase)
-            .ToList();
+        // Labels show at most 4 versions — avoid sorting hundreds of CF index entries.
+        const int collectCap = 24;
+        const int displayCap = 4;
 
-        if (list.Count == 0)
-            return string.Empty;
+        var unique = new List<string>(collectCap);
+        var seen = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
+        string? preferredHit = null;
+        var prefer = preferredGameVersion?.Trim();
 
-        if (!string.IsNullOrWhiteSpace(preferredGameVersion))
+        foreach (var raw in versions)
         {
-            var prefer = preferredGameVersion.Trim();
-            list = list
-                .OrderByDescending(v => string.Equals(v, prefer, StringComparison.OrdinalIgnoreCase))
-                .ToList();
+            if (string.IsNullOrWhiteSpace(raw))
+                continue;
+            var v = raw.Trim();
+            if (!seen.Add(v))
+                continue;
+
+            if (!string.IsNullOrEmpty(prefer) &&
+                preferredHit is null &&
+                string.Equals(v, prefer, StringComparison.OrdinalIgnoreCase))
+            {
+                preferredHit = v;
+            }
+
+            if (unique.Count < collectCap)
+                unique.Add(v);
         }
 
-        var joined = string.Join(", ", list.Take(4));
-        return list.Count > 4
+        if (unique.Count == 0)
+            return string.Empty;
+
+        if (preferredHit is not null)
+        {
+            unique.RemoveAll(v => string.Equals(v, preferredHit, StringComparison.OrdinalIgnoreCase));
+            unique.Sort(MinecraftVersionOrder.Descending);
+            unique.Insert(0, preferredHit);
+        }
+        else
+        {
+            unique.Sort(MinecraftVersionOrder.Descending);
+        }
+
+        var joined = string.Join(", ", unique.Take(displayCap));
+        return unique.Count > displayCap
             ? Loc.Format(LocKeys.Mod_VersionsEllipsis, joined)
             : joined;
     }
@@ -914,6 +1114,48 @@ public sealed partial class ModCatalogService
         _ => null
     };
 
+    private static string ModrinthProjectType(CatalogProjectKind kind) => kind switch
+    {
+        CatalogProjectKind.ResourcePack => "resourcepack",
+        CatalogProjectKind.Datapack => "datapack",
+        CatalogProjectKind.ShaderPack => "shader",
+        CatalogProjectKind.Modpack => "modpack",
+        _ => "mod"
+    };
+
+    /// <summary>Escape a facet value so quotes/backslashes cannot break the facets JSON.</summary>
+    private static string EscapeFacetValue(string value) =>
+        value.Replace("\\", "\\\\", StringComparison.Ordinal)
+            .Replace("\"", "\\\"", StringComparison.Ordinal);
+
+    private static string ModrinthUrlSegment(CatalogProjectKind kind) => kind switch
+    {
+        CatalogProjectKind.ResourcePack => "resourcepack",
+        // Datapacks are published as mods on Modrinth.
+        CatalogProjectKind.Datapack => "mod",
+        CatalogProjectKind.ShaderPack => "shader",
+        CatalogProjectKind.Modpack => "modpack",
+        _ => "mod"
+    };
+
+    private static int CurseForgeClassId(CatalogProjectKind kind) => kind switch
+    {
+        CatalogProjectKind.ResourcePack => 12,
+        CatalogProjectKind.Datapack => 6945,
+        CatalogProjectKind.ShaderPack => 6552,
+        CatalogProjectKind.Modpack => 4471,
+        _ => 6
+    };
+
+    private static string CurseForgeUrlSegment(CatalogProjectKind kind) => kind switch
+    {
+        CatalogProjectKind.ResourcePack => "texture-packs",
+        CatalogProjectKind.Datapack => "data-packs",
+        CatalogProjectKind.ShaderPack => "shaders",
+        CatalogProjectKind.Modpack => "modpacks",
+        _ => "mc-mods"
+    };
+
     private static int CurseForgeLoaderType(string loaderId) => loaderId switch
     {
         "1" => 1,
@@ -934,9 +1176,6 @@ public sealed partial class ModCatalogService
         _ => null
     };
 
-    private static string EscapeFacet(string value) =>
-        value.Replace("\\", "\\\\", StringComparison.Ordinal).Replace("'", "\\'", StringComparison.Ordinal);
-
     private static string FormatDownloads(long count)
     {
         if (count >= 1_000_000)
@@ -955,6 +1194,9 @@ public sealed partial class ModCatalogService
     {
         [JsonPropertyName("project_id")]
         public string? ProjectId { get; set; }
+
+        [JsonPropertyName("project_type")]
+        public string? ProjectType { get; set; }
 
         public string? Title { get; set; }
         public string? Description { get; set; }

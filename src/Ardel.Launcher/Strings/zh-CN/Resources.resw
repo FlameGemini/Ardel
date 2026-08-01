@@ -60,6 +60,11 @@
   <data name="Download_Type" xml:space="preserve"><value>类型</value></data>
   <data name="Download_SectionMinecraft" xml:space="preserve"><value>Minecraft</value></data>
   <data name="Download_SectionMod" xml:space="preserve"><value>模组</value></data>
+  <data name="Download_SectionResourcePack" xml:space="preserve"><value>材质包</value></data>
+  <data name="Download_SectionDatapack" xml:space="preserve"><value>数据包</value></data>
+  <data name="Download_SectionShaderPack" xml:space="preserve"><value>光影包</value></data>
+  <data name="Download_SectionModpack" xml:space="preserve"><value>整合包</value></data>
+  <data name="Catalog_DetailTitle" xml:space="preserve"><value>详情</value></data>
   <data name="Download_Search" xml:space="preserve"><value>搜索</value></data>
   <data name="Download_SearchPlaceholder" xml:space="preserve"><value>例如 1.21</value></data>
   <data name="Download_Installed" xml:space="preserve"><value>已安装</value></data>
@@ -328,7 +333,30 @@
   <data name="Mod_InstallPreferred" xml:space="preserve"><value>已匹配</value></data>
   <data name="Mod_InstallFileName" xml:space="preserve"><value>目标文件名</value></data>
   <data name="Mod_InstallJobName" xml:space="preserve"><value>{0} → {1}</value></data>
-  <data name="Mod_InstallDownloading" xml:space="preserve"><value>正在下载模组…</value></data>
+  <data name="Mod_InstallDownloading" xml:space="preserve"><value>正在下载资源…</value></data>
   <data name="Mod_InstallProgress" xml:space="preserve"><value>正在下载 {0}</value></data>
   <data name="Mod_InstallComplete" xml:space="preserve"><value>已将 {0} 安装到 {1}</value></data>
+  <data name="Mod_InstallModpackUnavailable" xml:space="preserve"><value>整合包安装尚未开放。</value></data>
+  <data name="Modpack_DialogTitle" xml:space="preserve"><value>安装整合包</value></data>
+  <data name="Modpack_InstallTitle" xml:space="preserve"><value>安装 {0}</value></data>
+  <data name="Modpack_InstallSubtitle" xml:space="preserve"><value>{0}</value></data>
+  <data name="Modpack_InstanceName" xml:space="preserve"><value>实例名称</value></data>
+  <data name="Modpack_InstanceNamePlaceholder" xml:space="preserve"><value>versions/ 下的文件夹名</value></data>
+  <data name="Modpack_InstallHint" xml:space="preserve"><value>将创建独立实例，安装所需加载器，再下载整合包文件。</value></data>
+  <data name="Modpack_JobName" xml:space="preserve"><value>{0} → {1}</value></data>
+  <data name="Modpack_Installing" xml:space="preserve"><value>正在安装整合包…</value></data>
+  <data name="Modpack_DownloadingPack" xml:space="preserve"><value>正在下载整合包…</value></data>
+  <data name="Modpack_Parsing" xml:space="preserve"><value>正在读取整合包清单…</value></data>
+  <data name="Modpack_InstallingLoader" xml:space="preserve"><value>正在安装 Minecraft {0} 与加载器…</value></data>
+  <data name="Modpack_ApplyingOverrides" xml:space="preserve"><value>正在应用覆盖文件…</value></data>
+  <data name="Modpack_InstallComplete" xml:space="preserve"><value>整合包已安装为 {0}</value></data>
+  <data name="Modpack_InvalidManifest" xml:space="preserve"><value>整合包清单无效。</value></data>
+  <data name="Modpack_MissingManifest" xml:space="preserve"><value>压缩包中未找到 CurseForge manifest.json。</value></data>
+  <data name="Modpack_MissingMrpackIndex" xml:space="preserve"><value>压缩包中未找到 modrinth.index.json。</value></data>
+  <data name="Modpack_MissingMinecraft" xml:space="preserve"><value>整合包未指定 Minecraft 版本。</value></data>
+  <data name="Modpack_UnsupportedLoader" xml:space="preserve"><value>此整合包使用了尚不支持的加载器（暂不支持 Quilt）。</value></data>
+  <data name="Modpack_UnsafePath" xml:space="preserve"><value>已拒绝不安全路径：{0}</value></data>
+  <data name="Modpack_HashMismatch" xml:space="preserve"><value>下载文件校验失败。</value></data>
+  <data name="Modpack_FileDownloadFailed" xml:space="preserve"><value>{0} 个文件下载失败。首个错误：{1}</value></data>
+  <data name="Modpack_FileDownloadFailedGeneric" xml:space="preserve"><value>无法下载整合包文件。</value></data>
 </root>

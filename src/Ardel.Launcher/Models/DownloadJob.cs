@@ -7,7 +7,8 @@ namespace Ardel.Launcher.Models;
 public enum DownloadJobKind
 {
     VersionInstall,
-    ModFile
+    ModFile,
+    Modpack
 }
 
 /// <summary>
@@ -25,6 +26,7 @@ public partial class DownloadJob : ObservableObject
         Kind = DownloadJobKind.VersionInstall;
         VersionRequest = request;
         ModRequest = null;
+        ModpackRequest = null;
         VersionId = request.CustomVersionName;
         MinecraftVersionId = request.MinecraftVersionId;
         _onCancel = onCancel;
@@ -44,8 +46,29 @@ public partial class DownloadJob : ObservableObject
         Kind = DownloadJobKind.ModFile;
         VersionRequest = null;
         ModRequest = request;
+        ModpackRequest = null;
         VersionId = request.DisplayName;
         MinecraftVersionId = request.TargetInstanceId;
+        _onCancel = onCancel;
+        StatusText = Loc.Get(LocKeys.Download_Queued);
+        IsIndeterminate = true;
+        CancelCommand = new RelayCommand(
+            () =>
+            {
+                Cancel();
+                _onCancel?.Invoke(this);
+            },
+            () => CanCancel);
+    }
+
+    public DownloadJob(ModpackInstallRequest request, Action<DownloadJob>? onCancel = null)
+    {
+        Kind = DownloadJobKind.Modpack;
+        VersionRequest = null;
+        ModRequest = null;
+        ModpackRequest = request;
+        VersionId = request.InstanceName;
+        MinecraftVersionId = request.InstanceName;
         _onCancel = onCancel;
         StatusText = Loc.Get(LocKeys.Download_Queued);
         IsIndeterminate = true;
@@ -63,6 +86,8 @@ public partial class DownloadJob : ObservableObject
     public InstallRequest? VersionRequest { get; }
 
     public ModFileInstallRequest? ModRequest { get; }
+
+    public ModpackInstallRequest? ModpackRequest { get; }
 
     /// <summary>Legacy alias for version installs.</summary>
     public InstallRequest Request =>

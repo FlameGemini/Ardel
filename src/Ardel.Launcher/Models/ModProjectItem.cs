@@ -1,4 +1,6 @@
 using CommunityToolkit.Mvvm.ComponentModel;
+using Microsoft.UI.Xaml.Media;
+using Ardel.Launcher.Helpers;
 
 namespace Ardel.Launcher.Models;
 
@@ -16,6 +18,7 @@ public sealed partial class ModProjectItem : ObservableObject
     private Uri? _iconUri;
 
     public bool HasIcon => IconUri is not null;
+    public ImageSource? IconImage => CatalogIconCache.Get(IconUri, decodePixels: 64);
     public long Downloads { get; init; }
     public string DownloadsLabel { get; init; } = string.Empty;
     public string VersionsLabel { get; init; } = string.Empty;
@@ -23,5 +26,9 @@ public sealed partial class ModProjectItem : ObservableObject
     public bool HasVersions => !string.IsNullOrEmpty(VersionsLabel);
     public bool HasLoaders => !string.IsNullOrEmpty(LoadersLabel);
 
-    partial void OnIconUriChanged(Uri? value) => OnPropertyChanged(nameof(HasIcon));
+    partial void OnIconUriChanged(Uri? value)
+    {
+        OnPropertyChanged(nameof(HasIcon));
+        OnPropertyChanged(nameof(IconImage));
+    }
 }

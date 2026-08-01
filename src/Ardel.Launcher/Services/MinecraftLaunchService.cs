@@ -1355,9 +1355,25 @@ public sealed class MinecraftLaunchService : IMinecraftLaunchService
             if (!string.IsNullOrWhiteSpace(process.StartInfo.FileName))
                 process.StartInfo.FileName = JavaRuntimeInstaller.PreferJavaw(process.StartInfo.FileName);
 
+            cancellationToken.ThrowIfCancellationRequested();
             ReportStatus(Loc.Get(LocKeys.Home_LaunchingGame));
             if (!process.Start())
                 throw new InvalidOperationException(Loc.Get(LocKeys.Error_ProcessStartFailed));
+
+            if (cancellationToken.IsCancellationRequested)
+            {
+                try
+                {
+                    if (!process.HasExited)
+                        process.Kill(entireProcessTree: true);
+                }
+                catch (Exception killEx)
+                {
+                    Debug.WriteLine($"[MinecraftLaunchService] Cancel kill failed: {killEx.Message}");
+                }
+
+                cancellationToken.ThrowIfCancellationRequested();
+            }
 
             return process;
         }

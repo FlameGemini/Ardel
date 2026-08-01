@@ -80,6 +80,7 @@ public partial class ModSearchViewModel : ObservableObject
     private string? _lastWarning;
     private bool _syncingVersion;
     private int _currentPage = 1;
+    private CatalogProjectKind _projectKind = CatalogProjectKind.Mod;
 
     public ModSearchViewModel(DispatcherQueue dispatcher)
     {
@@ -97,6 +98,20 @@ public partial class ModSearchViewModel : ObservableObject
         _statusText = Loc.Get(LocKeys.Mod_SearchHint);
     }
 
+    public CatalogProjectKind ProjectKind => _projectKind;
+
+    /// <summary>Switch catalog family (Mod / resource pack / datapack) and clear stale results.</summary>
+    public void SetProjectKind(CatalogProjectKind kind)
+    {
+        if (_projectKind == kind)
+            return;
+
+        _projectKind = kind;
+        IsCategoryFilterVisible = kind == CatalogProjectKind.Mod;
+        Reset();
+        UpdateLoaderVisibility();
+    }
+
     public IReadOnlyList<NamedOption> SourceOptions { get; }
     public IReadOnlyList<NamedOption> LoaderOptions { get; }
     public IReadOnlyList<NamedOption> CategoryOptions { get; }
@@ -110,6 +125,7 @@ public partial class ModSearchViewModel : ObservableObject
     [ObservableProperty] private NamedOption? _selectedVersion;
     [ObservableProperty] private string _versionText = string.Empty;
     [ObservableProperty] private bool _isLoaderFilterVisible;
+    [ObservableProperty] private bool _isCategoryFilterVisible = true;
     [ObservableProperty] private ModSearchCriteria? _submittedCriteria;
     [ObservableProperty] private bool _isSearching;
     [ObservableProperty] private bool _canGoPrevious;
@@ -201,12 +217,26 @@ public partial class ModSearchViewModel : ObservableObject
         StatusText = Loc.Get(LocKeys.Mod_Searching);
         if (replaceCriteria)
         {
-            HasResults = false;
+            // Keep previous rows visible under the spinner — clearing them forces a full
+            // ListView rebuild + icon burst when results arrive.
             IsPagerVisible = false;
             _lastWarning = null;
         }
 
         var offset = (page - 1) * ModCatalogService.PageSize;
+
+        // Packs + "All": Modrinth only. CF proxy is slow/heavy and a second Results
+        // swap (40→80 icons) freezes the UI; pick CurseForge source explicitly for CF.
+        if (criteria.SourceId == SourceIdAll && _projectKind != CatalogProjectKind.Mod)
+            criteria = criteria with { SourceId = SourceIdModrinth };
+
+        // Mods + "All": paint Modrinth first, merge CurseForge later at low priority.
+        if (criteria.SourceId == SourceIdAll && _projectKind == CatalogProjectKind.Mod)
+        {
+            await FetchModPageProgressiveAsync(criteria, page, offset, replaceCriteria, token)
+                .ConfigureAwait(false);
+            return;
+        }
 
         try
         {
@@ -214,20 +244,7 @@ public partial class ModSearchViewModel : ObservableObject
             if (token.IsCancellationRequested)
                 return;
 
-            RunOnUi(() =>
-            {
-                Results = result.Items;
-                HasResults = Results.Count > 0;
-                _currentPage = page;
-                CanGoPrevious = page > 1;
-                CanGoNext = result.HasMore;
-                IsPagerVisible = HasResults || page > 1 || result.HasMore;
-                PageLabel = Loc.Format(LocKeys.Mod_PageLabel, page);
-                if (result.WarningMessage is not null || replaceCriteria)
-                    _lastWarning = result.WarningMessage;
-                StatusText = FormatStatus(Results.Count, _lastWarning);
-                IsSearching = false;
-            });
+            RunOnUi(() => ApplySearchResult(result, page, replaceCriteria));
         }
         catch (OperationCanceledException)
         {
@@ -235,21 +252,131 @@ public partial class ModSearchViewModel : ObservableObject
         }
         catch (Exception ex)
         {
-            RunOnUi(() =>
-            {
-                if (replaceCriteria)
-                {
-                    Results = Array.Empty<ModProjectItem>();
-                    HasResults = false;
-                    IsPagerVisible = false;
-                    CanGoPrevious = false;
-                    CanGoNext = false;
-                }
-
-                StatusText = Loc.Format(LocKeys.Mod_SearchFailed, ex.Message);
-                IsSearching = false;
-            });
+            RunOnUi(() => ApplySearchFailure(ex, replaceCriteria));
         }
+    }
+
+    private async Task FetchModPageProgressiveAsync(
+        ModSearchCriteria criteria,
+        int page,
+        int offset,
+        bool replaceCriteria,
+        CancellationToken token)
+    {
+        var modrinthCriteria = criteria with { SourceId = SourceIdModrinth };
+        var curseForgeCriteria = criteria with { SourceId = SourceIdCurseForge };
+        var modrinthTask = _catalog.SearchAsync(modrinthCriteria, offset, token);
+        var curseForgeTask = _catalog.SearchAsync(curseForgeCriteria, offset, token);
+
+        ModCatalogSearchResult? modrinthResult = null;
+        Exception? modrinthError = null;
+        try
+        {
+            modrinthResult = await modrinthTask.ConfigureAwait(false);
+        }
+        catch (OperationCanceledException)
+        {
+            return;
+        }
+        catch (Exception ex)
+        {
+            modrinthError = ex;
+        }
+
+        if (token.IsCancellationRequested)
+            return;
+
+        if (modrinthResult is { Items.Count: > 0 })
+        {
+            RunOnUi(() => ApplySearchResult(modrinthResult, page, replaceCriteria));
+            // Keep Modrinth rows — a second Results swap rebinds every icon and flickers.
+            // CurseForge-only browsing remains available via the source filter.
+            if (curseForgeTask is not null)
+            {
+                try { await curseForgeTask.ConfigureAwait(false); }
+                catch (OperationCanceledException) { return; }
+                catch { /* keep Modrinth results */ }
+            }
+
+            return;
+        }
+
+        ModCatalogSearchResult? curseForgeResult = null;
+        Exception? curseForgeError = null;
+        try
+        {
+            curseForgeResult = await curseForgeTask.ConfigureAwait(false);
+        }
+        catch (OperationCanceledException)
+        {
+            return;
+        }
+        catch (Exception ex)
+        {
+            curseForgeError = ex;
+        }
+
+        if (token.IsCancellationRequested)
+            return;
+
+        if (modrinthResult is null && curseForgeResult is null)
+        {
+            var message = modrinthError is not null && curseForgeError is not null
+                ? Loc.Format(LocKeys.Mod_SearchBothFailed, modrinthError.Message, curseForgeError.Message)
+                : (modrinthError ?? curseForgeError)!.Message;
+            RunOnUi(() => ApplySearchFailure(
+                new InvalidOperationException(Loc.Format(LocKeys.Mod_SearchFailed, message)),
+                replaceCriteria));
+            return;
+        }
+
+        var hasKeyword = !string.IsNullOrWhiteSpace(criteria.Keyword);
+        var merged = ModCatalogService.MergeCatalogPages(
+            modrinthResult?.Items ?? [],
+            curseForgeResult?.Items ?? [],
+            hasKeyword);
+        if (merged.Count > ModCatalogService.PageSize)
+            merged = merged.Take(ModCatalogService.PageSize).ToList();
+
+        var hasMore = (modrinthResult?.HasMore ?? false) || (curseForgeResult?.HasMore ?? false);
+        string? warning = null;
+        if (modrinthError is not null)
+            warning = Loc.Format(LocKeys.Mod_SearchPartialModrinth, modrinthError.Message);
+        else if (curseForgeError is not null)
+            warning = Loc.Format(LocKeys.Mod_SearchPartialCurseForge, curseForgeError.Message);
+
+        var combined = new ModCatalogSearchResult(merged, warning, hasMore, offset + ModCatalogService.PageSize);
+        RunOnUi(() => ApplySearchResult(combined, page, replaceCriteria));
+    }
+
+    private void ApplySearchResult(ModCatalogSearchResult result, int page, bool replaceCriteria)
+    {
+        Results = result.Items;
+        HasResults = Results.Count > 0;
+        _currentPage = page;
+        CanGoPrevious = page > 1;
+        CanGoNext = result.HasMore;
+        IsPagerVisible = HasResults || page > 1 || result.HasMore;
+        PageLabel = Loc.Format(LocKeys.Mod_PageLabel, page);
+        if (result.WarningMessage is not null || replaceCriteria)
+            _lastWarning = result.WarningMessage;
+        StatusText = FormatStatus(Results.Count, _lastWarning);
+        IsSearching = false;
+    }
+
+    private void ApplySearchFailure(Exception ex, bool replaceCriteria)
+    {
+        if (replaceCriteria)
+        {
+            Results = Array.Empty<ModProjectItem>();
+            HasResults = false;
+            IsPagerVisible = false;
+            CanGoPrevious = false;
+            CanGoNext = false;
+        }
+
+        StatusText = Loc.Format(LocKeys.Mod_SearchFailed, ex.Message);
+        IsSearching = false;
     }
 
     [RelayCommand]
@@ -350,6 +477,14 @@ public partial class ModSearchViewModel : ObservableObject
 
     private void UpdateLoaderVisibility()
     {
+        if (_projectKind is not CatalogProjectKind.Mod)
+        {
+            IsLoaderFilterVisible = false;
+            if (LoaderOptions.Count > 0)
+                SelectedLoader = LoaderOptions[0];
+            return;
+        }
+
         var text = VersionText?.Trim() ?? string.Empty;
         var isConcrete = !string.IsNullOrEmpty(text)
             && !string.Equals(text, Loc.Get(LocKeys.Mod_VersionAll), StringComparison.Ordinal)
@@ -404,8 +539,9 @@ public partial class ModSearchViewModel : ObservableObject
             Keyword.Trim(),
             SelectedSource?.Id ?? SourceIdAll,
             version,
-            SelectedCategory?.Id ?? string.Empty,
-            IsLoaderFilterVisible ? (SelectedLoader?.Id ?? LoaderIdAny) : LoaderIdAny);
+            _projectKind == CatalogProjectKind.Mod ? (SelectedCategory?.Id ?? string.Empty) : string.Empty,
+            IsLoaderFilterVisible ? (SelectedLoader?.Id ?? LoaderIdAny) : LoaderIdAny,
+            _projectKind);
     }
 
     private void RunOnUi(Action action)
@@ -434,10 +570,11 @@ public partial class ModSearchViewModel : ObservableObject
     }
 }
 
-/// <summary>Immutable snapshot of Mod filter values after the user submits a search.</summary>
+/// <summary>Immutable snapshot of catalog filter values after the user submits a search.</summary>
 public sealed record ModSearchCriteria(
     string Keyword,
     string SourceId,
     string GameVersion,
     string CategoryId,
-    string LoaderId);
+    string LoaderId,
+    CatalogProjectKind Kind = CatalogProjectKind.Mod);

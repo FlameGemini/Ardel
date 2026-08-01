@@ -14,7 +14,11 @@ namespace Ardel.Launcher.ViewModels;
 public enum DownloadSection
 {
     Minecraft,
-    Mod
+    Mod,
+    ResourcePack,
+    Datapack,
+    ShaderPack,
+    Modpack
 }
 
 /// <summary>
@@ -85,7 +89,11 @@ public partial class DownloadViewModel : ObservableObject
     [ObservableProperty] private DownloadSection _selectedSection = DownloadSection.Minecraft;
 
     public bool IsMinecraftSection => SelectedSection == DownloadSection.Minecraft;
-    public bool IsModSection => SelectedSection == DownloadSection.Mod;
+    public bool IsCatalogSection => SelectedSection is
+        DownloadSection.Mod or DownloadSection.ResourcePack or DownloadSection.Datapack
+        or DownloadSection.ShaderPack or DownloadSection.Modpack;
+
+    public bool IsModSection => IsCatalogSection;
 
     public bool CanDownloadSelected =>
         SelectedVersion is not null && !IsVersionBusy(SelectedVersion.Id);
@@ -94,10 +102,24 @@ public partial class DownloadViewModel : ObservableObject
     {
         OnPropertyChanged(nameof(IsMinecraftSection));
         OnPropertyChanged(nameof(IsModSection));
+        OnPropertyChanged(nameof(IsCatalogSection));
 
-        // First visit: load a default catalog page so the Mod pane is not empty.
-        if (value == DownloadSection.Mod &&
-            ModSearch.Results.Count == 0 &&
+        if (!IsCatalogSection)
+            return;
+
+        var kind = value switch
+        {
+            DownloadSection.ResourcePack => CatalogProjectKind.ResourcePack,
+            DownloadSection.Datapack => CatalogProjectKind.Datapack,
+            DownloadSection.ShaderPack => CatalogProjectKind.ShaderPack,
+            DownloadSection.Modpack => CatalogProjectKind.Modpack,
+            _ => CatalogProjectKind.Mod
+        };
+
+        var kindChanged = ModSearch.ProjectKind != kind;
+        ModSearch.SetProjectKind(kind);
+
+        if ((kindChanged || ModSearch.Results.Count == 0) &&
             !ModSearch.IsSearching &&
             ModSearch.SearchCommand.CanExecute(null))
         {
@@ -243,6 +265,25 @@ public partial class DownloadViewModel : ObservableObject
         _ = RunDownloadAsync(job);
     }
 
+    /// <summary>Enqueue a full modpack install into a new isolated instance.</summary>
+    public void StartModpackInstall(ModpackInstallRequest request)
+    {
+        ArgumentNullException.ThrowIfNull(request);
+
+        var instanceId = request.InstanceName.Trim();
+        if (IsVersionBusy(instanceId))
+        {
+            StatusText = Loc.Format(LocKeys.Download_AlreadyRunning, instanceId);
+            return;
+        }
+
+        var job = new DownloadJob(request, OnJobCancelFromUi);
+        ActiveDownloads.Insert(0, job);
+        NotifyCanDownload();
+        StatusText = Loc.Format(LocKeys.Download_Started, request.DisplayName, ActiveDownloadCount);
+        _ = RunDownloadAsync(job);
+    }
+
     private bool IsModFileBusy(string modsDirectory, string fileName)
     {
         var target = Path.Combine(modsDirectory, fileName);
@@ -292,6 +333,12 @@ public partial class DownloadViewModel : ObservableObject
         if (job.Kind == DownloadJobKind.ModFile)
         {
             await RunModFileDownloadAsync(job).ConfigureAwait(false);
+            return;
+        }
+
+        if (job.Kind == DownloadJobKind.Modpack)
+        {
+            await RunModpackDownloadAsync(job).ConfigureAwait(false);
             return;
         }
 
@@ -534,6 +581,132 @@ public partial class DownloadViewModel : ObservableObject
         catch
         {
             // ignore cleanup failures
+        }
+    }
+
+    private async Task RunModpackDownloadAsync(DownloadJob job)
+    {
+        var request = job.ModpackRequest
+                      ?? throw new InvalidOperationException("Missing modpack request.");
+
+        job.State = DownloadJobState.Running;
+        job.IsIndeterminate = true;
+        job.StatusText = Loc.Get(LocKeys.Modpack_Installing);
+
+        var gameDir = GameDirectory;
+        var snapshot = await Task.Run(() => (
+            WasInstalled: GamePaths.IsVersionFullyInstalled(request.InstanceName, gameDir),
+            Folders: (IReadOnlySet<string>)new HashSet<string>(
+                GamePaths.ListVersionFolderNames(gameDir),
+                StringComparer.OrdinalIgnoreCase))).ConfigureAwait(false);
+        job.WasAlreadyInstalled = snapshot.WasInstalled;
+        job.PreexistingVersionFolders = snapshot.Folders;
+
+        var uiProgress = new CoalescedUiProgress(_dispatcher, (status, progress, indeterminate) =>
+        {
+            if (!job.IsRunning)
+                return;
+            job.ApplyProgress(status, progress, indeterminate);
+        });
+
+        IProgress<FileProgressInfo> fileProgress = new DirectProgress<FileProgressInfo>(e =>
+        {
+            if (e.TotalTasks <= 0)
+            {
+                uiProgress.ReportStatus(
+                    string.IsNullOrWhiteSpace(e.Name)
+                        ? Loc.Get(LocKeys.Modpack_Installing)
+                        : e.Name);
+                return;
+            }
+
+            uiProgress.ReportFile(
+                string.IsNullOrWhiteSpace(e.Name) ? Loc.Get(LocKeys.Modpack_Installing) : e.Name,
+                e.ProgressedTasks,
+                e.TotalTasks);
+        });
+
+        var settings = _launchViewModel.SnapshotSettings();
+
+        try
+        {
+            using var installer = new ModpackInstallService(_launchService.Value);
+            await Task.Run(() => installer.InstallAsync(settings, request, fileProgress, job.Token), job.Token)
+                .ConfigureAwait(false);
+
+            if (job.IsCancelRequested)
+            {
+                await FinishCancelledAsync(job).ConfigureAwait(false);
+                return;
+            }
+
+            RunOnUi(() =>
+            {
+                job.ProgressValue = 100;
+                job.IsIndeterminate = false;
+                job.State = DownloadJobState.Completed;
+                job.StatusText = Loc.Get(LocKeys.Download_Downloaded);
+                RefreshActiveFlags();
+                RefreshGameDirectory();
+                _ = _launchViewModel.SelectInstalledVersionAsync(request.InstanceName);
+                StatusText = Loc.Format(LocKeys.Modpack_InstallComplete, request.InstanceName);
+                NotifyCanDownload();
+                ToastRequested?.Invoke(this, new DownloadToastEventArgs(
+                    Loc.Format(LocKeys.Modpack_InstallComplete, request.InstanceName),
+                    isError: false));
+            });
+
+            await Task.Delay(4200).ConfigureAwait(false);
+            RunOnUi(() => RemoveJob(job));
+        }
+        catch (Exception ex) when (IsCancellation(ex, job))
+        {
+            await FinishCancelledAsync(job).ConfigureAwait(false);
+        }
+        catch (Exception ex)
+        {
+            var message = UnwrapMessage(ex);
+            Debug.WriteLine(ex);
+
+            if (job.IsCancelRequested)
+            {
+                await FinishCancelledAsync(job).ConfigureAwait(false);
+                return;
+            }
+
+            // Incomplete pack install — remove the instance folder.
+            if (job.TryBeginCleanup())
+            {
+                await GamePaths.PurgeCancelledVersionAsync(
+                        request.InstanceName,
+                        wasAlreadyInstalled: false,
+                        minecraftRoot: GameDirectory)
+                    .ConfigureAwait(false);
+            }
+
+            RunOnUi(() =>
+            {
+                if (!ActiveDownloads.Contains(job))
+                    return;
+
+                job.State = DownloadJobState.Failed;
+                job.IsIndeterminate = false;
+                job.ProgressValue = 0;
+                job.StatusText = message;
+                RefreshActiveFlags();
+                StatusText = Loc.Format(LocKeys.Download_Failed, request.InstanceName, message);
+                NotifyCanDownload();
+                ToastRequested?.Invoke(this, new DownloadToastEventArgs(
+                    Loc.Format(LocKeys.Download_Failed, request.InstanceName, message),
+                    isError: true));
+            });
+
+            await Task.Delay(4200).ConfigureAwait(false);
+            RunOnUi(() => RemoveJob(job));
+        }
+        finally
+        {
+            job.DisposeToken();
         }
     }
 

@@ -27,11 +27,11 @@ public sealed class ModFileVersionItem
         _ => "R"
     };
 
-    public string GameVersionsLabel =>
-        GameVersions.Count == 0 ? string.Empty : string.Join(", ", GameVersions.Take(6));
+    /// <summary>Preformatted at create time — avoid re-sorting on every bind.</summary>
+    public string GameVersionsLabel { get; init; } = string.Empty;
 
     public string LoadersLabel { get; init; } = string.Empty;
 
-    public bool HasGameVersions => GameVersions.Count > 0;
+    public bool HasGameVersions => !string.IsNullOrEmpty(GameVersionsLabel);
     public bool HasLoaders => !string.IsNullOrEmpty(LoadersLabel);
 }

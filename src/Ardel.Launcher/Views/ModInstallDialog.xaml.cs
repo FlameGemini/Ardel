@@ -12,6 +12,7 @@ public sealed partial class ModInstallDialog : UserControl
 {
     private readonly ModFileVersionItem _file;
     private readonly string _minecraftRoot;
+    private readonly CatalogProjectKind _kind;
     private string _fileName;
 
     public event EventHandler<ModFileInstallRequest>? InstallRequested;
@@ -22,10 +23,12 @@ public sealed partial class ModInstallDialog : UserControl
         IReadOnlyList<GameVersionItem> instances,
         string minecraftRoot,
         string? preferredGameVersion,
-        string? preferredLoaderSlug)
+        string? preferredLoaderSlug,
+        CatalogProjectKind kind = CatalogProjectKind.Mod)
     {
         _file = file;
         _minecraftRoot = minecraftRoot;
+        _kind = kind;
         _fileName = SanitizeFileName(file.FileName);
 
         InitializeComponent();
@@ -40,7 +43,8 @@ public sealed partial class ModInstallDialog : UserControl
             file,
             minecraftRoot,
             preferredGameVersion,
-            preferredLoaderSlug);
+            preferredLoaderSlug,
+            kind);
 
         EmptyText.Visibility = groups.Count == 0 ? Visibility.Visible : Visibility.Collapsed;
         InstanceList.Visibility = groups.Count == 0 ? Visibility.Collapsed : Visibility.Visible;
@@ -61,7 +65,8 @@ public sealed partial class ModInstallDialog : UserControl
         string minecraftRoot,
         string? preferredGameVersion,
         string? preferredLoaderSlug,
-        Action<ModFileInstallRequest> onInstall)
+        Action<ModFileInstallRequest> onInstall,
+        CatalogProjectKind kind = CatalogProjectKind.Mod)
     {
         var content = new ModInstallDialog(
             project,
@@ -69,7 +74,8 @@ public sealed partial class ModInstallDialog : UserControl
             instances,
             minecraftRoot,
             preferredGameVersion,
-            preferredLoaderSlug);
+            preferredLoaderSlug,
+            kind);
         var dialog = new ContentDialog
         {
             XamlRoot = xamlRoot,
@@ -104,13 +110,22 @@ public sealed partial class ModInstallDialog : UserControl
         var fileName = string.IsNullOrWhiteSpace(_fileName)
             ? SanitizeFileName(_file.FileName)
             : _fileName;
+        var defaultExt = _kind == CatalogProjectKind.Mod ? ".jar" : ".zip";
         if (!fileName.EndsWith(".jar", StringComparison.OrdinalIgnoreCase) &&
             !fileName.EndsWith(".zip", StringComparison.OrdinalIgnoreCase))
-            fileName += ".jar";
+            fileName += defaultExt;
 
         var instanceDir = GamePaths.EnsureVersionIsolation(instance.Id, _minecraftRoot);
-        var modsDir = Path.Combine(instanceDir, "mods");
-        Directory.CreateDirectory(modsDir);
+        var folder = _kind switch
+        {
+            CatalogProjectKind.ResourcePack => "resourcepacks",
+            CatalogProjectKind.Datapack => "datapacks",
+            CatalogProjectKind.ShaderPack => "shaderpacks",
+            CatalogProjectKind.Modpack => "modpacks",
+            _ => "mods"
+        };
+        var targetDir = Path.Combine(instanceDir, folder);
+        Directory.CreateDirectory(targetDir);
 
         InstallRequested?.Invoke(this, new ModFileInstallRequest
         {
@@ -118,7 +133,7 @@ public sealed partial class ModInstallDialog : UserControl
             FileName = fileName,
             DownloadUrl = _file.DownloadUrl,
             TargetInstanceId = instance.Id,
-            ModsDirectory = modsDir
+            ModsDirectory = targetDir
         });
     }
 
@@ -127,6 +142,6 @@ public sealed partial class ModInstallDialog : UserControl
         var trimmed = name.Trim();
         foreach (var c in Path.GetInvalidFileNameChars())
             trimmed = trimmed.Replace(c, '_');
-        return string.IsNullOrWhiteSpace(trimmed) ? "mod.jar" : trimmed;
+        return string.IsNullOrWhiteSpace(trimmed) ? "pack.zip" : trimmed;
     }
 }

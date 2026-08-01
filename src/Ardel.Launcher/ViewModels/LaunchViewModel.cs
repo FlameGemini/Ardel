@@ -233,6 +233,13 @@ public partial class LaunchViewModel : ObservableObject
                     token)
                 .ConfigureAwait(true);
 
+            // LaunchAsync may have started the process before noticing cancel.
+            if (token.IsCancellationRequested)
+            {
+                TryKillGameProcess();
+                token.ThrowIfCancellationRequested();
+            }
+
             // Persist auto-downloaded / resolved Java path.
             if (!string.IsNullOrWhiteSpace(settings.JavaPath) &&
                 !string.Equals(JavaPath, settings.JavaPath, StringComparison.OrdinalIgnoreCase))
@@ -267,6 +274,7 @@ public partial class LaunchViewModel : ObservableObject
         }
         catch (OperationCanceledException)
         {
+            TryKillGameProcess();
             StatusText = Loc.Get(LocKeys.Home_Cancelled);
         }
         catch (Exception ex)
@@ -287,6 +295,27 @@ public partial class LaunchViewModel : ObservableObject
     {
         _launchCts?.Cancel();
         StatusText = Loc.Get(LocKeys.Home_Cancelling);
+        TryKillGameProcess();
+    }
+
+    private void TryKillGameProcess()
+    {
+        var process = _gameProcess;
+        if (process is null)
+            return;
+
+        try
+        {
+            if (!process.HasExited)
+            {
+                process.Kill(entireProcessTree: true);
+                process.WaitForExit(3000);
+            }
+        }
+        catch (Exception ex)
+        {
+            Debug.WriteLine($"[LaunchViewModel] Kill failed: {ex.Message}");
+        }
     }
 
     private bool CanLaunch() => !IsLaunching && SelectedVersion is not null;
