@@ -15,11 +15,17 @@ public partial class LaunchViewModel : ObservableObject
     private readonly Lazy<IMinecraftLaunchService> _launchService;
     private readonly LocalVersionStore _localVersions;
     private readonly SettingsService _settingsService;
+    private readonly AccountStore _accounts;
+    private readonly SkinLibraryStore _skins;
     private readonly DispatcherQueue _dispatcher;
     private readonly DispatcherQueueTimer _persistTimer;
     private LauncherSettings _settings = new();
     private CancellationTokenSource? _launchCts;
     private Process? _gameProcess;
+    private readonly object _processGate = new();
+    private readonly List<Process> _gameProcesses = [];
+    private DispatcherQueueTimer? _gameWatchTimer;
+    private bool _gameWatchTimerRunning;
     private bool _suppressPersist = true;
     private bool _localReady;
     private bool _settingsLoaded;
@@ -29,12 +35,18 @@ public partial class LaunchViewModel : ObservableObject
         Lazy<IMinecraftLaunchService> launchService,
         LocalVersionStore localVersions,
         SettingsService settingsService,
+        AccountStore accounts,
+        SkinLibraryStore skins,
         DispatcherQueue dispatcher)
     {
         _launchService = launchService;
         _localVersions = localVersions;
         _settingsService = settingsService;
+        _accounts = accounts;
+        _skins = skins;
         _dispatcher = dispatcher;
+        _accounts.Changed += (_, _) =>
+            _dispatcher.TryEnqueue(() => LaunchGameCommand.NotifyCanExecuteChanged());
         _persistTimer = dispatcher.CreateTimer();
         _persistTimer.IsRepeating = false;
         _persistTimer.Interval = TimeSpan.FromMilliseconds(400);
@@ -46,7 +58,7 @@ public partial class LaunchViewModel : ObservableObject
     public ObservableCollection<JavaInstallation> JavaInstallations { get; } = [];
 
     [ObservableProperty] private GameVersionItem? _selectedVersion;
-    [ObservableProperty] private string _playerName = Loc.Get(LocKeys.Default_PlayerName);
+    [ObservableProperty] private string _playerName = string.Empty;
     [ObservableProperty] private string? _javaPath;
     [ObservableProperty] private int _maxRamMb = 4096;
     [ObservableProperty] private bool _useBmclApi;
@@ -54,6 +66,7 @@ public partial class LaunchViewModel : ObservableObject
     [ObservableProperty] private double _progressValue;
     [ObservableProperty] private bool _isIndeterminate;
     [ObservableProperty] private bool _isLaunching;
+    [ObservableProperty] private bool _isGameRunning;
     [ObservableProperty] private bool _isBusy;
     [ObservableProperty] private string _avatarInitials = "P";
 
@@ -120,7 +133,9 @@ public partial class LaunchViewModel : ObservableObject
 
         _settings = _settingsService.Load();
         _suppressPersist = true;
-        PlayerName = _settings.PlayerName;
+        PlayerName = NameRules.ValidatePlayerName(_settings.PlayerName) is null
+            ? _settings.PlayerName
+            : string.Empty;
         MaxRamMb = _settings.MaxRamMb;
         UseBmclApi = _settings.UseBmclApi;
         JavaPath = _settings.JavaPath;
@@ -130,6 +145,9 @@ public partial class LaunchViewModel : ObservableObject
         _suppressPersist = false;
         _settingsLoaded = true;
     }
+
+    /// <summary>Load settings without scanning local versions (Account page).</summary>
+    public void EnsureSettingsReady() => EnsureSettingsLoaded();
 
     public async Task LoadLocalVersionsAsync()
     {
@@ -172,12 +190,27 @@ public partial class LaunchViewModel : ObservableObject
         if (SelectedVersion is null || IsLaunching)
             return;
 
-        var nameError = NameRules.ValidatePlayerName(PlayerName);
+        var active = _accounts.GetActive();
+        if (active is null)
+        {
+            StatusText = Loc.Get(LocKeys.Account_NeedLogin);
+            return;
+        }
+
+        if (active.Kind == AccountKind.Microsoft)
+        {
+            StatusText = Loc.Get(LocKeys.Account_MicrosoftComingSoon);
+            return;
+        }
+
+        var nameError = NameRules.ValidatePlayerName(active.DisplayName);
         if (nameError is not null)
         {
             StatusText = nameError;
             return;
         }
+
+        PlayerName = active.DisplayName.Trim();
 
         _launchCts?.Cancel();
         _launchCts = new CancellationTokenSource();
@@ -221,6 +254,7 @@ public partial class LaunchViewModel : ObservableObject
         {
             var settings = SnapshotSettings();
             Persist(settings);
+            var offlineSkin = ResolveOfflineSkinOptions();
 
             _gameProcess = await Task.Run(
                     () => _launchService.Value.LaunchAsync(
@@ -229,7 +263,8 @@ public partial class LaunchViewModel : ObservableObject
                         PlayerName,
                         fileProgress,
                         byteProgress,
-                        token),
+                        token,
+                        offlineSkin),
                     token)
                 .ConfigureAwait(true);
 
@@ -239,6 +274,8 @@ public partial class LaunchViewModel : ObservableObject
                 TryKillGameProcess();
                 token.ThrowIfCancellationRequested();
             }
+
+            TrackGameProcess(_gameProcess);
 
             // Persist auto-downloaded / resolved Java path.
             if (!string.IsNullOrWhiteSpace(settings.JavaPath) &&
@@ -261,6 +298,7 @@ public partial class LaunchViewModel : ObservableObject
 
             if (_gameProcess.HasExited)
             {
+                RefreshGameRunningState();
                 StatusText = Loc.Get(LocKeys.Home_GameExited);
                 ProgressValue = 0;
             }
@@ -298,12 +336,77 @@ public partial class LaunchViewModel : ObservableObject
         TryKillGameProcess();
     }
 
+    [RelayCommand(CanExecute = nameof(CanStopAllGames))]
+    private void StopAllGames()
+    {
+        _launchCts?.Cancel();
+        KillAllTrackedProcesses();
+        RefreshGameRunningState();
+        StatusText = Loc.Get(LocKeys.Instances_GamesStopped);
+    }
+
+    private bool CanStopAllGames() => IsGameRunning;
+
     private void TryKillGameProcess()
     {
-        var process = _gameProcess;
+        KillAllTrackedProcesses();
+        RefreshGameRunningState();
+    }
+
+    private void TrackGameProcess(Process? process)
+    {
         if (process is null)
             return;
 
+        lock (_processGate)
+        {
+            if (!_gameProcesses.Contains(process))
+                _gameProcesses.Add(process);
+        }
+
+        try
+        {
+            process.EnableRaisingEvents = true;
+            process.Exited -= OnTrackedProcessExited;
+            process.Exited += OnTrackedProcessExited;
+        }
+        catch (Exception ex)
+        {
+            Debug.WriteLine($"[LaunchViewModel] Track failed: {ex.Message}");
+        }
+
+        RefreshGameRunningState();
+    }
+
+    private void OnTrackedProcessExited(object? sender, EventArgs e) =>
+        RunOnUi(() =>
+        {
+            PruneExitedProcesses();
+            RefreshGameRunningState();
+            if (!IsGameRunning && !IsLaunching)
+            {
+                StatusText = Loc.Get(LocKeys.Home_GameExited);
+                ProgressValue = 0;
+            }
+        });
+
+    private void KillAllTrackedProcesses()
+    {
+        List<Process> snapshot;
+        lock (_processGate)
+            snapshot = _gameProcesses.ToList();
+
+        foreach (var process in snapshot)
+            TryKillProcess(process);
+
+        if (_gameProcess is not null && !snapshot.Contains(_gameProcess))
+            TryKillProcess(_gameProcess);
+
+        PruneExitedProcesses();
+    }
+
+    private static void TryKillProcess(Process process)
+    {
         try
         {
             if (!process.HasExited)
@@ -318,8 +421,137 @@ public partial class LaunchViewModel : ObservableObject
         }
     }
 
-    private bool CanLaunch() => !IsLaunching && SelectedVersion is not null;
+    private void PruneExitedProcesses()
+    {
+        lock (_processGate)
+        {
+            for (var i = _gameProcesses.Count - 1; i >= 0; i--)
+            {
+                var process = _gameProcesses[i];
+                var exited = false;
+                try
+                {
+                    exited = process.HasExited;
+                }
+                catch
+                {
+                    exited = true;
+                }
+
+                if (!exited)
+                    continue;
+
+                try
+                {
+                    process.Exited -= OnTrackedProcessExited;
+                }
+                catch
+                {
+                    // ignore
+                }
+
+                _gameProcesses.RemoveAt(i);
+            }
+        }
+    }
+
+    private void RefreshGameRunningState()
+    {
+        PruneExitedProcesses();
+
+        var running = false;
+        lock (_processGate)
+        {
+            foreach (var process in _gameProcesses)
+            {
+                try
+                {
+                    if (!process.HasExited)
+                    {
+                        running = true;
+                        break;
+                    }
+                }
+                catch
+                {
+                    // treat as dead
+                }
+            }
+        }
+
+        if (IsGameRunning != running)
+            IsGameRunning = running;
+
+        UpdateGameWatchTimer(running);
+    }
+
+    private void UpdateGameWatchTimer(bool running)
+    {
+        if (running)
+        {
+            if (_gameWatchTimer is null)
+            {
+                _gameWatchTimer = _dispatcher.CreateTimer();
+                _gameWatchTimer.IsRepeating = true;
+                _gameWatchTimer.Interval = TimeSpan.FromSeconds(1);
+                _gameWatchTimer.Tick += (_, _) => RefreshGameRunningState();
+            }
+
+            if (!_gameWatchTimerRunning)
+            {
+                _gameWatchTimer.Start();
+                _gameWatchTimerRunning = true;
+            }
+
+            return;
+        }
+
+        if (_gameWatchTimer is not null && _gameWatchTimerRunning)
+        {
+            _gameWatchTimer.Stop();
+            _gameWatchTimerRunning = false;
+        }
+    }
+
+    private bool CanLaunch()
+    {
+        if (IsLaunching || SelectedVersion is null)
+            return false;
+
+        var active = _accounts.GetActive();
+        return active is { Kind: AccountKind.Offline } &&
+               NameRules.ValidatePlayerName(active.DisplayName) is null;
+    }
+
+    private OfflineSkinLaunchOptions? ResolveOfflineSkinOptions()
+    {
+        var active = _accounts.GetActive();
+        if (active is null || active.Kind != AccountKind.Offline)
+            return null;
+
+        var skin = _skins.Find(active.SkinId);
+        if (skin is null || (!skin.IsBuiltIn && !skin.IsConfigured))
+            return null;
+
+        var path = _skins.GetAbsolutePath(skin);
+        if (!File.Exists(path))
+            return null;
+
+        var uuid = string.IsNullOrWhiteSpace(active.Uuid)
+            ? OfflinePlayerUuid.FromPlayerName(active.DisplayName.Trim())
+            : active.Uuid;
+
+        return new OfflineSkinLaunchOptions(
+            uuid,
+            active.DisplayName.Trim(),
+            path,
+            skin.ArmModel == SkinArmModel.Slim);
+    }
+
     private bool CanCancel() => IsLaunching;
+
+    partial void OnIsGameRunningChanged(bool value) =>
+        StopAllGamesCommand.NotifyCanExecuteChanged();
 
     /// <summary>Select an installed version and start it (from Instances page).</summary>
     public Task LaunchVersionAsync(GameVersionItem version)
@@ -522,17 +754,17 @@ public partial class LaunchViewModel : ObservableObject
     {
         try
         {
-            process.EnableRaisingEvents = true;
-            process.Exited += (_, _) =>
+            await process.WaitForExitAsync().ConfigureAwait(false);
+            RunOnUi(() =>
             {
-                RunOnUi(() =>
+                PruneExitedProcesses();
+                RefreshGameRunningState();
+                if (!IsGameRunning && !IsLaunching)
                 {
                     StatusText = Loc.Get(LocKeys.Home_GameExited);
                     ProgressValue = 0;
-                });
-            };
-
-            await process.WaitForExitAsync().ConfigureAwait(false);
+                }
+            });
         }
         catch (Exception ex)
         {

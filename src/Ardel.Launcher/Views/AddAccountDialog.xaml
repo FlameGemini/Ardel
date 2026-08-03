@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="utf-8"?>
+<UserControl
+    x:Class="Ardel.Launcher.Views.AddAccountDialog"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:loc="using:Ardel.Launcher.Localization"
+    MinWidth="440"
+    MaxWidth="520">
+
+    <StackPanel Spacing="16" Padding="4,4,4,8">
+        <StackPanel Spacing="8">
+            <TextBlock Text="{loc:String Key=Account_Type}" FontSize="12" Opacity="0.7" />
+            <Border
+                Background="{ThemeResource SubtleFillColorSecondaryBrush}"
+                CornerRadius="12"
+                Padding="3"
+                Height="44">
+                <Grid x:Name="SegmentTrack">
+                    <Border
+                        x:Name="SegmentThumb"
+                        Width="200"
+                        HorizontalAlignment="Left"
+                        CornerRadius="10"
+                        Background="{ThemeResource AccentFillColorDefaultBrush}">
+                        <Border.RenderTransform>
+                            <TranslateTransform x:Name="SegmentThumbOffset" />
+                        </Border.RenderTransform>
+                    </Border>
+                    <Grid ColumnSpacing="0">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*" />
+                            <ColumnDefinition Width="*" />
+                        </Grid.ColumnDefinitions>
+                        <Button
+                            x:Name="OfflineSegmentButton"
+                            Grid.Column="0"
+                            HorizontalAlignment="Stretch"
+                            VerticalAlignment="Stretch"
+                            Background="Transparent"
+                            BorderThickness="0"
+                            Click="OfflineSegment_Click"
+                            Padding="0">
+                            <TextBlock
+                                x:Name="OfflineSegmentLabel"
+                                Text="{loc:String Key=Account_KindOffline}"
+                                HorizontalAlignment="Center"
+                                FontWeight="SemiBold"
+                                Foreground="{ThemeResource TextOnAccentFillColorPrimaryBrush}" />
+                        </Button>
+                        <Button
+                            x:Name="MicrosoftSegmentButton"
+                            Grid.Column="1"
+                            HorizontalAlignment="Stretch"
+                            VerticalAlignment="Stretch"
+                            Background="Transparent"
+                            BorderThickness="0"
+                            Click="MicrosoftSegment_Click"
+                            Padding="0">
+                            <TextBlock
+                                x:Name="MicrosoftSegmentLabel"
+                                Text="{loc:String Key=Account_KindMicrosoft}"
+                                HorizontalAlignment="Center"
+                                FontWeight="SemiBold"
+                                Opacity="0.7" />
+                        </Button>
+                    </Grid>
+                </Grid>
+            </Border>
+        </StackPanel>
+
+        <Grid x:Name="MicrosoftPane" Visibility="Collapsed" MinHeight="80">
+            <TextBlock
+                Text="{loc:String Key=Account_MicrosoftPlaceholder}"
+                Opacity="0.55"
+                TextWrapping="Wrap"
+                VerticalAlignment="Center" />
+        </Grid>
+
+        <StackPanel x:Name="OfflinePane" Spacing="12">
+            <TextBox
+                x:Name="NameBox"
+                Header="{loc:String Key=Account_PlayerName}"
+                MaxLength="16"
+                PlaceholderText="{loc:String Key=Account_PlayerNameHint}"
+                FontFamily="Consolas"
+                IsSpellCheckEnabled="False"
+                IsTextPredictionEnabled="False" />
+            <TextBlock
+                x:Name="UuidText"
+                FontSize="12"
+                Opacity="0.65"
+                IsTextSelectionEnabled="True"
+                TextWrapping="Wrap" />
+            <TextBlock
+                x:Name="ErrorText"
+                Foreground="{ThemeResource SystemFillColorCriticalBrush}"
+                FontSize="12"
+                TextWrapping="Wrap"
+                Visibility="Collapsed" />
+        </StackPanel>
+    </StackPanel>
+</UserControl>

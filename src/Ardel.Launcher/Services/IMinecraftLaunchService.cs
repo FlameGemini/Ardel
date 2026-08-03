@@ -54,7 +54,8 @@ public interface IMinecraftLaunchService
         string playerName,
         IProgress<FileProgressInfo>? fileProgress,
         IProgress<ByteProgressInfo>? byteProgress,
-        CancellationToken cancellationToken = default);
+        CancellationToken cancellationToken = default,
+        OfflineSkinLaunchOptions? offlineSkin = null);
 }
 
 public static class MinecraftLaunchServiceFactory

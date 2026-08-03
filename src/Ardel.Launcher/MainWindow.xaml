@@ -46,12 +46,25 @@
                         <FontIcon Glyph="&#xE8F1;" FontSize="16" />
                     </NavigationViewItem.Icon>
                 </NavigationViewItem>
+                <NavigationViewItem Content="{loc:String Key=Nav_Account}" Tag="account">
+                    <NavigationViewItem.Icon>
+                        <FontIcon Glyph="&#xE77B;" FontSize="16" />
+                    </NavigationViewItem.Icon>
+                </NavigationViewItem>
                 <NavigationViewItem Content="{loc:String Key=Nav_Settings}" Tag="settings">
                     <NavigationViewItem.Icon>
                         <FontIcon Glyph="&#xE713;" FontSize="16" />
                     </NavigationViewItem.Icon>
                 </NavigationViewItem>
             </NavigationView.MenuItems>
+
+            <NavigationView.FooterMenuItems>
+                <NavigationViewItem Content="{loc:String Key=Nav_About}" Tag="about">
+                    <NavigationViewItem.Icon>
+                        <FontIcon Glyph="&#xE946;" FontSize="16" />
+                    </NavigationViewItem.Icon>
+                </NavigationViewItem>
+            </NavigationView.FooterMenuItems>
 
             <Frame x:Name="ContentFrame" />
         </NavigationView>

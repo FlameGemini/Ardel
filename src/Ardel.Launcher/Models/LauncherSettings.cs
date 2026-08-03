@@ -14,7 +14,7 @@ public sealed class LauncherSettings
     /// </summary>
     public string UiLanguage { get; set; } = string.Empty;
 
-    public string PlayerName { get; set; } = Localization.Loc.Get(Localization.LocKeys.Default_PlayerName);
+    public string PlayerName { get; set; } = string.Empty;
     public string? SelectedVersion { get; set; }
     public string? JavaPath { get; set; }
     public int MaxRamMb { get; set; } = 4096;

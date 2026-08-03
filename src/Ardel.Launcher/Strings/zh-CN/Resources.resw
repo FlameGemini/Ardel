@@ -235,7 +235,7 @@
   <data name="Validate_PlayerQuote" xml:space="preserve"><value>玩家名不能包含引号（"）。</value></data>
   <data name="Validate_PlayerTooLong" xml:space="preserve"><value>玩家名最多 16 个字符。</value></data>
 
-  <data name="Default_PlayerName" xml:space="preserve"><value>玩家</value></data>
+  <data name="Default_PlayerName" xml:space="preserve"><value>Player</value></data>
   <data name="Action_Search" xml:space="preserve"><value>搜索</value></data>
   <data name="Action_Reset" xml:space="preserve"><value>重置</value></data>
   <data name="Mod_Keyword" xml:space="preserve"><value>关键词</value></data>
@@ -359,4 +359,53 @@
   <data name="Modpack_HashMismatch" xml:space="preserve"><value>下载文件校验失败。</value></data>
   <data name="Modpack_FileDownloadFailed" xml:space="preserve"><value>{0} 个文件下载失败。首个错误：{1}</value></data>
   <data name="Modpack_FileDownloadFailedGeneric" xml:space="preserve"><value>无法下载整合包文件。</value></data>
+
+  <data name="Nav_Account" xml:space="preserve"><value>账户</value></data>
+  <data name="Nav_Skins" xml:space="preserve"><value>皮肤库</value></data>
+  <data name="Instances_StopAll" xml:space="preserve"><value>结束所有游戏</value></data>
+  <data name="Instances_GamesStopped" xml:space="preserve"><value>已结束所有游戏进程</value></data>
+  <data name="Account_Title" xml:space="preserve"><value>账户</value></data>
+  <data name="Account_Subtitle" xml:space="preserve"><value>点击卡片登录。</value></data>
+  <data name="Account_PlayerName" xml:space="preserve"><value>游戏名</value></data>
+  <data name="Account_PlayerNameHint" xml:space="preserve"><value>Steve_01</value></data>
+  <data name="Account_Saved" xml:space="preserve"><value>游戏名已保存</value></data>
+  <data name="Account_Add" xml:space="preserve"><value>添加账户</value></data>
+  <data name="Account_AddTitle" xml:space="preserve"><value>添加账户</value></data>
+  <data name="Account_EditTitle" xml:space="preserve"><value>编辑账户</value></data>
+  <data name="Account_Edit" xml:space="preserve"><value>编辑</value></data>
+  <data name="Account_Skin" xml:space="preserve"><value>皮肤</value></data>
+  <data name="Account_SkinNone" xml:space="preserve"><value>未选择皮肤</value></data>
+  <data name="Account_PickSkinTitle" xml:space="preserve"><value>选择皮肤</value></data>
+  <data name="Account_Empty" xml:space="preserve"><value>还没有账户 - 先添加一个</value></data>
+  <data name="Account_ActiveBadge" xml:space="preserve"><value>当前</value></data>
+  <data name="Account_KindOffline" xml:space="preserve"><value>离线</value></data>
+  <data name="Account_KindMicrosoft" xml:space="preserve"><value>正版</value></data>
+  <data name="Account_UuidLabel" xml:space="preserve"><value>UUID：{0}</value></data>
+  <data name="Account_MicrosoftPlaceholder" xml:space="preserve"><value>正版登录将在后续版本提供。</value></data>
+  <data name="Account_MicrosoftComingSoon" xml:space="preserve"><value>正版账户尚未就绪。</value></data>
+  <data name="Account_LoggingIn" xml:space="preserve"><value>正在登录 {0}...</value></data>
+  <data name="Account_LoginOffline" xml:space="preserve"><value>正在切换离线账户...</value></data>
+  <data name="Account_LoggedIn" xml:space="preserve"><value>已登录为 {0}</value></data>
+  <data name="Account_LoginFailed" xml:space="preserve"><value>登录失败：{0}</value></data>
+  <data name="Account_DeleteTitle" xml:space="preserve"><value>删除账户</value></data>
+  <data name="Account_DeleteConfirm" xml:space="preserve"><value>删除“{0}”？此操作无法撤销。</value></data>
+  <data name="Account_NeedLogin" xml:space="preserve"><value>请先在账户页点击卡片登录，再启动游戏。</value></data>
+  <data name="Account_NeedSkin" xml:space="preserve"><value>请先为该账户选择皮肤。</value></data>
+  <data name="Account_OpenSkinLibrary" xml:space="preserve"><value>打开皮肤库</value></data>
+  <data name="Download_SectionSkins" xml:space="preserve"><value>皮肤库</value></data>
+  <data name="Skin_LibraryTitle" xml:space="preserve"><value>皮肤库</value></data>
+  <data name="Skin_LibrarySubtitle" xml:space="preserve"><value>导入并预览离线 / 正版账户使用的皮肤</value></data>
+  <data name="Skin_Add" xml:space="preserve"><value>添加皮肤</value></data>
+  <data name="Skin_AddTitle" xml:space="preserve"><value>添加皮肤</value></data>
+  <data name="Skin_Name" xml:space="preserve"><value>皮肤名称</value></data>
+  <data name="Skin_NamePlaceholder" xml:space="preserve"><value>在皮肤库中显示的名称</value></data>
+  <data name="Skin_NameRequired" xml:space="preserve"><value>请输入皮肤名称。</value></data>
+  <data name="Skin_ArmModel" xml:space="preserve"><value>手臂模型</value></data>
+  <data name="Skin_ModelSteve" xml:space="preserve"><value>Steve（经典）</value></data>
+  <data name="Skin_ModelAlex" xml:space="preserve"><value>Alex（纤细）</value></data>
+  <data name="Skin_Import" xml:space="preserve"><value>导入 PNG...</value></data>
+  <data name="Skin_ImportRequired" xml:space="preserve"><value>请选择要导入的皮肤 PNG。</value></data>
+  <data name="Skin_ImportFailed" xml:space="preserve"><value>无法导入皮肤：{0}</value></data>
+  <data name="Skin_Empty" xml:space="preserve"><value>暂无皮肤 — Steve / Alex 原皮会自动预置</value></data>
+  <data name="Skin_Count" xml:space="preserve"><value>{0} 个皮肤</value></data>
 </root>

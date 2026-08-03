@@ -13,6 +13,9 @@ public static class LocKeys
     public const string Nav_Download = "Nav_Download";
     public const string Nav_Instances = "Nav_Instances";
     public const string Nav_Settings = "Nav_Settings";
+    public const string Nav_Account = "Nav_Account";
+    public const string Nav_Skins = "Nav_Skins";
+    public const string Nav_About = "Nav_About";
 
     // Common actions
     public const string Action_Launch = "Action_Launch";
@@ -36,6 +39,7 @@ public static class LocKeys
     public const string Home_GoDownload = "Home_GoDownload";
     public const string Home_InitFailed = "Home_InitFailed";
     public const string Home_Preparing = "Home_Preparing";
+    public const string Home_PreparingOfflineSkin = "Home_PreparingOfflineSkin";
     public const string Home_Starting = "Home_Starting";
     public const string Home_ResolvingJava = "Home_ResolvingJava";
     public const string Home_DownloadingJava = "Home_DownloadingJava";
@@ -62,7 +66,64 @@ public static class LocKeys
     public const string Instances_Deleted = "Instances_Deleted";
     public const string Instances_DeleteFailed = "Instances_DeleteFailed";
     public const string Instances_DeleteNoUi = "Instances_DeleteNoUi";
+    public const string Instances_StopAll = "Instances_StopAll";
+    public const string Instances_GamesStopped = "Instances_GamesStopped";
     public const string Home_ProcessError = "Home_ProcessError";
+
+    // Account
+    public const string Account_Title = "Account_Title";
+    public const string Account_Subtitle = "Account_Subtitle";
+    public const string Account_PlayerName = "Account_PlayerName";
+    public const string Account_PlayerNameHint = "Account_PlayerNameHint";
+    public const string Account_Saved = "Account_Saved";
+    public const string Account_Add = "Account_Add";
+    public const string Account_AddTitle = "Account_AddTitle";
+    public const string Account_EditTitle = "Account_EditTitle";
+    public const string Account_Edit = "Account_Edit";
+    public const string Account_Skin = "Account_Skin";
+    public const string Account_SkinNone = "Account_SkinNone";
+    public const string Account_PickSkinTitle = "Account_PickSkinTitle";
+    public const string Account_Empty = "Account_Empty";
+    public const string Account_ActiveBadge = "Account_ActiveBadge";
+    public const string Account_KindOffline = "Account_KindOffline";
+    public const string Account_KindMicrosoft = "Account_KindMicrosoft";
+    public const string Account_Type = "Account_Type";
+    public const string Account_SkinCustom = "Account_SkinCustom";
+    public const string Account_SkinCustom1 = "Account_SkinCustom1";
+    public const string Account_SkinCustom2 = "Account_SkinCustom2";
+    public const string Account_SkinSlotEmpty = "Account_SkinSlotEmpty";
+    public const string Account_SkinReplace = "Account_SkinReplace";
+    public const string Account_UuidLabel = "Account_UuidLabel";
+    public const string Account_MicrosoftPlaceholder = "Account_MicrosoftPlaceholder";
+    public const string Account_MicrosoftComingSoon = "Account_MicrosoftComingSoon";
+    public const string Account_LoggingIn = "Account_LoggingIn";
+    public const string Account_LoginOffline = "Account_LoginOffline";
+    public const string Account_LoggedIn = "Account_LoggedIn";
+    public const string Account_LoginFailed = "Account_LoginFailed";
+    public const string Account_DeleteTitle = "Account_DeleteTitle";
+    public const string Account_DeleteConfirm = "Account_DeleteConfirm";
+    public const string Account_NeedLogin = "Account_NeedLogin";
+    public const string Account_NeedSkin = "Account_NeedSkin";
+    public const string Account_OpenSkinLibrary = "Account_OpenSkinLibrary";
+
+    // Skin library
+    public const string Download_SectionSkins = "Download_SectionSkins";
+    public const string Skin_LibraryTitle = "Skin_LibraryTitle";
+    public const string Skin_LibrarySubtitle = "Skin_LibrarySubtitle";
+    public const string Skin_Add = "Skin_Add";
+    public const string Skin_AddTitle = "Skin_AddTitle";
+    public const string Skin_Name = "Skin_Name";
+    public const string Skin_NamePlaceholder = "Skin_NamePlaceholder";
+    public const string Skin_NameRequired = "Skin_NameRequired";
+    public const string Skin_ArmModel = "Skin_ArmModel";
+    public const string Skin_ModelSteve = "Skin_ModelSteve";
+    public const string Skin_ModelAlex = "Skin_ModelAlex";
+    public const string Skin_Import = "Skin_Import";
+    public const string Skin_ImportRequired = "Skin_ImportRequired";
+    public const string Skin_ImportFailed = "Skin_ImportFailed";
+    public const string Skin_Empty = "Skin_Empty";
+    public const string Skin_Count = "Skin_Count";
+    public const string Skin_CannotDeleteBuiltIn = "Skin_CannotDeleteBuiltIn";
 
     // Download page
     public const string Download_Type = "Download_Type";
@@ -265,6 +326,20 @@ public static class LocKeys
     public const string Settings_LanguageApplied = "Settings_LanguageApplied";
     public const string Settings_ScanningJava = "Settings_ScanningJava";
 
+    // About
+    public const string About_Title = "About_Title";
+    public const string About_Subtitle = "About_Subtitle";
+    public const string About_Version = "About_Version";
+    public const string About_CreditsHeading = "About_CreditsHeading";
+    public const string About_CreditsIntro = "About_CreditsIntro";
+    public const string About_Credit_CmlLib = "About_Credit_CmlLib";
+    public const string About_Credit_CmlLibForge = "About_Credit_CmlLibForge";
+    public const string About_Credit_OptifineInstaller = "About_Credit_OptifineInstaller";
+    public const string About_Credit_CommunityToolkit = "About_Credit_CommunityToolkit";
+    public const string About_Credit_AuthlibInjector = "About_Credit_AuthlibInjector";
+    public const string About_Credit_BmclApi = "About_Credit_BmclApi";
+    public const string About_Disclaimer = "About_Disclaimer";
+
     // Version / Java display
     public const string Version_Fabric = "Version_Fabric";
     public const string Version_Forge = "Version_Forge";
@@ -365,6 +440,9 @@ public static class LocKeys
     public const string Validate_PlayerEmpty = "Validate_PlayerEmpty";
     public const string Validate_PlayerQuote = "Validate_PlayerQuote";
     public const string Validate_PlayerTooLong = "Validate_PlayerTooLong";
+    public const string Validate_PlayerLength = "Validate_PlayerLength";
+    public const string Validate_PlayerCharset = "Validate_PlayerCharset";
+    public const string Validate_SkinNameInvalid = "Validate_SkinNameInvalid";
 
     // Defaults
     public const string Default_PlayerName = "Default_PlayerName";

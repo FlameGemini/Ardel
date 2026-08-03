@@ -79,7 +79,20 @@ public sealed partial class MainWindow : Window
             {
                 "download" => Loc.Get(LocKeys.Nav_Download),
                 "instances" => Loc.Get(LocKeys.Nav_Instances),
+                "account" => Loc.Get(LocKeys.Nav_Account),
                 "settings" => Loc.Get(LocKeys.Nav_Settings),
+                _ => item.Content
+            };
+        }
+
+        foreach (var obj in NavView.FooterMenuItems)
+        {
+            if (obj is not NavigationViewItem item || item.Tag is not string tag)
+                continue;
+
+            item.Content = tag switch
+            {
+                "about" => Loc.Get(LocKeys.Nav_About),
                 _ => item.Content
             };
         }
@@ -125,9 +138,14 @@ public sealed partial class MainWindow : Window
         SelectNavTag("settings");
     }
 
+    public void NavigateToAccount()
+    {
+        SelectNavTag("account");
+    }
+
     private void SelectNavTag(string targetTag)
     {
-        foreach (var obj in NavView.MenuItems)
+        foreach (var obj in NavView.MenuItems.Concat(NavView.FooterMenuItems))
         {
             if (obj is NavigationViewItem item && item.Tag is string tag && tag == targetTag)
             {
@@ -148,10 +166,12 @@ public sealed partial class MainWindow : Window
         {
             "download" => typeof(DownloadPage),
             "instances" => typeof(InstancesPage),
+            "account" => typeof(AccountPage),
             "settings" => typeof(SettingsPage),
+            "about" => typeof(AboutPage),
             _ => typeof(InstancesPage)
         };
 
-        ContentFrame.Navigate(pageType, null, new SuppressNavigationTransitionInfo());
+        ContentFrame.Navigate(pageType, null, new EntranceNavigationTransitionInfo());
     }
 }

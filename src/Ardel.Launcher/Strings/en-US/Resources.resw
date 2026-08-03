@@ -359,4 +359,53 @@
   <data name="Modpack_HashMismatch" xml:space="preserve"><value>Downloaded file failed hash verification.</value></data>
   <data name="Modpack_FileDownloadFailed" xml:space="preserve"><value>{0} pack files failed. First error: {1}</value></data>
   <data name="Modpack_FileDownloadFailedGeneric" xml:space="preserve"><value>Could not download a pack file.</value></data>
+
+  <data name="Nav_Account" xml:space="preserve"><value>Account</value></data>
+  <data name="Nav_Skins" xml:space="preserve"><value>Skins</value></data>
+  <data name="Instances_StopAll" xml:space="preserve"><value>Stop all games</value></data>
+  <data name="Instances_GamesStopped" xml:space="preserve"><value>All game processes stopped</value></data>
+  <data name="Account_Title" xml:space="preserve"><value>Account</value></data>
+  <data name="Account_Subtitle" xml:space="preserve"><value>Tap a card to sign in.</value></data>
+  <data name="Account_PlayerName" xml:space="preserve"><value>Player name</value></data>
+  <data name="Account_PlayerNameHint" xml:space="preserve"><value>Steve_01</value></data>
+  <data name="Account_Saved" xml:space="preserve"><value>Player name saved</value></data>
+  <data name="Account_Add" xml:space="preserve"><value>Add account</value></data>
+  <data name="Account_AddTitle" xml:space="preserve"><value>Add account</value></data>
+  <data name="Account_EditTitle" xml:space="preserve"><value>Edit account</value></data>
+  <data name="Account_Edit" xml:space="preserve"><value>Edit</value></data>
+  <data name="Account_Skin" xml:space="preserve"><value>Skin</value></data>
+  <data name="Account_SkinNone" xml:space="preserve"><value>No skin selected</value></data>
+  <data name="Account_PickSkinTitle" xml:space="preserve"><value>Choose skin</value></data>
+  <data name="Account_Empty" xml:space="preserve"><value>No accounts yet - add one to get started</value></data>
+  <data name="Account_ActiveBadge" xml:space="preserve"><value>Active</value></data>
+  <data name="Account_KindOffline" xml:space="preserve"><value>Offline</value></data>
+  <data name="Account_KindMicrosoft" xml:space="preserve"><value>Microsoft</value></data>
+  <data name="Account_UuidLabel" xml:space="preserve"><value>UUID: {0}</value></data>
+  <data name="Account_MicrosoftPlaceholder" xml:space="preserve"><value>Microsoft sign-in will be available in a later update.</value></data>
+  <data name="Account_MicrosoftComingSoon" xml:space="preserve"><value>Microsoft accounts are not ready yet.</value></data>
+  <data name="Account_LoggingIn" xml:space="preserve"><value>Signing in as {0}...</value></data>
+  <data name="Account_LoginOffline" xml:space="preserve"><value>Switching offline profile...</value></data>
+  <data name="Account_LoggedIn" xml:space="preserve"><value>Signed in as {0}</value></data>
+  <data name="Account_LoginFailed" xml:space="preserve"><value>Sign-in failed: {0}</value></data>
+  <data name="Account_DeleteTitle" xml:space="preserve"><value>Delete account</value></data>
+  <data name="Account_DeleteConfirm" xml:space="preserve"><value>Delete "{0}"? This cannot be undone.</value></data>
+  <data name="Account_NeedLogin" xml:space="preserve"><value>Sign in on the Account page (tap a card) before launching.</value></data>
+  <data name="Account_NeedSkin" xml:space="preserve"><value>Choose a skin for this account first.</value></data>
+  <data name="Account_OpenSkinLibrary" xml:space="preserve"><value>Open skin library</value></data>
+  <data name="Download_SectionSkins" xml:space="preserve"><value>Skins</value></data>
+  <data name="Skin_LibraryTitle" xml:space="preserve"><value>Skin library</value></data>
+  <data name="Skin_LibrarySubtitle" xml:space="preserve"><value>Import and preview skins for offline or Microsoft profiles</value></data>
+  <data name="Skin_Add" xml:space="preserve"><value>Add skin</value></data>
+  <data name="Skin_AddTitle" xml:space="preserve"><value>Add skin</value></data>
+  <data name="Skin_Name" xml:space="preserve"><value>Skin name</value></data>
+  <data name="Skin_NamePlaceholder" xml:space="preserve"><value>Display name in the library</value></data>
+  <data name="Skin_NameRequired" xml:space="preserve"><value>Enter a skin name.</value></data>
+  <data name="Skin_ArmModel" xml:space="preserve"><value>Arm model</value></data>
+  <data name="Skin_ModelSteve" xml:space="preserve"><value>Steve (classic)</value></data>
+  <data name="Skin_ModelAlex" xml:space="preserve"><value>Alex (slim)</value></data>
+  <data name="Skin_Import" xml:space="preserve"><value>Import PNG...</value></data>
+  <data name="Skin_ImportRequired" xml:space="preserve"><value>Choose a skin PNG to import.</value></data>
+  <data name="Skin_ImportFailed" xml:space="preserve"><value>Could not import skin: {0}</value></data>
+  <data name="Skin_Empty" xml:space="preserve"><value>No skins yet — Steve and Alex are seeded automatically</value></data>
+  <data name="Skin_Count" xml:space="preserve"><value>{0} skins</value></data>
 </root>

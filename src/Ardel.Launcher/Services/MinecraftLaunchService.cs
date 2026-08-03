@@ -17,6 +17,7 @@ using Optifine.Installer;
 using Ardel.Launcher.Helpers;
 using Ardel.Launcher.Localization;
 using Ardel.Launcher.Models;
+using Ardel.Launcher.Services.SkinRelay;
 
 namespace Ardel.Launcher.Services;
 
@@ -1242,7 +1243,8 @@ public sealed class MinecraftLaunchService : IMinecraftLaunchService
         string playerName,
         IProgress<FileProgressInfo>? fileProgress,
         IProgress<ByteProgressInfo>? byteProgress,
-        CancellationToken cancellationToken = default)
+        CancellationToken cancellationToken = default,
+        OfflineSkinLaunchOptions? offlineSkin = null)
     {
         ArgumentException.ThrowIfNullOrWhiteSpace(versionId);
 
@@ -1289,6 +1291,7 @@ public sealed class MinecraftLaunchService : IMinecraftLaunchService
         javaPath = JavaRuntimeInstaller.PreferJavaw(javaPath);
         settings.JavaPath = javaPath;
 
+        SkinRelaySession? skinRelay = null;
         try
         {
             var gameDir = string.IsNullOrWhiteSpace(settings.GameDirectory)
@@ -1314,10 +1317,17 @@ public sealed class MinecraftLaunchService : IMinecraftLaunchService
                 ReportStatus(Loc.Format(LocKeys.Home_Starting, versionId));
             }
 
-            var sessionName = string.IsNullOrWhiteSpace(playerName)
-                ? Localization.Loc.Get(Localization.LocKeys.Default_PlayerName)
-                : playerName.Trim();
-            var session = MSession.CreateOfflineSession(sessionName);
+            if (string.IsNullOrWhiteSpace(playerName) ||
+                Helpers.NameRules.ValidatePlayerName(playerName) is not null)
+            {
+                throw new InvalidOperationException(
+                    Localization.Loc.Get(Localization.LocKeys.Validate_PlayerEmpty));
+            }
+
+            var trimmedName = playerName.Trim();
+            var session = MSession.CreateOfflineSession(trimmedName);
+            if (offlineSkin is not null && !string.IsNullOrWhiteSpace(offlineSkin.PlayerUuid))
+                session.UUID = offlineSkin.PlayerUuid.Replace("-", "", StringComparison.Ordinal);
 
             var root = launcher.MinecraftPath;
             var instanceDir = GamePaths.EnsureVersionIsolation(versionId, settings.GameDirectory);
@@ -1346,6 +1356,22 @@ public sealed class MinecraftLaunchService : IMinecraftLaunchService
                 option.NativesDirectory = nativesDir;
             }
 
+            if (offlineSkin is not null && File.Exists(offlineSkin.SkinPngPath))
+            {
+                ReportStatus(Loc.Get(LocKeys.Home_PreparingOfflineSkin));
+                skinRelay = await SkinRelaySession.TryStartAsync(
+                        GetHttpClient(settings.UseBmclApi),
+                        settings.UseBmclApi,
+                        offlineSkin.PlayerUuid,
+                        trimmedName,
+                        offlineSkin.SkinPngPath,
+                        offlineSkin.SlimArms,
+                        cancellationToken)
+                    .ConfigureAwait(false);
+                if (skinRelay is not null)
+                    option.ExtraJvmArguments = skinRelay.JvmArguments.ToArray();
+            }
+
             var process = await launcher.BuildProcessAsync(versionId, option, cancellationToken)
                 .ConfigureAwait(false);
 
@@ -1372,13 +1398,21 @@ public sealed class MinecraftLaunchService : IMinecraftLaunchService
                     Debug.WriteLine($"[MinecraftLaunchService] Cancel kill failed: {killEx.Message}");
                 }
 
+                skinRelay?.Dispose();
                 cancellationToken.ThrowIfCancellationRequested();
+            }
+
+            if (skinRelay is not null)
+            {
+                skinRelay.AttachToProcess(process);
+                skinRelay = null;
             }
 
             return process;
         }
         catch (Exception ex)
         {
+            skinRelay?.Dispose();
             Debug.WriteLine($"[MinecraftLaunchService] Launch failed: {ex}");
             throw;
         }

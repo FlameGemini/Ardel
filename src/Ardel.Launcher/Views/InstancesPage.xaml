@@ -160,14 +160,27 @@
                     IsIndeterminate="{x:Bind ViewModel.Launch.IsIndeterminate, Mode=OneWay}"
                     Visibility="{x:Bind ViewModel.Launch.IsLaunching, Mode=OneWay, Converter={StaticResource BoolToVisibility}}" />
             </StackPanel>
-            <Button
+            <StackPanel
                 Grid.Column="1"
-                Content="{loc:String Key=Action_Cancel}"
-                MinWidth="120"
-                MinHeight="36"
-                VerticalAlignment="Center"
-                Command="{x:Bind ViewModel.Launch.CancelLaunchCommand}"
-                Visibility="{x:Bind ViewModel.Launch.IsLaunching, Mode=OneWay, Converter={StaticResource BoolToVisibility}}" />
+                Orientation="Horizontal"
+                Spacing="8"
+                VerticalAlignment="Center">
+                <Button
+                    Content="{loc:String Key=Action_Cancel}"
+                    MinWidth="120"
+                    MinHeight="36"
+                    Command="{x:Bind ViewModel.Launch.CancelLaunchCommand}"
+                    Visibility="{x:Bind ViewModel.Launch.IsLaunching, Mode=OneWay, Converter={StaticResource BoolToVisibility}}" />
+                <Button
+                    ToolTipService.ToolTip="{loc:String Key=Instances_StopAll}"
+                    Width="40"
+                    Height="36"
+                    Padding="0"
+                    Command="{x:Bind ViewModel.Launch.StopAllGamesCommand}"
+                    Visibility="{x:Bind ViewModel.Launch.IsGameRunning, Mode=OneWay, Converter={StaticResource BoolToVisibility}}">
+                    <FontIcon Glyph="&#xE71A;" FontSize="14" />
+                </Button>
+            </StackPanel>
         </Grid>
     </Grid>
 </Page>

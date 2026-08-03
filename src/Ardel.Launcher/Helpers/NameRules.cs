@@ -69,7 +69,8 @@ public static partial class NameRules
     }
 
     /// <summary>
-    /// Offline player name: non-empty, no ASCII quote, trimmed length at most 16.
+    /// Offline player name: 3–16 chars, ASCII letters/digits/underscore only
+    /// (Java Edition style — no spaces or CJK).
     /// </summary>
     public static string? ValidatePlayerName(string? name)
     {
@@ -77,11 +78,27 @@ public static partial class NameRules
             return Loc.Get(LocKeys.Validate_PlayerEmpty);
 
         var trimmed = name.Trim();
-        if (trimmed.Contains('"'))
-            return Loc.Get(LocKeys.Validate_PlayerQuote);
+        if (trimmed.Length is < 3 or > PlayerNameMaxLength)
+            return Loc.Get(LocKeys.Validate_PlayerLength);
 
-        if (trimmed.Length > PlayerNameMaxLength)
-            return Loc.Get(LocKeys.Validate_PlayerTooLong);
+        if (!PlayerNamePattern().IsMatch(trimmed))
+            return Loc.Get(LocKeys.Validate_PlayerCharset);
+
+        return null;
+    }
+
+    /// <summary>Skin library display name: 1–32 chars, no path separators.</summary>
+    public static string? ValidateSkinName(string? name)
+    {
+        if (string.IsNullOrWhiteSpace(name))
+            return Loc.Get(LocKeys.Skin_NameRequired);
+
+        var trimmed = name.Trim();
+        if (trimmed.Length > 32)
+            return Loc.Format(LocKeys.Validate_NameTooLong, 32);
+
+        if (trimmed.Contains('/') || trimmed.Contains('\\') || trimmed.Contains(':'))
+            return Loc.Get(LocKeys.Validate_SkinNameInvalid);
 
         return null;
     }
@@ -112,5 +129,8 @@ public static partial class NameRules
 
     [GeneratedRegex(@".{2,}~\d", RegexOptions.CultureInvariant)]
     private static partial Regex Ntfs83Pattern();
+
+    [GeneratedRegex(@"^[A-Za-z0-9_]{3,16}$", RegexOptions.CultureInvariant)]
+    private static partial Regex PlayerNamePattern();
 }
 

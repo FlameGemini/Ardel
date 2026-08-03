@@ -2,6 +2,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Input;
+using Microsoft.UI.Xaml.Media;
 using Microsoft.UI.Xaml.Media.Animation;
 using Microsoft.UI.Xaml.Navigation;
 using Windows.System;
@@ -115,6 +116,7 @@ public sealed partial class DownloadPage : Page
         {
             var index = ViewModel.SelectedSection switch
             {
+                DownloadSection.Minecraft => 0,
                 DownloadSection.Mod => 1,
                 DownloadSection.ResourcePack => 2,
                 DownloadSection.Datapack => 3,
@@ -153,38 +155,42 @@ public sealed partial class DownloadPage : Page
         section is DownloadSection.Mod or DownloadSection.ResourcePack or DownloadSection.Datapack
             or DownloadSection.ShaderPack or DownloadSection.Modpack;
 
+    private UIElement PaneFor(DownloadSection section) =>
+        IsCatalog(section) ? ModPane : MinecraftPane;
+
+    private TranslateTransform OffsetFor(DownloadSection section) =>
+        IsCatalog(section) ? ModPaneOffset : MinecraftPaneOffset;
+
     private void ApplySectionInstant(DownloadSection section)
     {
-        var showCatalog = IsCatalog(section);
-        MinecraftPane.Opacity = showCatalog ? 0 : 1;
-        MinecraftPane.Visibility = showCatalog ? Visibility.Collapsed : Visibility.Visible;
-        MinecraftPane.IsHitTestVisible = !showCatalog;
-        MinecraftPaneOffset.X = 0;
+        ApplyPane(MinecraftPane, MinecraftPaneOffset, section == DownloadSection.Minecraft);
+        ApplyPane(ModPane, ModPaneOffset, IsCatalog(section));
+    }
 
-        ModPane.Opacity = showCatalog ? 1 : 0;
-        ModPane.Visibility = showCatalog ? Visibility.Visible : Visibility.Collapsed;
-        ModPane.IsHitTestVisible = showCatalog;
-        ModPaneOffset.X = 0;
+    private static void ApplyPane(UIElement pane, TranslateTransform offset, bool show)
+    {
+        pane.Opacity = show ? 1 : 0;
+        pane.Visibility = show ? Visibility.Visible : Visibility.Collapsed;
+        pane.IsHitTestVisible = show;
+        offset.X = 0;
     }
 
     private void AnimateSectionSwitch(DownloadSection from, DownloadSection to)
     {
         StopSectionAnimation();
 
-        // Catalog sections share ModPane — only animate Minecraft <-> catalog.
-        if (IsCatalog(from) && IsCatalog(to))
+        if ((IsCatalog(from) && IsCatalog(to)) || from == to)
         {
             ApplySectionInstant(to);
             return;
         }
 
-        var showCatalog = IsCatalog(to);
-        var incoming = showCatalog ? ModPane : MinecraftPane;
-        var outgoing = showCatalog ? MinecraftPane : ModPane;
-        var incomingOffset = showCatalog ? ModPaneOffset : MinecraftPaneOffset;
-        var outgoingOffset = showCatalog ? MinecraftPaneOffset : ModPaneOffset;
-        var slideInFrom = showCatalog ? 18d : -18d;
-        var slideOutTo = showCatalog ? -12d : 12d;
+        var incoming = PaneFor(to);
+        var outgoing = PaneFor(from);
+        var incomingOffset = OffsetFor(to);
+        var outgoingOffset = OffsetFor(from);
+        var slideInFrom = 22d;
+        var slideOutTo = -14d;
 
         outgoing.IsHitTestVisible = false;
         incoming.Visibility = Visibility.Visible;
@@ -206,13 +212,7 @@ public sealed partial class DownloadPage : Page
         {
             if (generation != _sectionAnimGeneration)
                 return;
-
-            outgoing.Visibility = Visibility.Collapsed;
-            outgoing.Opacity = 0;
-            outgoingOffset.X = 0;
-            incoming.Opacity = 1;
-            incomingOffset.X = 0;
-            incoming.IsHitTestVisible = true;
+            ApplySectionInstant(to);
             _sectionStoryboard = null;
         };
 

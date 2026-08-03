@@ -59,6 +59,14 @@ public sealed class SettingsService
                     dirty = true;
                 }
 
+                // No invented default name — clear invalid / legacy CJK placeholders.
+                if (!string.IsNullOrEmpty(settings.PlayerName) &&
+                    Helpers.NameRules.ValidatePlayerName(settings.PlayerName) is not null)
+                {
+                    settings.PlayerName = string.Empty;
+                    dirty = true;
+                }
+
                 // Always force portable .minecraft next to the exe (ignore legacy AppData paths).
                 var portable = GamePaths.GetMinecraftRoot();
                 if (!PathsEqual(settings.GameDirectory, portable))
@@ -139,7 +147,7 @@ public sealed class SettingsService
         MaxRamMb = Math.Clamp(GetSuggestedRamMb(), 1024, 16384),
         UseBmclApi = false,
         UiLanguage = string.Empty,
-        PlayerName = Localization.Loc.Get(Localization.LocKeys.Default_PlayerName),
+        PlayerName = string.Empty,
         ForceVersionIsolation = true
     };
 

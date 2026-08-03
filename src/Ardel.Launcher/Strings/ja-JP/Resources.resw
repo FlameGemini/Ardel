@@ -215,7 +215,7 @@
   <data name="Validate_PlayerEmpty" xml:space="preserve"><value>プレイヤー名を空にできません。</value></data>
   <data name="Validate_PlayerQuote" xml:space="preserve"><value>プレイヤー名に引用符（&quot;）を含められません。</value></data>
   <data name="Validate_PlayerTooLong" xml:space="preserve"><value>プレイヤー名は 16 文字以下にしてください。</value></data>
-  <data name="Default_PlayerName" xml:space="preserve"><value>プレイヤー</value></data>
+  <data name="Default_PlayerName" xml:space="preserve"><value>Player</value></data>
   <data name="Action_Search" xml:space="preserve"><value>検索</value></data>
   <data name="Action_Reset" xml:space="preserve"><value>リセット</value></data>
   <data name="Mod_Keyword" xml:space="preserve"><value>キーワード</value></data>
@@ -339,4 +339,53 @@
   <data name="Modpack_HashMismatch" xml:space="preserve"><value>ダウンロードしたファイルのハッシュが一致しません。</value></data>
   <data name="Modpack_FileDownloadFailed" xml:space="preserve"><value>{0} 件のファイル取得に失敗。最初のエラー: {1}</value></data>
   <data name="Modpack_FileDownloadFailedGeneric" xml:space="preserve"><value>パックファイルをダウンロードできませんでした。</value></data>
+
+  <data name="Nav_Account" xml:space="preserve"><value>アカウント</value></data>
+  <data name="Nav_Skins" xml:space="preserve"><value>スキン</value></data>
+  <data name="Instances_StopAll" xml:space="preserve"><value>すべてのゲームを終了</value></data>
+  <data name="Instances_GamesStopped" xml:space="preserve"><value>すべてのゲームプロセスを終了しました</value></data>
+  <data name="Account_Title" xml:space="preserve"><value>アカウント</value></data>
+  <data name="Account_Subtitle" xml:space="preserve"><value>カードをタップしてサインイン。</value></data>
+  <data name="Account_PlayerName" xml:space="preserve"><value>プレイヤー名</value></data>
+  <data name="Account_PlayerNameHint" xml:space="preserve"><value>Steve_01</value></data>
+  <data name="Account_Saved" xml:space="preserve"><value>プレイヤー名を保存しました</value></data>
+  <data name="Account_Add" xml:space="preserve"><value>アカウントを追加</value></data>
+  <data name="Account_AddTitle" xml:space="preserve"><value>アカウントを追加</value></data>
+  <data name="Account_EditTitle" xml:space="preserve"><value>アカウントを編集</value></data>
+  <data name="Account_Edit" xml:space="preserve"><value>編集</value></data>
+  <data name="Account_Skin" xml:space="preserve"><value>スキン</value></data>
+  <data name="Account_SkinNone" xml:space="preserve"><value>スキン未選択</value></data>
+  <data name="Account_PickSkinTitle" xml:space="preserve"><value>スキンを選択</value></data>
+  <data name="Account_Empty" xml:space="preserve"><value>アカウントがありません - 先に追加してください</value></data>
+  <data name="Account_ActiveBadge" xml:space="preserve"><value>使用中</value></data>
+  <data name="Account_KindOffline" xml:space="preserve"><value>オフライン</value></data>
+  <data name="Account_KindMicrosoft" xml:space="preserve"><value>Microsoft</value></data>
+  <data name="Account_UuidLabel" xml:space="preserve"><value>UUID: {0}</value></data>
+  <data name="Account_MicrosoftPlaceholder" xml:space="preserve"><value>Microsoft サインインは今後の更新で提供予定です。</value></data>
+  <data name="Account_MicrosoftComingSoon" xml:space="preserve"><value>Microsoft アカウントはまだ利用できません。</value></data>
+  <data name="Account_LoggingIn" xml:space="preserve"><value>{0} でサインイン中...</value></data>
+  <data name="Account_LoginOffline" xml:space="preserve"><value>オフラインプロファイル切替中...</value></data>
+  <data name="Account_LoggedIn" xml:space="preserve"><value>{0} でサインインしました</value></data>
+  <data name="Account_LoginFailed" xml:space="preserve"><value>サインインに失敗しました: {0}</value></data>
+  <data name="Account_DeleteTitle" xml:space="preserve"><value>アカウントを削除</value></data>
+  <data name="Account_DeleteConfirm" xml:space="preserve"><value>「{0}」を削除しますか？元に戻せません。</value></data>
+  <data name="Account_NeedLogin" xml:space="preserve"><value>起動前にアカウントページでカードを選んでサインインしてください。</value></data>
+  <data name="Account_NeedSkin" xml:space="preserve"><value>先にこのアカウントのスキンを選んでください。</value></data>
+  <data name="Account_OpenSkinLibrary" xml:space="preserve"><value>スキンライブラリを開く</value></data>
+  <data name="Download_SectionSkins" xml:space="preserve"><value>スキン</value></data>
+  <data name="Skin_LibraryTitle" xml:space="preserve"><value>スキンライブラリ</value></data>
+  <data name="Skin_LibrarySubtitle" xml:space="preserve"><value>オフライン / Microsoft 用スキンを取り込み・プレビュー</value></data>
+  <data name="Skin_Add" xml:space="preserve"><value>スキンを追加</value></data>
+  <data name="Skin_AddTitle" xml:space="preserve"><value>スキンを追加</value></data>
+  <data name="Skin_Name" xml:space="preserve"><value>スキン名</value></data>
+  <data name="Skin_NamePlaceholder" xml:space="preserve"><value>ライブラリに表示する名前</value></data>
+  <data name="Skin_NameRequired" xml:space="preserve"><value>スキン名を入力してください。</value></data>
+  <data name="Skin_ArmModel" xml:space="preserve"><value>腕モデル</value></data>
+  <data name="Skin_ModelSteve" xml:space="preserve"><value>Steve（クラシック）</value></data>
+  <data name="Skin_ModelAlex" xml:space="preserve"><value>Alex（スリム）</value></data>
+  <data name="Skin_Import" xml:space="preserve"><value>PNG をインポート...</value></data>
+  <data name="Skin_ImportRequired" xml:space="preserve"><value>インポートするスキン PNG を選んでください。</value></data>
+  <data name="Skin_ImportFailed" xml:space="preserve"><value>スキンをインポートできませんでした: {0}</value></data>
+  <data name="Skin_Empty" xml:space="preserve"><value>スキンがありません — Steve / Alex は自動で用意されます</value></data>
+  <data name="Skin_Count" xml:space="preserve"><value>{0} 件のスキン</value></data>
 </root>

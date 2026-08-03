@@ -4,6 +4,7 @@ using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
+using Ardel.Launcher.Helpers;
 using Ardel.Launcher.Localization;
 using Ardel.Launcher.Models;
 using Ardel.Launcher.Services;
@@ -14,14 +15,17 @@ public partial class InstancesViewModel : ObservableObject
 {
     private readonly LaunchViewModel _launch;
     private readonly SettingsService _settingsService;
+    private readonly AccountStore _accounts;
     private XamlRoot? _xamlRoot;
 
     public InstancesViewModel(
         LaunchViewModel launch,
-        SettingsService settingsService)
+        SettingsService settingsService,
+        AccountStore accounts)
     {
         _launch = launch;
         _settingsService = settingsService;
+        _accounts = accounts;
     }
 
     /// <summary>Shared launch state (status / progress / cancel) for the page footer.</summary>
@@ -51,9 +55,10 @@ public partial class InstancesViewModel : ObservableObject
             IsEmpty = Instances.Count == 0;
             if (!_launch.IsLaunching)
             {
-                _launch.StatusText = Instances.Count > 0
-                    ? Loc.Get(LocKeys.Home_Ready)
-                    : Loc.Get(LocKeys.Home_GoDownload);
+                if (Instances.Count == 0)
+                    _launch.StatusText = Loc.Get(LocKeys.Home_GoDownload);
+                else
+                    _launch.StatusText = Loc.Get(LocKeys.Home_Ready);
             }
         }
         catch (Exception ex)
@@ -71,6 +76,34 @@ public partial class InstancesViewModel : ObservableObject
     {
         if (item is null || IsBusy || _launch.IsLaunching)
             return;
+
+        var accounts = _accounts;
+        if (accounts.GetActive() is null)
+        {
+            await ShowMessageAsync(
+                    Loc.Get(LocKeys.Instances_Title),
+                    Loc.Get(LocKeys.Account_NeedLogin))
+                .ConfigureAwait(true);
+            return;
+        }
+
+        var active = accounts.GetActive()!;
+        if (active.Kind != AccountKind.Offline)
+        {
+            await ShowMessageAsync(
+                    Loc.Get(LocKeys.Instances_Title),
+                    Loc.Get(LocKeys.Account_MicrosoftComingSoon))
+                .ConfigureAwait(true);
+            return;
+        }
+
+        var nameError = NameRules.ValidatePlayerName(active.DisplayName);
+        if (nameError is not null)
+        {
+            await ShowMessageAsync(Loc.Get(LocKeys.Instances_Title), nameError)
+                .ConfigureAwait(true);
+            return;
+        }
 
         IsBusy = true;
         try

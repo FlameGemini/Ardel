@@ -160,6 +160,21 @@ public partial class App : Application
                     Debug.WriteLine($"[App] Startup maintenance failed: {ex.Message}");
                 }
             });
+
+            // Seed Steve/Alex early so Account / Skin library never look empty on first open.
+            _ = Task.Run(async () =>
+            {
+                try
+                {
+                    await Services.GetRequiredService<SkinLibraryStore>()
+                        .EnsureReadyAsync()
+                        .ConfigureAwait(false);
+                }
+                catch (Exception ex)
+                {
+                    Debug.WriteLine($"[App] Skin seed failed: {ex.Message}");
+                }
+            });
         });
     }
 
@@ -173,9 +188,12 @@ public partial class App : Application
         services.AddSingleton<LocalVersionStore>();
         services.AddSingleton(sp => new Lazy<IMinecraftLaunchService>(
             () => MinecraftLaunchServiceFactory.Create(sp.GetRequiredService<SettingsService>())));
+        services.AddSingleton<AccountStore>();
+        services.AddSingleton<SkinLibraryStore>();
         services.AddSingleton<LaunchViewModel>();
         services.AddSingleton<DownloadViewModel>();
         services.AddTransient<SettingsViewModel>();
+        services.AddTransient<AccountViewModel>();
         services.AddTransient<InstancesViewModel>();
 
         return services.BuildServiceProvider();
