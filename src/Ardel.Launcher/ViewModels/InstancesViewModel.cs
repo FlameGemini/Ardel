@@ -1,4 +1,5 @@
 using System.Collections.ObjectModel;
+using System.Collections.Specialized;
 using System.Diagnostics;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
@@ -14,24 +15,24 @@ namespace Ardel.Launcher.ViewModels;
 public partial class InstancesViewModel : ObservableObject
 {
     private readonly LaunchViewModel _launch;
-    private readonly SettingsService _settingsService;
     private readonly AccountStore _accounts;
     private XamlRoot? _xamlRoot;
 
     public InstancesViewModel(
         LaunchViewModel launch,
-        SettingsService settingsService,
         AccountStore accounts)
     {
         _launch = launch;
-        _settingsService = settingsService;
         _accounts = accounts;
+        _launch.Versions.CollectionChanged += OnVersionsChanged;
+        SyncFromLaunch();
     }
 
     /// <summary>Shared launch state (status / progress / cancel) for the page footer.</summary>
     public LaunchViewModel Launch => _launch;
 
-    public ObservableCollection<GameVersionItem> Instances { get; } = [];
+    /// <summary>Live list — same collection as <see cref="LaunchViewModel.Versions"/>.</summary>
+    public ObservableCollection<GameVersionItem> Instances => _launch.Versions;
 
     [ObservableProperty] private bool _isEmpty = true;
     [ObservableProperty] private bool _isBusy;
@@ -48,18 +49,7 @@ public partial class InstancesViewModel : ObservableObject
         try
         {
             await _launch.LoadLocalVersionsAsync().ConfigureAwait(true);
-            Instances.Clear();
-            foreach (var item in _launch.Versions)
-                Instances.Add(item);
-
-            IsEmpty = Instances.Count == 0;
-            if (!_launch.IsLaunching)
-            {
-                if (Instances.Count == 0)
-                    _launch.StatusText = Loc.Get(LocKeys.Home_GoDownload);
-                else
-                    _launch.StatusText = Loc.Get(LocKeys.Home_Ready);
-            }
+            SyncFromLaunch();
         }
         catch (Exception ex)
         {
@@ -124,91 +114,18 @@ public partial class InstancesViewModel : ObservableObject
         }
     }
 
-    [RelayCommand]
-    private async Task OpenSettings(GameVersionItem? item)
+    private void OnVersionsChanged(object? sender, NotifyCollectionChangedEventArgs e) =>
+        SyncFromLaunch();
+
+    private void SyncFromLaunch()
     {
-        if (item is null)
+        IsEmpty = _launch.Versions.Count == 0;
+        if (_launch.IsLaunching || _launch.IsGameRunning)
             return;
 
-        try
-        {
-            var settings = _settingsService.Load();
-            var dir = GamePaths.GetVersionInstanceDirectory(item.Id, settings.GameDirectory);
-            Directory.CreateDirectory(dir);
-            Process.Start(new ProcessStartInfo
-            {
-                FileName = "explorer.exe",
-                Arguments = dir,
-                UseShellExecute = true
-            });
-        }
-        catch (Exception ex)
-        {
-            await ShowMessageAsync(
-                    Loc.Get(LocKeys.Instances_Title),
-                    Loc.Format(LocKeys.Download_CannotOpenFolder, ex.Message))
-                .ConfigureAwait(true);
-        }
-    }
-
-    [RelayCommand]
-    private async Task DeleteAsync(GameVersionItem? item)
-    {
-        if (item is null || IsBusy)
-            return;
-
-        var root = _xamlRoot;
-        if (root is null)
-        {
-            await ShowMessageAsync(
-                    Loc.Get(LocKeys.Instances_Title),
-                    Loc.Get(LocKeys.Instances_DeleteNoUi))
-                .ConfigureAwait(true);
-            return;
-        }
-
-        var confirm = new ContentDialog
-        {
-            XamlRoot = root,
-            Title = Loc.Get(LocKeys.Instances_DeleteTitle),
-            Content = Loc.Format(LocKeys.Instances_DeleteConfirm, item.Id),
-            PrimaryButtonText = Loc.Get(LocKeys.Action_Delete),
-            CloseButtonText = Loc.Get(LocKeys.Action_Cancel),
-            DefaultButton = ContentDialogButton.Close
-        };
-
-        if (await confirm.ShowAsync() != ContentDialogResult.Primary)
-            return;
-
-        IsBusy = true;
-        try
-        {
-            var settings = _settingsService.Load();
-            await GamePaths
-                .DeleteInstalledVersionAsync(item.Id, settings.GameDirectory)
-                .ConfigureAwait(true);
-
-            if (_launch.SelectedVersion is not null &&
-                string.Equals(_launch.SelectedVersion.Id, item.Id, StringComparison.OrdinalIgnoreCase))
-            {
-                _launch.SelectedVersion = null;
-            }
-
-            await RefreshAsync().ConfigureAwait(true);
-        }
-        catch (Exception ex)
-        {
-            Debug.WriteLine(ex);
-            await ShowMessageAsync(
-                    Loc.Get(LocKeys.Instances_DeleteTitle),
-                    Loc.Format(LocKeys.Instances_DeleteFailed, item.Id, ex.Message))
-                .ConfigureAwait(true);
-            await RefreshAsync().ConfigureAwait(true);
-        }
-        finally
-        {
-            IsBusy = false;
-        }
+        _launch.StatusText = IsEmpty
+            ? Loc.Get(LocKeys.Home_GoDownload)
+            : Loc.Get(LocKeys.Home_Ready);
     }
 
     private async Task ShowMessageAsync(string title, string message)

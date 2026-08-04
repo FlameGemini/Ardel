@@ -1,6 +1,7 @@
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Media.Animation;
 using Microsoft.UI.Xaml.Navigation;
 using Ardel.Launcher.Models;
 using Ardel.Launcher.ViewModels;
@@ -32,15 +33,17 @@ public sealed partial class InstancesPage : Page
             ViewModel.LaunchCommand.Execute(item);
     }
 
-    private void OpenFolderButton_Click(object sender, RoutedEventArgs e)
+    private void OpenSettingsButton_Click(object sender, RoutedEventArgs e)
     {
         if (sender is FrameworkElement { Tag: GameVersionItem item })
-            ViewModel.OpenSettingsCommand.Execute(item);
-    }
-
-    private void DeleteButton_Click(object sender, RoutedEventArgs e)
-    {
-        if (sender is FrameworkElement { Tag: GameVersionItem item })
-            ViewModel.DeleteCommand.Execute(item);
+        {
+            Frame.Navigate(
+                typeof(InstanceSettingsPage),
+                item.Id,
+                new SlideNavigationTransitionInfo
+                {
+                    Effect = SlideNavigationTransitionEffect.FromRight
+                });
+        }
     }
 }

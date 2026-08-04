@@ -1,5 +1,7 @@
 using System.Diagnostics;
+using Ardel.Launcher.Helpers;
 using Ardel.Launcher.Localization;
+using Ardel.Launcher.Models;
 
 namespace Ardel.Launcher.Services;
 
@@ -313,17 +315,184 @@ public static class GamePaths
     }
 
     /// <summary>
-    /// Delete a user-installed version/instance (quarantine then remove).
+    /// Delete a user-installed version/instance (quarantine then remove),
+    /// then drop orphan dependency parents and sweep leftover <c>_trash_*</c> folders.
     /// </summary>
-    public static Task DeleteInstalledVersionAsync(
+    public static async Task DeleteInstalledVersionAsync(
         string versionId,
         string? minecraftRoot = null,
         CancellationToken cancellationToken = default)
     {
         if (string.IsNullOrWhiteSpace(versionId))
-            return Task.CompletedTask;
+            return;
 
-        return QuarantineAndDeleteVersionAsync(versionId.Trim(), minecraftRoot, cancellationToken);
+        var id = versionId.Trim();
+        var orphanParents = CollectInheritsChain(id, minecraftRoot);
+
+        await QuarantineAndDeleteVersionAsync(id, minecraftRoot, cancellationToken)
+            .ConfigureAwait(false);
+
+        foreach (var parent in orphanParents)
+        {
+            cancellationToken.ThrowIfCancellationRequested();
+            if (!ShouldRemoveOrphanDependency(parent, minecraftRoot))
+                continue;
+
+            try
+            {
+                await QuarantineAndDeleteVersionAsync(parent, minecraftRoot, cancellationToken)
+                    .ConfigureAwait(false);
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine($"[GamePaths] Orphan dependency purge '{parent}' failed: {ex.Message}");
+            }
+        }
+
+        PurgeIncompleteAndTrash(minecraftRoot);
+        ScheduleDeleteRetrySweep(id, orphanParents, minecraftRoot);
+    }
+
+    /// <summary>Parents in the <c>inheritsFrom</c> chain (nearest first), excluding <paramref name="versionId"/>.</summary>
+    private static List<string> CollectInheritsChain(string versionId, string? minecraftRoot)
+    {
+        var chain = new List<string>();
+        var visited = new HashSet<string>(StringComparer.OrdinalIgnoreCase) { versionId };
+        var current = versionId;
+
+        while (true)
+        {
+            var parent = TryGetInheritsFrom(current, minecraftRoot);
+            if (string.IsNullOrWhiteSpace(parent) || !visited.Add(parent))
+                break;
+
+            chain.Add(parent);
+            current = parent;
+        }
+
+        return chain;
+    }
+
+    /// <summary>
+    /// Dependency-only (or legacy hidden vanilla parent) that nothing remaining still inherits from.
+    /// Never removes an explicit user instance.
+    /// </summary>
+    private static bool ShouldRemoveOrphanDependency(string versionId, string? minecraftRoot)
+    {
+        if (string.IsNullOrWhiteSpace(versionId))
+            return false;
+
+        if (!VersionFolderExists(versionId, minecraftRoot))
+            return false;
+
+        if (IsUserInstance(versionId, minecraftRoot))
+            return false;
+
+        if (IsReferencedByAnyInstalledVersion(versionId, minecraftRoot))
+            return false;
+
+        if (IsDependencyOnly(versionId, minecraftRoot))
+            return true;
+
+        // Legacy vanilla parent with no markers: safe to drop when unreferenced.
+        var kind = VersionKindDetector.Detect(versionId, minecraftRoot);
+        return kind == VersionKind.Vanilla;
+    }
+
+    private static bool IsReferencedByAnyInstalledVersion(string versionId, string? minecraftRoot)
+    {
+        foreach (var other in ListVersionFolderNames(minecraftRoot))
+        {
+            if (string.Equals(other, versionId, StringComparison.OrdinalIgnoreCase))
+                continue;
+
+            var current = other;
+            var visited = new HashSet<string>(StringComparer.OrdinalIgnoreCase) { other };
+            while (true)
+            {
+                var parent = TryGetInheritsFrom(current, minecraftRoot);
+                if (string.IsNullOrWhiteSpace(parent))
+                    break;
+
+                if (string.Equals(parent, versionId, StringComparison.OrdinalIgnoreCase))
+                    return true;
+
+                if (!visited.Add(parent))
+                    break;
+
+                current = parent;
+            }
+        }
+
+        return false;
+    }
+
+    private static void ScheduleDeleteRetrySweep(
+        string primaryId,
+        IReadOnlyList<string> orphanParents,
+        string? minecraftRoot)
+    {
+        var ids = new List<string> { primaryId };
+        ids.AddRange(orphanParents);
+
+        _ = Task.Run(async () =>
+        {
+            try
+            {
+                foreach (var delayMs in new[] { 400, 1200, 3000, 7000, 15000 })
+                {
+                    await Task.Delay(delayMs).ConfigureAwait(false);
+
+                    foreach (var id in ids)
+                    {
+                        try
+                        {
+                            if (VersionFolderExists(id, minecraftRoot))
+                            {
+                                if (string.Equals(id, primaryId, StringComparison.OrdinalIgnoreCase) ||
+                                    ShouldRemoveOrphanDependency(id, minecraftRoot))
+                                {
+                                    await QuarantineAndDeleteVersionAsync(id, minecraftRoot)
+                                        .ConfigureAwait(false);
+                                }
+                            }
+                            else
+                            {
+                                DeleteMatchingTrash(GetVersionsRoot(minecraftRoot), id);
+                            }
+                        }
+                        catch (Exception ex)
+                        {
+                            Debug.WriteLine($"[GamePaths] Delete retry '{id}': {ex.Message}");
+                        }
+                    }
+
+                    PurgeIncompleteAndTrash(minecraftRoot);
+
+                    var pending = ids.Any(id =>
+                        VersionFolderExists(id, minecraftRoot) ||
+                        HasMatchingTrash(GetVersionsRoot(minecraftRoot), id));
+                    if (!pending)
+                        return;
+                }
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine($"[GamePaths] Delete retry sweep failed: {ex}");
+            }
+        });
+    }
+
+    private static bool HasMatchingTrash(string versionsRoot, string versionId)
+    {
+        if (!Directory.Exists(versionsRoot))
+            return false;
+
+        var prefix = TrashPrefix + versionId + "_";
+        return Directory.EnumerateDirectories(versionsRoot)
+            .Select(Path.GetFileName)
+            .Any(name => name is not null &&
+                         name.StartsWith(prefix, StringComparison.OrdinalIgnoreCase));
     }
 
     /// <summary>
@@ -475,6 +644,142 @@ public static class GamePaths
 
         RenameVersionFiles(targetDir, sourceId, targetId);
         PatchVersionJsonId(Path.Combine(targetDir, targetId + ".json"), targetId);
+    }
+
+    /// <summary>
+    /// Rename a user instance folder in place (json/jar ids + sibling <c>inheritsFrom</c> references).
+    /// </summary>
+    public static void RenameVersion(string sourceId, string targetId, string? minecraftRoot = null)
+    {
+        ArgumentException.ThrowIfNullOrWhiteSpace(sourceId);
+        ArgumentException.ThrowIfNullOrWhiteSpace(targetId);
+
+        var from = sourceId.Trim();
+        var to = targetId.Trim();
+        if (string.Equals(from, to, StringComparison.OrdinalIgnoreCase))
+            return;
+
+        PublishVersionAs(from, to, copy: false, minecraftRoot);
+        PatchInheritsFromReferences(from, to, minecraftRoot);
+    }
+
+    /// <summary>
+    /// Copy an instance folder to a new unique id, mark it as a user instance, ensure isolation folders.
+    /// </summary>
+    public static string DuplicateVersion(string sourceId, string? minecraftRoot = null)
+    {
+        ArgumentException.ThrowIfNullOrWhiteSpace(sourceId);
+
+        var from = sourceId.Trim();
+        var versionsRoot = GetVersionsRoot(minecraftRoot);
+        var targetId = SuggestDuplicateId(from, versionsRoot);
+        var error = NameRules.ValidateVersionName(targetId, versionsRoot);
+        if (error is not null)
+            throw new InvalidOperationException(error);
+
+        PublishVersionAs(from, targetId, copy: true, minecraftRoot);
+        MarkAsUserInstance(targetId, minecraftRoot);
+        EnsureVersionIsolation(targetId, minecraftRoot);
+        return targetId;
+    }
+
+    /// <summary>Zip the version instance folder (profile + isolated data) to <paramref name="zipPath"/>.</summary>
+    public static void ExportVersionZip(string versionId, string zipPath, string? minecraftRoot = null)
+    {
+        ArgumentException.ThrowIfNullOrWhiteSpace(versionId);
+        ArgumentException.ThrowIfNullOrWhiteSpace(zipPath);
+
+        var sourceDir = Path.Combine(GetVersionsRoot(minecraftRoot), versionId.Trim());
+        if (!Directory.Exists(sourceDir))
+            throw new DirectoryNotFoundException(Loc.Format(LocKeys.Error_VersionFolderNotFound, versionId));
+
+        var destDir = Path.GetDirectoryName(zipPath);
+        if (!string.IsNullOrWhiteSpace(destDir))
+            Directory.CreateDirectory(destDir);
+
+        if (File.Exists(zipPath))
+            File.Delete(zipPath);
+
+        System.IO.Compression.ZipFile.CreateFromDirectory(
+            sourceDir,
+            zipPath,
+            System.IO.Compression.CompressionLevel.Optimal,
+            includeBaseDirectory: false);
+    }
+
+    public static string SuggestDuplicateId(string sourceId, string versionsRoot)
+    {
+        var baseName = sourceId.Trim();
+        var candidate = baseName + "-copy";
+        var n = 2;
+        while (Directory.Exists(Path.Combine(versionsRoot, candidate)))
+        {
+            candidate = $"{baseName}-copy-{n}";
+            n++;
+            if (n > 9999)
+                throw new IOException(Loc.Format(LocKeys.Error_VersionAlreadyExists, candidate));
+        }
+
+        return candidate;
+    }
+
+    /// <summary>Rewrite <c>inheritsFrom</c> when a parent profile was renamed.</summary>
+    private static void PatchInheritsFromReferences(
+        string oldId,
+        string newId,
+        string? minecraftRoot)
+    {
+        var versionsRoot = GetVersionsRoot(minecraftRoot);
+        if (!Directory.Exists(versionsRoot))
+            return;
+
+        foreach (var dir in Directory.EnumerateDirectories(versionsRoot))
+        {
+            var id = Path.GetFileName(dir);
+            if (string.IsNullOrEmpty(id) ||
+                id.StartsWith(TrashPrefix, StringComparison.OrdinalIgnoreCase) ||
+                string.Equals(id, newId, StringComparison.OrdinalIgnoreCase))
+                continue;
+
+            var jsonPath = Path.Combine(dir, id + ".json");
+            if (!File.Exists(jsonPath))
+                continue;
+
+            try
+            {
+                var text = File.ReadAllText(jsonPath);
+                using var doc = System.Text.Json.JsonDocument.Parse(text);
+                if (!doc.RootElement.TryGetProperty("inheritsFrom", out var prop) ||
+                    prop.ValueKind != System.Text.Json.JsonValueKind.String)
+                    continue;
+
+                var current = prop.GetString();
+                if (!string.Equals(current, oldId, StringComparison.OrdinalIgnoreCase))
+                    continue;
+
+                using var stream = File.Create(jsonPath);
+                using var writer = new System.Text.Json.Utf8JsonWriter(
+                    stream,
+                    new System.Text.Json.JsonWriterOptions { Indented = true });
+                writer.WriteStartObject();
+                foreach (var p in doc.RootElement.EnumerateObject())
+                {
+                    if (p.NameEquals("inheritsFrom"))
+                    {
+                        writer.WriteString("inheritsFrom", newId);
+                        continue;
+                    }
+
+                    p.WriteTo(writer);
+                }
+
+                writer.WriteEndObject();
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine($"[GamePaths] Patch inheritsFrom in '{id}' failed: {ex.Message}");
+            }
+        }
     }
 
     private static void CopyDirectory(string sourceDir, string targetDir)
@@ -692,19 +997,31 @@ public static class GamePaths
         if (!Directory.Exists(dir))
             return;
 
+        ClearReadOnlyAttributes(dir);
+
+        // Prefer a single recursive delete when the tree is unlocked.
+        try
+        {
+            Directory.Delete(dir, recursive: true);
+            return;
+        }
+        catch (Exception ex)
+        {
+            Debug.WriteLine($"[GamePaths] Recursive delete failed for '{dir}': {ex.Message}");
+        }
+
         foreach (var path in Directory.EnumerateFileSystemEntries(dir, "*", SearchOption.AllDirectories)
                      .OrderByDescending(p => p.Length))
         {
             try
             {
-                var attrs = File.GetAttributes(path);
-                if ((attrs & FileAttributes.ReadOnly) != 0)
-                    File.SetAttributes(path, attrs & ~FileAttributes.ReadOnly);
+                ClearReadOnlyAttribute(path);
 
-                if ((attrs & FileAttributes.Directory) != 0)
+                if (Directory.Exists(path))
                     continue;
 
-                File.Delete(path);
+                if (File.Exists(path))
+                    File.Delete(path);
             }
             catch
             {
@@ -717,6 +1034,7 @@ public static class GamePaths
         {
             try
             {
+                ClearReadOnlyAttribute(sub);
                 Directory.Delete(sub, recursive: true);
             }
             catch
@@ -725,7 +1043,47 @@ public static class GamePaths
             }
         }
 
-        Directory.Delete(dir, recursive: true);
+        try
+        {
+            ClearReadOnlyAttribute(dir);
+            Directory.Delete(dir, recursive: true);
+        }
+        catch (Exception ex)
+        {
+            Debug.WriteLine($"[GamePaths] Final delete failed for '{dir}': {ex.Message}");
+            throw;
+        }
+    }
+
+    private static void ClearReadOnlyAttributes(string root)
+    {
+        try
+        {
+            ClearReadOnlyAttribute(root);
+            if (!Directory.Exists(root))
+                return;
+
+            foreach (var path in Directory.EnumerateFileSystemEntries(root, "*", SearchOption.AllDirectories))
+                ClearReadOnlyAttribute(path);
+        }
+        catch (Exception ex)
+        {
+            Debug.WriteLine($"[GamePaths] ClearReadOnly failed for '{root}': {ex.Message}");
+        }
+    }
+
+    private static void ClearReadOnlyAttribute(string path)
+    {
+        try
+        {
+            var attrs = File.GetAttributes(path);
+            if ((attrs & FileAttributes.ReadOnly) != 0)
+                File.SetAttributes(path, attrs & ~FileAttributes.ReadOnly);
+        }
+        catch
+        {
+            // ignore
+        }
     }
 
     private static string? FindRepoRoot(string startDirectory)

@@ -1,0 +1,400 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Page
+    x:Class="Ardel.Launcher.Views.InstanceSettingsPage"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:models="using:Ardel.Launcher.Models"
+    xmlns:loc="using:Ardel.Launcher.Localization"
+    NavigationCacheMode="Disabled">
+
+    <Grid Padding="40,24,40,20" RowSpacing="12">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" />
+            <RowDefinition Height="Auto" />
+        </Grid.RowDefinitions>
+
+        <!-- Header -->
+        <Grid ColumnSpacing="12">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="Auto" />
+                <ColumnDefinition Width="Auto" />
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="Auto" />
+            </Grid.ColumnDefinitions>
+            <Button
+                Click="BackButton_Click"
+                Width="40"
+                Height="40"
+                Padding="0"
+                VerticalAlignment="Center"
+                ToolTipService.ToolTip="{loc:String Key=Action_Back}">
+                <FontIcon Glyph="&#xE72B;" FontSize="14" />
+            </Button>
+
+            <Border
+                Grid.Column="1"
+                Width="48"
+                Height="48"
+                CornerRadius="8"
+                VerticalAlignment="Center"
+                Background="{ThemeResource SubtleFillColorSecondaryBrush}">
+                <Grid>
+                    <FontIcon
+                        Glyph="&#xE7FC;"
+                        FontSize="20"
+                        Opacity="0.45"
+                        HorizontalAlignment="Center"
+                        VerticalAlignment="Center"
+                        Visibility="{x:Bind ViewModel.HasCustomIcon, Mode=OneWay, Converter={StaticResource InverseBoolToVisibility}}" />
+                    <Image
+                        Source="{x:Bind ViewModel.IconImage, Mode=OneWay}"
+                        Stretch="UniformToFill"
+                        Visibility="{x:Bind ViewModel.HasCustomIcon, Mode=OneWay, Converter={StaticResource BoolToVisibility}}" />
+                </Grid>
+            </Border>
+
+            <StackPanel Grid.Column="2" Spacing="2" VerticalAlignment="Center">
+                <TextBlock
+                    Text="{x:Bind ViewModel.VersionIdDisplay, Mode=OneWay}"
+                    FontSize="24"
+                    FontWeight="SemiBold"
+                    TextTrimming="CharacterEllipsis" />
+                <TextBlock
+                    Text="{x:Bind ViewModel.InfoSummary, Mode=OneWay}"
+                    FontSize="13"
+                    Opacity="0.55"
+                    TextTrimming="CharacterEllipsis" />
+            </StackPanel>
+
+            <Button
+                Grid.Column="3"
+                Content="{loc:String Key=Action_Launch}"
+                Style="{StaticResource AccentButtonStyle}"
+                MinHeight="40"
+                Padding="20,0"
+                VerticalAlignment="Center"
+                Command="{x:Bind ViewModel.LaunchCommand}"
+                IsEnabled="{x:Bind ViewModel.CanLaunch, Mode=OneWay}" />
+        </Grid>
+
+        <Pivot
+            x:Name="SettingsPivot"
+            Grid.Row="1"
+            SelectedIndex="{x:Bind ViewModel.SelectedTabIndex, Mode=TwoWay}">
+
+            <!-- Overview -->
+            <PivotItem Header="{loc:String Key=InstanceSettings_NavOverview}">
+                <ScrollViewer VerticalScrollBarVisibility="Auto" Padding="0,16,8,8">
+                    <StackPanel HorizontalAlignment="Stretch" Spacing="22">
+                        <StackPanel Spacing="8">
+                            <TextBlock Text="{loc:String Key=InstanceSettings_Icon}" Style="{StaticResource BodyStrongTextBlockStyle}" />
+                            <StackPanel Orientation="Horizontal" Spacing="8">
+                                <Button Content="{loc:String Key=InstanceSettings_IconChange}" Command="{x:Bind ViewModel.BrowseIconCommand}" />
+                                <Button
+                                    Content="{loc:String Key=InstanceSettings_IconClear}"
+                                    Command="{x:Bind ViewModel.ClearIconCommand}"
+                                    IsEnabled="{x:Bind ViewModel.HasCustomIcon, Mode=OneWay}" />
+                            </StackPanel>
+                        </StackPanel>
+
+                        <StackPanel Spacing="8">
+                            <TextBlock Text="{loc:String Key=InstanceSettings_Name}" Style="{StaticResource BodyStrongTextBlockStyle}" />
+                            <Grid ColumnSpacing="8">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*" />
+                                    <ColumnDefinition Width="Auto" />
+                                </Grid.ColumnDefinitions>
+                                <TextBox
+                                    Text="{x:Bind ViewModel.EditName, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                                    MaxLength="100" />
+                                <Button
+                                    Grid.Column="1"
+                                    Content="{loc:String Key=InstanceSettings_Rename}"
+                                    Command="{x:Bind ViewModel.RenameCommand}"
+                                    IsEnabled="{x:Bind ViewModel.CanRename, Mode=OneWay}" />
+                            </Grid>
+                        </StackPanel>
+
+                        <StackPanel Spacing="8">
+                            <TextBlock Text="{loc:String Key=InstanceSettings_Notes}" Style="{StaticResource BodyStrongTextBlockStyle}" />
+                            <TextBox
+                                Text="{x:Bind ViewModel.Notes, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                                PlaceholderText="{loc:String Key=InstanceSettings_NotesPlaceholder}"
+                                AcceptsReturn="True"
+                                TextWrapping="Wrap"
+                                MinHeight="72" />
+                        </StackPanel>
+
+                        <StackPanel Spacing="10">
+                            <TextBlock Text="{loc:String Key=InstanceSettings_Folders}" Style="{StaticResource BodyStrongTextBlockStyle}" />
+                            <TextBlock
+                                Text="{loc:String Key=InstanceSettings_IsolationHint}"
+                                FontSize="12"
+                                Opacity="0.55"
+                                TextWrapping="Wrap" />
+                            <StackPanel Orientation="Horizontal" Spacing="8">
+                                <Button Content="{loc:String Key=InstanceSettings_OpenFolder}" Command="{x:Bind ViewModel.OpenInstanceFolderCommand}" />
+                                <Button Content="{loc:String Key=InstanceSettings_CopyPath}" Command="{x:Bind ViewModel.CopyPathCommand}" />
+                            </StackPanel>
+                            <Grid ColumnSpacing="8" RowSpacing="8">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*" />
+                                    <ColumnDefinition Width="*" />
+                                    <ColumnDefinition Width="*" />
+                                    <ColumnDefinition Width="*" />
+                                </Grid.ColumnDefinitions>
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="Auto" />
+                                    <RowDefinition Height="Auto" />
+                                </Grid.RowDefinitions>
+                                <Button Content="{loc:String Key=InstanceSettings_FolderMods}" HorizontalAlignment="Stretch" Command="{x:Bind ViewModel.OpenModsFolderCommand}" />
+                                <Button Grid.Column="1" Content="{loc:String Key=InstanceSettings_FolderSaves}" HorizontalAlignment="Stretch" Command="{x:Bind ViewModel.OpenSavesFolderCommand}" />
+                                <Button Grid.Column="2" Content="{loc:String Key=InstanceSettings_FolderConfig}" HorizontalAlignment="Stretch" Command="{x:Bind ViewModel.OpenConfigFolderCommand}" />
+                                <Button Grid.Column="3" Content="{loc:String Key=InstanceSettings_FolderResourcepacks}" HorizontalAlignment="Stretch" Command="{x:Bind ViewModel.OpenResourcepacksFolderCommand}" />
+                                <Button Grid.Row="1" Content="{loc:String Key=InstanceSettings_FolderShaderpacks}" HorizontalAlignment="Stretch" Command="{x:Bind ViewModel.OpenShaderpacksFolderCommand}" />
+                                <Button Grid.Row="1" Grid.Column="1" Content="{loc:String Key=InstanceSettings_FolderDatapacks}" HorizontalAlignment="Stretch" Command="{x:Bind ViewModel.OpenDatapacksFolderCommand}" />
+                                <Button Grid.Row="1" Grid.Column="2" Content="{loc:String Key=InstanceSettings_FolderScreenshots}" HorizontalAlignment="Stretch" Command="{x:Bind ViewModel.OpenScreenshotsFolderCommand}" />
+                                <Button Grid.Row="1" Grid.Column="3" Content="{loc:String Key=InstanceSettings_FolderLogs}" HorizontalAlignment="Stretch" Command="{x:Bind ViewModel.OpenLogsFolderCommand}" />
+                            </Grid>
+                        </StackPanel>
+                    </StackPanel>
+                </ScrollViewer>
+            </PivotItem>
+
+            <!-- Runtime -->
+            <PivotItem Header="{loc:String Key=InstanceSettings_NavRuntime}">
+                <ScrollViewer VerticalScrollBarVisibility="Auto" Padding="0,16,8,8">
+                    <StackPanel HorizontalAlignment="Stretch" Spacing="28">
+                        <StackPanel Spacing="10">
+                            <Grid>
+                                <TextBlock Text="{loc:String Key=Settings_Java}" Style="{StaticResource BodyStrongTextBlockStyle}" VerticalAlignment="Center" />
+                                <ToggleSwitch
+                                    HorizontalAlignment="Right"
+                                    OffContent="{loc:String Key=InstanceSettings_FollowGlobal}"
+                                    OnContent="{loc:String Key=InstanceSettings_Custom}"
+                                    IsOn="{x:Bind ViewModel.OverrideJava, Mode=TwoWay}" />
+                            </Grid>
+                            <TextBlock
+                                Text="{x:Bind ViewModel.JavaVersionHint, Mode=OneWay}"
+                                FontSize="12"
+                                Opacity="0.55"
+                                TextWrapping="Wrap"
+                                Visibility="{x:Bind ViewModel.OverrideJava, Mode=OneWay, Converter={StaticResource InverseBoolToVisibility}}" />
+                            <StackPanel
+                                Spacing="8"
+                                Visibility="{x:Bind ViewModel.OverrideJava, Mode=OneWay, Converter={StaticResource BoolToVisibility}}">
+                                <ComboBox
+                                    HorizontalAlignment="Stretch"
+                                    PlaceholderText="{loc:String Key=Settings_JavaPlaceholder}"
+                                    ItemsSource="{x:Bind ViewModel.JavaInstallations, Mode=OneWay}"
+                                    SelectedValuePath="JavaExePath"
+                                    SelectedValue="{x:Bind ViewModel.JavaPath, Mode=TwoWay}"
+                                    IsEnabled="{x:Bind ViewModel.CanEditJava, Mode=OneWay}">
+                                    <ComboBox.ItemTemplate>
+                                        <DataTemplate x:DataType="models:JavaInstallation">
+                                            <TextBlock Text="{x:Bind DisplayName}" />
+                                        </DataTemplate>
+                                    </ComboBox.ItemTemplate>
+                                </ComboBox>
+                                <TextBlock Text="{x:Bind ViewModel.JavaVersionHint, Mode=OneWay}" FontSize="12" Opacity="0.55" TextWrapping="Wrap" />
+                                <StackPanel Orientation="Horizontal" Spacing="8">
+                                    <Button Content="{loc:String Key=Action_Rescan}" Command="{x:Bind ViewModel.RescanJavaCommand}" IsEnabled="{x:Bind ViewModel.CanEditJava, Mode=OneWay}" />
+                                    <Button Content="{loc:String Key=Action_Browse}" Command="{x:Bind ViewModel.BrowseJavaCommand}" />
+                                </StackPanel>
+                            </StackPanel>
+                        </StackPanel>
+
+                        <StackPanel Spacing="8">
+                            <Grid>
+                                <TextBlock Text="{loc:String Key=Settings_MaxMemory}" Style="{StaticResource BodyStrongTextBlockStyle}" VerticalAlignment="Center" />
+                                <ToggleSwitch
+                                    HorizontalAlignment="Right"
+                                    OffContent="{loc:String Key=InstanceSettings_FollowGlobal}"
+                                    OnContent="{loc:String Key=InstanceSettings_Custom}"
+                                    IsOn="{x:Bind ViewModel.OverrideMemory, Mode=TwoWay}" />
+                            </Grid>
+                            <TextBlock
+                                FontSize="12"
+                                Opacity="0.55"
+                                Visibility="{x:Bind ViewModel.OverrideMemory, Mode=OneWay, Converter={StaticResource InverseBoolToVisibility}}">
+                                <Run Text="{loc:String Key=InstanceSettings_GlobalMemoryHint}" />
+                                <Run Text=" " />
+                                <Run Text="{x:Bind ViewModel.GlobalMaxRamMb, Mode=OneWay}" />
+                                <Run Text="{loc:String Key=Settings_MemoryUnitMb}" />
+                            </TextBlock>
+                            <StackPanel
+                                Spacing="12"
+                                Visibility="{x:Bind ViewModel.OverrideMemory, Mode=OneWay, Converter={StaticResource BoolToVisibility}}">
+                                <StackPanel Spacing="4">
+                                    <Grid>
+                                        <TextBlock Text="{loc:String Key=InstanceSettings_MaxMemory}" Opacity="0.75" />
+                                        <TextBlock HorizontalAlignment="Right" Opacity="0.75">
+                                            <Run Text="{x:Bind ViewModel.MaxRamMb, Mode=OneWay}" />
+                                            <Run Text="{loc:String Key=Settings_MemoryUnitMb}" />
+                                        </TextBlock>
+                                    </Grid>
+                                    <Slider Minimum="1024" Maximum="16384" StepFrequency="256" Value="{x:Bind ViewModel.MaxRamMb, Mode=TwoWay}" />
+                                </StackPanel>
+                                <StackPanel Spacing="4">
+                                    <Grid>
+                                        <TextBlock Text="{loc:String Key=InstanceSettings_MinMemory}" Opacity="0.75" />
+                                        <TextBlock HorizontalAlignment="Right" Opacity="0.75">
+                                            <Run Text="{x:Bind ViewModel.MinRamMb, Mode=OneWay}" />
+                                            <Run Text="{loc:String Key=Settings_MemoryUnitMb}" />
+                                        </TextBlock>
+                                    </Grid>
+                                    <Slider Minimum="512" Maximum="8192" StepFrequency="256" Value="{x:Bind ViewModel.MinRamMb, Mode=TwoWay}" />
+                                    <TextBlock Text="{loc:String Key=InstanceSettings_MinMemoryHint}" FontSize="12" Opacity="0.5" TextWrapping="Wrap" />
+                                </StackPanel>
+                            </StackPanel>
+                        </StackPanel>
+                    </StackPanel>
+                </ScrollViewer>
+            </PivotItem>
+
+            <!-- Window & server -->
+            <PivotItem Header="{loc:String Key=InstanceSettings_NavWindow}">
+                <ScrollViewer VerticalScrollBarVisibility="Auto" Padding="0,16,8,8">
+                    <StackPanel HorizontalAlignment="Stretch" Spacing="24">
+                        <StackPanel Spacing="10">
+                            <TextBlock Text="{loc:String Key=InstanceSettings_Window}" Style="{StaticResource BodyStrongTextBlockStyle}" />
+                            <ComboBox
+                                Header="{loc:String Key=InstanceSettings_ResolutionPreset}"
+                                HorizontalAlignment="Stretch"
+                                ItemsSource="{x:Bind ViewModel.ResolutionPresets}"
+                                DisplayMemberPath="Label"
+                                SelectedItem="{x:Bind ViewModel.SelectedResolutionPreset, Mode=TwoWay}" />
+                            <Grid ColumnSpacing="12">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*" />
+                                    <ColumnDefinition Width="*" />
+                                </Grid.ColumnDefinitions>
+                                <TextBox
+                                    Header="{loc:String Key=InstanceSettings_Width}"
+                                    PlaceholderText="{loc:String Key=InstanceSettings_ResolutionDefault}"
+                                    Text="{x:Bind ViewModel.ScreenWidthText, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+                                <TextBox
+                                    Grid.Column="1"
+                                    Header="{loc:String Key=InstanceSettings_Height}"
+                                    PlaceholderText="{loc:String Key=InstanceSettings_ResolutionDefault}"
+                                    Text="{x:Bind ViewModel.ScreenHeightText, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+                            </Grid>
+                            <ToggleSwitch
+                                Header="{loc:String Key=InstanceSettings_FullScreen}"
+                                OffContent="{loc:String Key=Settings_Off}"
+                                OnContent="{loc:String Key=Settings_On}"
+                                IsOn="{x:Bind ViewModel.FullScreen, Mode=TwoWay}" />
+                        </StackPanel>
+
+                        <StackPanel Spacing="10">
+                            <TextBlock Text="{loc:String Key=InstanceSettings_Server}" Style="{StaticResource BodyStrongTextBlockStyle}" />
+                            <TextBlock Text="{loc:String Key=InstanceSettings_ServerHint}" FontSize="12" Opacity="0.55" TextWrapping="Wrap" />
+                            <Grid ColumnSpacing="12">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="2*" />
+                                    <ColumnDefinition Width="*" />
+                                </Grid.ColumnDefinitions>
+                                <TextBox
+                                    Header="{loc:String Key=InstanceSettings_ServerIp}"
+                                    PlaceholderText="{loc:String Key=InstanceSettings_ServerIpPlaceholder}"
+                                    Text="{x:Bind ViewModel.ServerIp, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+                                <TextBox
+                                    Grid.Column="1"
+                                    Header="{loc:String Key=InstanceSettings_ServerPort}"
+                                    PlaceholderText="25565"
+                                    Text="{x:Bind ViewModel.ServerPortText, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+                            </Grid>
+                        </StackPanel>
+                    </StackPanel>
+                </ScrollViewer>
+            </PivotItem>
+
+            <!-- Advanced -->
+            <PivotItem Header="{loc:String Key=InstanceSettings_NavAdvanced}">
+                <ScrollViewer VerticalScrollBarVisibility="Auto" Padding="0,16,8,8">
+                    <StackPanel HorizontalAlignment="Stretch" Spacing="16">
+                        <TextBox
+                            Header="{loc:String Key=InstanceSettings_JvmArgs}"
+                            Text="{x:Bind ViewModel.ExtraJvmArguments, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                            PlaceholderText="{loc:String Key=InstanceSettings_JvmArgsPlaceholder}"
+                            AcceptsReturn="True"
+                            TextWrapping="Wrap"
+                            MinHeight="120" />
+                        <TextBox
+                            Header="{loc:String Key=InstanceSettings_GameArgs}"
+                            Text="{x:Bind ViewModel.ExtraGameArguments, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                            PlaceholderText="{loc:String Key=InstanceSettings_GameArgsPlaceholder}"
+                            AcceptsReturn="True"
+                            TextWrapping="Wrap"
+                            MinHeight="88" />
+                    </StackPanel>
+                </ScrollViewer>
+            </PivotItem>
+
+            <!-- Manage -->
+            <PivotItem Header="{loc:String Key=InstanceSettings_NavManage}">
+                <ScrollViewer VerticalScrollBarVisibility="Auto" Padding="0,16,8,8">
+                    <StackPanel HorizontalAlignment="Stretch" Spacing="24">
+                        <StackPanel Spacing="10">
+                            <TextBlock Text="{loc:String Key=InstanceSettings_DuplicateTitle}" Style="{StaticResource BodyStrongTextBlockStyle}" />
+                            <TextBlock Text="{loc:String Key=InstanceSettings_DuplicateHint}" FontSize="12" Opacity="0.55" TextWrapping="Wrap" />
+                            <Button
+                                Content="{loc:String Key=InstanceSettings_Duplicate}"
+                                HorizontalAlignment="Left"
+                                Command="{x:Bind ViewModel.DuplicateCommand}"
+                                IsEnabled="{x:Bind ViewModel.CanDuplicate, Mode=OneWay}" />
+                        </StackPanel>
+
+                        <Border Height="1" Background="{ThemeResource DividerStrokeColorDefaultBrush}" Opacity="0.5" />
+
+                        <StackPanel Spacing="10">
+                            <TextBlock Text="{loc:String Key=InstanceSettings_ExportTitle}" Style="{StaticResource BodyStrongTextBlockStyle}" />
+                            <TextBlock Text="{loc:String Key=InstanceSettings_ExportHint}" FontSize="12" Opacity="0.55" TextWrapping="Wrap" />
+                            <Button
+                                Content="{loc:String Key=InstanceSettings_Export}"
+                                HorizontalAlignment="Left"
+                                Command="{x:Bind ViewModel.ExportCommand}" />
+                        </StackPanel>
+
+                        <Border Height="1" Background="{ThemeResource DividerStrokeColorDefaultBrush}" Opacity="0.5" />
+
+                        <StackPanel Spacing="10">
+                            <TextBlock Text="{loc:String Key=InstanceSettings_ResetTitle}" Style="{StaticResource BodyStrongTextBlockStyle}" />
+                            <TextBlock Text="{loc:String Key=InstanceSettings_ResetHint}" FontSize="12" Opacity="0.55" TextWrapping="Wrap" />
+                            <Button
+                                Content="{loc:String Key=InstanceSettings_Reset}"
+                                HorizontalAlignment="Left"
+                                Command="{x:Bind ViewModel.ResetSettingsCommand}" />
+                        </StackPanel>
+
+                        <Border Height="1" Background="{ThemeResource DividerStrokeColorDefaultBrush}" Opacity="0.5" />
+
+                        <StackPanel Spacing="10">
+                            <TextBlock Text="{loc:String Key=Instances_DeleteTitle}" Style="{StaticResource BodyStrongTextBlockStyle}" />
+                            <TextBlock Text="{loc:String Key=InstanceSettings_DeleteHint}" FontSize="12" Opacity="0.55" TextWrapping="Wrap" />
+                            <Button
+                                Content="{loc:String Key=Instances_DeleteTitle}"
+                                HorizontalAlignment="Left"
+                                Foreground="{ThemeResource SystemFillColorCriticalBrush}"
+                                Command="{x:Bind ViewModel.DeleteCommand}"
+                                IsEnabled="{x:Bind ViewModel.CanDelete, Mode=OneWay}" />
+                        </StackPanel>
+                    </StackPanel>
+                </ScrollViewer>
+            </PivotItem>
+        </Pivot>
+
+        <Grid
+            Grid.Row="2"
+            Padding="0,12,0,0"
+            BorderBrush="{ThemeResource DividerStrokeColorDefaultBrush}"
+            BorderThickness="0,1,0,0">
+            <TextBlock
+                Text="{x:Bind ViewModel.StatusText, Mode=OneWay}"
+                Opacity="0.7"
+                VerticalAlignment="Center"
+                TextWrapping="Wrap" />
+        </Grid>
+    </Grid>
+</Page>

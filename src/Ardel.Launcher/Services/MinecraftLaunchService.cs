@@ -41,6 +41,7 @@ public sealed class MinecraftLaunchService : IMinecraftLaunchService
         System.Text.RegularExpressions.RegexOptions.CultureInvariant);
 
     private readonly SettingsService _settingsService;
+    private readonly InstanceSettingsStore _instanceSettings;
     private readonly object _httpLock = new();
     private readonly SemaphoreSlim _installGate = new(1, 1);
     private HttpClient? _httpOfficial;
@@ -57,9 +58,12 @@ public sealed class MinecraftLaunchService : IMinecraftLaunchService
     private IProgress<InstallerProgressChangedEventArgs>? _cmlFileProgress;
     private IProgress<ByteProgress>? _cmlByteProgress;
 
-    public MinecraftLaunchService(SettingsService settingsService)
+    public MinecraftLaunchService(
+        SettingsService settingsService,
+        InstanceSettingsStore? instanceSettings = null)
     {
         _settingsService = settingsService;
+        _instanceSettings = instanceSettings ?? new InstanceSettingsStore();
     }
 
     public MinecraftLauncher CreateLauncher(LauncherSettings settings) =>
@@ -1252,6 +1256,18 @@ public sealed class MinecraftLaunchService : IMinecraftLaunchService
             fileProgress?.Report(new FileProgressInfo(status, 0, 0));
 
         ReportStatus(Loc.Get(LocKeys.Home_ResolvingJava));
+        var instanceSettings = _instanceSettings.Load(versionId, settings.GameDirectory);
+
+        if (instanceSettings.OverrideJava &&
+            !string.IsNullOrWhiteSpace(instanceSettings.JavaPath) &&
+            File.Exists(instanceSettings.JavaPath))
+        {
+            settings.JavaPath = instanceSettings.JavaPath;
+        }
+
+        if (instanceSettings.OverrideMemory)
+            settings.MaxRamMb = Math.Clamp(instanceSettings.MaxRamMb, 512, 65536);
+
         var metadataUrl = _cachedVersions?
             .FirstOrDefault(v => string.Equals(v.Id, versionId, StringComparison.OrdinalIgnoreCase))
             ?.MetadataUrl;
@@ -1348,6 +1364,36 @@ public sealed class MinecraftLaunchService : IMinecraftLaunchService
                 Path = launchPath
             };
 
+            if (instanceSettings.OverrideMemory && instanceSettings.MinRamMb > 0)
+            {
+                option.MinimumRamMb = Math.Clamp(
+                    instanceSettings.MinRamMb,
+                    512,
+                    option.MaximumRamMb);
+            }
+
+            if (instanceSettings.ScreenWidth > 0)
+                option.ScreenWidth = instanceSettings.ScreenWidth;
+            if (instanceSettings.ScreenHeight > 0)
+                option.ScreenHeight = instanceSettings.ScreenHeight;
+            if (instanceSettings.FullScreen)
+                option.FullScreen = true;
+
+            if (!string.IsNullOrWhiteSpace(instanceSettings.ServerIp))
+            {
+                option.ServerIp = instanceSettings.ServerIp.Trim();
+                if (instanceSettings.ServerPort is > 0 and <= 65535)
+                    option.ServerPort = instanceSettings.ServerPort;
+            }
+
+            var jvmArgs = new List<MArgument>();
+            foreach (var arg in ArgumentTokenizer.Split(instanceSettings.ExtraJvmArguments))
+                jvmArgs.Add(new MArgument(arg));
+
+            var gameArgs = ArgumentTokenizer.Split(instanceSettings.ExtraGameArguments);
+            if (gameArgs.Count > 0)
+                option.ExtraGameArguments = gameArgs.Select(a => new MArgument(a)).ToArray();
+
             // Reuse extracted natives when present to avoid Clean+Unzip on every launch.
             var nativesDir = Path.Combine(root.Versions, versionId, "natives");
             if (Directory.Exists(nativesDir) &&
@@ -1369,8 +1415,11 @@ public sealed class MinecraftLaunchService : IMinecraftLaunchService
                         cancellationToken)
                     .ConfigureAwait(false);
                 if (skinRelay is not null)
-                    option.ExtraJvmArguments = skinRelay.JvmArguments.ToArray();
+                    jvmArgs.AddRange(skinRelay.JvmArguments);
             }
+
+            if (jvmArgs.Count > 0)
+                option.ExtraJvmArguments = jvmArgs.ToArray();
 
             var process = await launcher.BuildProcessAsync(versionId, option, cancellationToken)
                 .ConfigureAwait(false);

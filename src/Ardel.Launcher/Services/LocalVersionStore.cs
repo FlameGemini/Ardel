@@ -9,6 +9,13 @@ namespace Ardel.Launcher.Services;
 /// </summary>
 public sealed class LocalVersionStore
 {
+    private readonly InstanceSettingsStore _instanceSettings;
+
+    public LocalVersionStore(InstanceSettingsStore instanceSettings)
+    {
+        _instanceSettings = instanceSettings;
+    }
+
     public IReadOnlyList<GameVersionItem> GetInstalled(string gameDirectory)
     {
         if (string.IsNullOrWhiteSpace(gameDirectory))
@@ -32,6 +39,8 @@ public sealed class LocalVersionStore
                 continue;
 
             var jsonPath = Path.Combine(dir, id + ".json");
+            var notes = _instanceSettings.Load(id, gameDirectory).Notes ?? string.Empty;
+            var iconPath = InstanceIconHelper.FindPath(dir);
             candidates.Add((
                 new GameVersionItem
                 {
@@ -39,7 +48,9 @@ public sealed class LocalVersionStore
                     Type = "local",
                     Kind = VersionKindDetector.Detect(id, gameDirectory),
                     IsInstalled = true,
-                    ReleaseTime = File.GetLastWriteTimeUtc(jsonPath)
+                    ReleaseTime = File.GetLastWriteTimeUtc(jsonPath),
+                    Notes = notes,
+                    IconPath = iconPath
                 },
                 ReadInheritsFrom(jsonPath)));
         }

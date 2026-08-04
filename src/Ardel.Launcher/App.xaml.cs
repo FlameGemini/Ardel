@@ -185,9 +185,12 @@ public partial class App : Application
         services.AddSingleton(window);
         services.AddSingleton(DispatcherQueue.GetForCurrentThread());
         services.AddSingleton<SettingsService>();
+        services.AddSingleton<InstanceSettingsStore>();
         services.AddSingleton<LocalVersionStore>();
         services.AddSingleton(sp => new Lazy<IMinecraftLaunchService>(
-            () => MinecraftLaunchServiceFactory.Create(sp.GetRequiredService<SettingsService>())));
+            () => MinecraftLaunchServiceFactory.Create(
+                sp.GetRequiredService<SettingsService>(),
+                sp.GetRequiredService<InstanceSettingsStore>())));
         services.AddSingleton<AccountStore>();
         services.AddSingleton<SkinLibraryStore>();
         services.AddSingleton<LaunchViewModel>();
@@ -195,6 +198,7 @@ public partial class App : Application
         services.AddTransient<SettingsViewModel>();
         services.AddTransient<AccountViewModel>();
         services.AddTransient<InstancesViewModel>();
+        services.AddTransient<InstanceSettingsViewModel>();
 
         return services.BuildServiceProvider();
     }

@@ -21,12 +21,60 @@ public sealed class GameVersionItem : INotifyPropertyChanged
 {
     private int? _officialJavaMajor;
     private string? _cachedJavaLabel;
+    private string _notes = string.Empty;
+    private string? _iconPath;
+    private Microsoft.UI.Xaml.Media.Imaging.BitmapImage? _iconImage;
 
     public required string Id { get; init; }
     public string Type { get; init; } = "release";
     public VersionKind Kind { get; init; } = VersionKind.Vanilla;
     public bool IsInstalled { get; set; }
     public DateTimeOffset? ReleaseTime { get; init; }
+
+    /// <summary>Launcher-only note from <c>ardel-instance.json</c>; shown on the profiles list.</summary>
+    public string Notes
+    {
+        get => _notes;
+        set
+        {
+            var next = value ?? string.Empty;
+            if (_notes == next)
+                return;
+            _notes = next;
+            OnPropertyChanged();
+            OnPropertyChanged(nameof(HasNotes));
+        }
+    }
+
+    public bool HasNotes => !string.IsNullOrWhiteSpace(_notes);
+
+    /// <summary>Absolute path to <c>ardel-icon.*</c> when present.</summary>
+    public string? IconPath
+    {
+        get => _iconPath;
+        set
+        {
+            if (_iconPath == value)
+                return;
+            _iconPath = value;
+            _iconImage = Helpers.InstanceIconHelper.CreateImage(value, decodePixels: 48);
+            OnPropertyChanged();
+            OnPropertyChanged(nameof(HasCustomIcon));
+            OnPropertyChanged(nameof(IconImage));
+        }
+    }
+
+    public bool HasCustomIcon => _iconImage is not null;
+
+    public Microsoft.UI.Xaml.Media.Imaging.BitmapImage? IconImage => _iconImage;
+
+    /// <summary>Reload icon bitmap after the file on disk was replaced.</summary>
+    public void RefreshIcon()
+    {
+        _iconImage = Helpers.InstanceIconHelper.CreateImage(_iconPath, decodePixels: 48);
+        OnPropertyChanged(nameof(HasCustomIcon));
+        OnPropertyChanged(nameof(IconImage));
+    }
 
     /// <summary>Official client JSON URL from version_manifest (may be empty for local-only rows).</summary>
     public string? MetadataUrl { get; init; }

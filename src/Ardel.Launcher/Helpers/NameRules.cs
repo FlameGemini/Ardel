@@ -24,7 +24,10 @@ public static partial class NameRules
     /// <summary>
     /// Validate a versions/ folder name. Returns localized error, or null if OK.
     /// </summary>
-    public static string? ValidateVersionName(string? name, string? versionsParent = null)
+    public static string? ValidateVersionName(
+        string? name,
+        string? versionsParent = null,
+        string? allowExistingId = null)
     {
         if (string.IsNullOrWhiteSpace(name))
             return Loc.Get(LocKeys.Validate_VersionEmpty);
@@ -59,7 +62,9 @@ public static partial class NameRules
                 .Select(Path.GetFileName)
                 .Any(existing =>
                     !string.IsNullOrEmpty(existing) &&
-                    existing.Equals(name, StringComparison.OrdinalIgnoreCase));
+                    existing.Equals(name, StringComparison.OrdinalIgnoreCase) &&
+                    (string.IsNullOrEmpty(allowExistingId) ||
+                     !existing.Equals(allowExistingId, StringComparison.OrdinalIgnoreCase)));
 
             if (exists)
                 return Loc.Get(LocKeys.Validate_VersionExists);

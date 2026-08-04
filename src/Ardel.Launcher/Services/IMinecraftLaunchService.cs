@@ -60,6 +60,8 @@ public interface IMinecraftLaunchService
 
 public static class MinecraftLaunchServiceFactory
 {
-    public static IMinecraftLaunchService Create(SettingsService settingsService) =>
-        new MinecraftLaunchService(settingsService);
+    public static IMinecraftLaunchService Create(
+        SettingsService settingsService,
+        InstanceSettingsStore? instanceSettings = null) =>
+        new MinecraftLaunchService(settingsService, instanceSettings);
 }

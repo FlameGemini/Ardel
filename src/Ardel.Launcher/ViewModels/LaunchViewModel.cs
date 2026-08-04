@@ -30,6 +30,10 @@ public partial class LaunchViewModel : ObservableObject
     private bool _localReady;
     private bool _settingsLoaded;
     private int _javaProbeGeneration;
+    private FileSystemWatcher? _versionsWatcher;
+    private string? _versionsWatcherPath;
+    private DispatcherQueueTimer? _versionsReloadTimer;
+    private int _versionsReloadBusy;
 
     public LaunchViewModel(
         Lazy<IMinecraftLaunchService> launchService,
@@ -51,6 +55,11 @@ public partial class LaunchViewModel : ObservableObject
         _persistTimer.IsRepeating = false;
         _persistTimer.Interval = TimeSpan.FromMilliseconds(400);
         _persistTimer.Tick += (_, _) => PersistNow();
+
+        _versionsReloadTimer = dispatcher.CreateTimer();
+        _versionsReloadTimer.IsRepeating = false;
+        _versionsReloadTimer.Interval = TimeSpan.FromMilliseconds(750);
+        _versionsReloadTimer.Tick += (_, _) => _ = ReloadLocalVersionsFromWatcherAsync();
         // No disk I/O / CmlLib in ctor — first paint stays light
     }
 
@@ -83,6 +92,7 @@ public partial class LaunchViewModel : ObservableObject
         if (value is not null)
             _ = EnsureSuitableJavaSelectedAsync(value.Id);
 
+        LaunchGameCommand.NotifyCanExecuteChanged();
         SchedulePersist();
     }
     partial void OnMaxRamMbChanged(int value) => SchedulePersist();
@@ -152,6 +162,7 @@ public partial class LaunchViewModel : ObservableObject
     public async Task LoadLocalVersionsAsync()
     {
         EnsureSettingsLoaded();
+        EnsureVersionsWatcher();
         var gameDir = SnapshotSettings().GameDirectory;
         var saved = _settings.SelectedVersion;
         var items = await Task.Run(() => _localVersions.GetInstalled(gameDir)).ConfigureAwait(true);
@@ -163,6 +174,7 @@ public partial class LaunchViewModel : ObservableObject
     public async Task SelectInstalledVersionAsync(string versionId)
     {
         EnsureSettingsLoaded();
+        EnsureVersionsWatcher();
         var gameDir = SnapshotSettings().GameDirectory;
         var items = await Task.Run(() => _localVersions.GetInstalled(gameDir)).ConfigureAwait(true);
 
@@ -182,6 +194,132 @@ public partial class LaunchViewModel : ObservableObject
                               string.Equals(v.Id, preferredId, StringComparison.OrdinalIgnoreCase))
                           ?? Versions.FirstOrDefault();
         _suppressPersist = false;
+    }
+
+    private void EnsureVersionsWatcher()
+    {
+        try
+        {
+            var root = GamePaths.GetVersionsRoot(SnapshotSettings().GameDirectory);
+            Directory.CreateDirectory(root);
+
+            if (_versionsWatcher is not null &&
+                string.Equals(_versionsWatcherPath, root, StringComparison.OrdinalIgnoreCase))
+            {
+                return;
+            }
+
+            DisposeVersionsWatcher();
+
+            var watcher = new FileSystemWatcher(root)
+            {
+                NotifyFilter = NotifyFilters.DirectoryName |
+                               NotifyFilters.FileName |
+                               NotifyFilters.LastWrite,
+                IncludeSubdirectories = true,
+                InternalBufferSize = 64 * 1024
+            };
+            watcher.Created += OnVersionsFileSystemEvent;
+            watcher.Deleted += OnVersionsFileSystemEvent;
+            watcher.Changed += OnVersionsFileSystemEvent;
+            watcher.Renamed += OnVersionsFileSystemEvent;
+            watcher.Error += (_, e) =>
+                Debug.WriteLine($"[Launch] Versions watcher error: {e.GetException().Message}");
+            watcher.EnableRaisingEvents = true;
+
+            _versionsWatcher = watcher;
+            _versionsWatcherPath = root;
+        }
+        catch (Exception ex)
+        {
+            Debug.WriteLine($"[Launch] Versions watcher setup failed: {ex.Message}");
+        }
+    }
+
+    private void DisposeVersionsWatcher()
+    {
+        if (_versionsWatcher is null)
+            return;
+
+        try
+        {
+            _versionsWatcher.EnableRaisingEvents = false;
+            _versionsWatcher.Created -= OnVersionsFileSystemEvent;
+            _versionsWatcher.Deleted -= OnVersionsFileSystemEvent;
+            _versionsWatcher.Changed -= OnVersionsFileSystemEvent;
+            _versionsWatcher.Renamed -= OnVersionsFileSystemEvent;
+            _versionsWatcher.Dispose();
+        }
+        catch (Exception ex)
+        {
+            Debug.WriteLine($"[Launch] Versions watcher dispose failed: {ex.Message}");
+        }
+
+        _versionsWatcher = null;
+        _versionsWatcherPath = null;
+    }
+
+    private void OnVersionsFileSystemEvent(object sender, FileSystemEventArgs e)
+    {
+        if (!ShouldReloadForVersionsEvent(e))
+            return;
+
+        _dispatcher.TryEnqueue(() =>
+        {
+            if (_versionsReloadTimer is null)
+                return;
+            _versionsReloadTimer.Stop();
+            _versionsReloadTimer.Start();
+        });
+    }
+
+    private static bool ShouldReloadForVersionsEvent(FileSystemEventArgs e)
+    {
+        var relative = e.Name;
+        if (string.IsNullOrWhiteSpace(relative))
+            return true;
+
+        var parts = relative.Split(
+            new[] { Path.DirectorySeparatorChar, Path.AltDirectorySeparatorChar },
+            StringSplitOptions.RemoveEmptyEntries);
+
+        // versions/{id} created / deleted / renamed
+        if (parts.Length == 1)
+            return true;
+
+        // versions/{id}/markers or profile json
+        if (parts.Length == 2)
+        {
+            var file = parts[1];
+            if (string.Equals(file, GamePaths.UserInstanceMarker, StringComparison.OrdinalIgnoreCase) ||
+                string.Equals(file, GamePaths.DependencyMarker, StringComparison.OrdinalIgnoreCase) ||
+                string.Equals(file, GamePaths.ReadyMarker, StringComparison.OrdinalIgnoreCase))
+                return true;
+
+            if (file.EndsWith(".json", StringComparison.OrdinalIgnoreCase))
+                return true;
+        }
+
+        return false;
+    }
+
+    private async Task ReloadLocalVersionsFromWatcherAsync()
+    {
+        if (Interlocked.Exchange(ref _versionsReloadBusy, 1) == 1)
+            return;
+
+        try
+        {
+            await LoadLocalVersionsAsync().ConfigureAwait(true);
+        }
+        catch (Exception ex)
+        {
+            Debug.WriteLine($"[Launch] Watcher reload failed: {ex.Message}");
+        }
+        finally
+        {
+            Interlocked.Exchange(ref _versionsReloadBusy, 0);
+        }
     }
 
     [RelayCommand(CanExecute = nameof(CanLaunch))]
