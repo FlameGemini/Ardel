@@ -43,3 +43,9 @@ design.md          UI design system
 - Default game dir: `{exe}/.minecraft` (portable, PCL-style)
 - **Forced version isolation**: each version uses its own mods/saves/config under `versions/<id>/`
 - Settings file: `%LocalAppData%\Ardel\settings.json`
+
+## License
+
+Copyright (c) 2026 FlameGemini
+
+Licensed under the [Open Software License version 3.0](LICENSE) (OSL-3.0).

@@ -405,6 +405,8 @@ public static partial class Loc
         [LocKeys.About_Title] = "情報",
         [LocKeys.About_Subtitle] = "Windows 向けポータブル Minecraft ランチャー。",
         [LocKeys.About_Version] = "バージョン {0}",
+        [LocKeys.About_License] =
+            "Open Software License 3.0（OSL-3.0）の下でライセンスされています。",
         [LocKeys.About_CreditsHeading] = "オープンソースとクレジット",
         [LocKeys.About_CreditsIntro] = "謝辞が必要なライブラリとサービスを掲載しています。",
         [LocKeys.About_Credit_CmlLib] =

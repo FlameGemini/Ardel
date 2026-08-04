@@ -420,6 +420,7 @@ public static class LocKeys
     public const string About_Title = "About_Title";
     public const string About_Subtitle = "About_Subtitle";
     public const string About_Version = "About_Version";
+    public const string About_License = "About_License";
     public const string About_CreditsHeading = "About_CreditsHeading";
     public const string About_CreditsIntro = "About_CreditsIntro";
     public const string About_Credit_CmlLib = "About_Credit_CmlLib";

@@ -22,6 +22,9 @@
     <TieredPGO>true</TieredPGO>
     <!-- R2R speeds cold start for both Debug and Release builds when publishing -->
     <PublishReadyToRun>true</PublishReadyToRun>
+    <PackageLicenseExpression>OSL-3.0</PackageLicenseExpression>
+    <Authors>FlameGemini</Authors>
+    <Copyright>Copyright (c) 2026 FlameGemini</Copyright>
   </PropertyGroup>
 
   <!-- Debug: keep symbols, but still optimize IL for snappier F5 -->

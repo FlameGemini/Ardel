@@ -406,6 +406,8 @@ public static partial class Loc
         [LocKeys.About_Title] = "关于",
         [LocKeys.About_Subtitle] = "面向 Windows 的便携 Minecraft 启动器。",
         [LocKeys.About_Version] = "版本 {0}",
+        [LocKeys.About_License] =
+            "以 Open Software License 3.0（OSL-3.0）授权。",
         [LocKeys.About_CreditsHeading] = "开源与致谢",
         [LocKeys.About_CreditsIntro] = "下列为需要署名或致谢的库与服务。",
         [LocKeys.About_Credit_CmlLib] =

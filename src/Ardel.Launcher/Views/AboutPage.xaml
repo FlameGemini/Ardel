@@ -19,6 +19,12 @@
                     Text="{loc:String Key=About_Subtitle}"
                     Style="{StaticResource ArdelSectionCaptionStyle}"
                     TextWrapping="Wrap" />
+                <TextBlock
+                    Text="{loc:String Key=About_License}"
+                    FontSize="12"
+                    Opacity="0.65"
+                    TextWrapping="Wrap"
+                    Margin="0,4,0,0" />
             </StackPanel>
 
             <StackPanel Spacing="10">
