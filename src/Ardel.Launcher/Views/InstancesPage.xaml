@@ -42,95 +42,107 @@
                 <ListView.ItemContainerStyle>
                     <Style TargetType="ListViewItem">
                         <Setter Property="HorizontalContentAlignment" Value="Stretch" />
-                        <Setter Property="MinHeight" Value="56" />
-                        <Setter Property="Padding" Value="12,8" />
-                        <Setter Property="Margin" Value="0,0,0,4" />
+                        <Setter Property="Padding" Value="0" />
+                        <Setter Property="Margin" Value="0" />
                     </Style>
                 </ListView.ItemContainerStyle>
                 <ListView.ItemTemplate>
                     <DataTemplate x:DataType="models:GameVersionItem">
-                        <Grid ColumnSpacing="12">
-                            <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="Auto" />
-                                <ColumnDefinition Width="*" />
-                                <ColumnDefinition Width="Auto" />
-                                <ColumnDefinition Width="Auto" />
-                            </Grid.ColumnDefinitions>
+                        <Border
+                            Background="{ThemeResource CardBackgroundFillColorDefaultBrush}"
+                            BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}"
+                            BorderThickness="1"
+                            CornerRadius="8"
+                            Padding="16,12"
+                            Margin="0,0,0,8">
+                            <Grid ColumnSpacing="16">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="Auto" />
+                                    <ColumnDefinition Width="*" />
+                                    <ColumnDefinition Width="Auto" />
+                                    <ColumnDefinition Width="Auto" />
+                                </Grid.ColumnDefinitions>
 
-                            <Border
-                                Width="40"
-                                Height="40"
-                                CornerRadius="6"
-                                VerticalAlignment="Center"
-                                Background="{ThemeResource SubtleFillColorSecondaryBrush}">
-                                <Grid>
-                                    <FontIcon
-                                        Glyph="&#xE7FC;"
-                                        FontSize="16"
-                                        Opacity="0.45"
-                                        HorizontalAlignment="Center"
-                                        VerticalAlignment="Center"
-                                        Visibility="{x:Bind HasCustomIcon, Mode=OneWay, Converter={StaticResource InverseBoolToVisibility}}" />
-                                    <Image
-                                        Source="{x:Bind IconImage, Mode=OneWay}"
-                                        Stretch="UniformToFill"
-                                        Visibility="{x:Bind HasCustomIcon, Mode=OneWay, Converter={StaticResource BoolToVisibility}}" />
-                                </Grid>
-                            </Border>
+                                <Border
+                                    Width="44"
+                                    Height="44"
+                                    CornerRadius="8"
+                                    VerticalAlignment="Center"
+                                    Background="{ThemeResource ArdelSoftAccentBrush}"
+                                    BorderBrush="{ThemeResource ArdelAccentBrush}"
+                                    BorderThickness="1">
+                                    <Grid>
+                                        <FontIcon
+                                            Glyph="&#xE7FC;"
+                                            FontSize="18"
+                                            Foreground="{ThemeResource ArdelAccentBrush}"
+                                            HorizontalAlignment="Center"
+                                            VerticalAlignment="Center"
+                                            Visibility="{x:Bind HasCustomIcon, Mode=OneWay, Converter={StaticResource InverseBoolToVisibility}}" />
+                                        <Image
+                                            Source="{x:Bind IconImage, Mode=OneWay}"
+                                            Stretch="UniformToFill"
+                                            Visibility="{x:Bind HasCustomIcon, Mode=OneWay, Converter={StaticResource BoolToVisibility}}" />
+                                    </Grid>
+                                </Border>
 
-                            <StackPanel Grid.Column="1" VerticalAlignment="Center" Spacing="2">
-                                <TextBlock
-                                    Text="{x:Bind Id}"
-                                    FontSize="15"
-                                    FontWeight="SemiBold"
-                                    TextTrimming="CharacterEllipsis" />
-                                <TextBlock
-                                    Text="{x:Bind Notes, Mode=OneWay}"
-                                    FontSize="12"
-                                    Opacity="0.55"
-                                    TextWrapping="WrapWholeWords"
-                                    TextTrimming="CharacterEllipsis"
-                                    MaxLines="2"
-                                    Visibility="{x:Bind HasNotes, Mode=OneWay, Converter={StaticResource BoolToVisibility}}" />
-                            </StackPanel>
+                                <StackPanel Grid.Column="1" VerticalAlignment="Center" Spacing="2">
+                                    <TextBlock
+                                        Text="{x:Bind Id}"
+                                        FontSize="15"
+                                        FontWeight="SemiBold"
+                                        TextTrimming="CharacterEllipsis" />
+                                    <TextBlock
+                                        Text="{x:Bind Notes, Mode=OneWay}"
+                                        FontSize="12"
+                                        Opacity="0.6"
+                                        TextWrapping="WrapWholeWords"
+                                        TextTrimming="CharacterEllipsis"
+                                        MaxLines="2"
+                                        Visibility="{x:Bind HasNotes, Mode=OneWay, Converter={StaticResource BoolToVisibility}}" />
+                                </StackPanel>
 
-                            <Border
-                                Grid.Column="2"
-                                VerticalAlignment="Center"
-                                Padding="10,4"
-                                CornerRadius="4"
-                                Background="{ThemeResource SubtleFillColorSecondaryBrush}">
-                                <TextBlock
-                                    Text="{x:Bind KindLabel}"
-                                    FontSize="12"
-                                    Opacity="0.85" />
-                            </Border>
+                                <Border
+                                    Grid.Column="2"
+                                    VerticalAlignment="Center"
+                                    Padding="10,4"
+                                    CornerRadius="6"
+                                    Background="{ThemeResource SubtleFillColorSecondaryBrush}">
+                                    <TextBlock
+                                        Text="{x:Bind KindLabel}"
+                                        FontSize="12"
+                                        FontWeight="Medium"
+                                        Opacity="0.85" />
+                                </Border>
 
-                            <StackPanel
-                                Grid.Column="3"
-                                Orientation="Horizontal"
-                                Spacing="4"
-                                VerticalAlignment="Center">
-                                <Button
-                                    ToolTipService.ToolTip="{loc:String Key=Action_Launch}"
-                                    Tag="{x:Bind}"
-                                    Click="LaunchButton_Click"
-                                    Width="40"
-                                    Height="36"
-                                    Padding="0">
-                                    <FontIcon Glyph="&#xE768;" FontSize="14" />
-                                </Button>
-                                <Button
-                                    ToolTipService.ToolTip="{loc:String Key=Instances_OpenSettings}"
-                                    Tag="{x:Bind}"
-                                    Click="OpenSettingsButton_Click"
-                                    Width="40"
-                                    Height="36"
-                                    Padding="0">
-                                    <FontIcon Glyph="&#xE713;" FontSize="14" />
-                                </Button>
-                            </StackPanel>
-                        </Grid>
+                                <StackPanel
+                                    Grid.Column="3"
+                                    Orientation="Horizontal"
+                                    Spacing="8"
+                                    VerticalAlignment="Center">
+                                    <Button
+                                        Style="{StaticResource AccentButtonStyle}"
+                                        Background="{ThemeResource ArdelAccentBrush}"
+                                        ToolTipService.ToolTip="{loc:String Key=Action_Launch}"
+                                        Tag="{x:Bind}"
+                                        Click="LaunchButton_Click"
+                                        Width="40"
+                                        Height="36"
+                                        Padding="0">
+                                        <FontIcon Glyph="&#xE768;" FontSize="14" Foreground="White" />
+                                    </Button>
+                                    <Button
+                                        ToolTipService.ToolTip="{loc:String Key=Instances_OpenSettings}"
+                                        Tag="{x:Bind}"
+                                        Click="OpenSettingsButton_Click"
+                                        Width="40"
+                                        Height="36"
+                                        Padding="0">
+                                        <FontIcon Glyph="&#xE713;" FontSize="14" />
+                                    </Button>
+                                </StackPanel>
+                            </Grid>
+                        </Border>
                     </DataTemplate>
                 </ListView.ItemTemplate>
             </ListView>
