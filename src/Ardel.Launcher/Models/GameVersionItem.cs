@@ -25,6 +25,7 @@ public sealed class GameVersionItem : INotifyPropertyChanged
     private string? _iconPath;
     private Microsoft.UI.Xaml.Media.Imaging.BitmapImage? _iconImage;
     private bool _hasCustomIcon;
+    private string _iconGlyph = "\uE7FC";
 
     public required string Id { get; init; }
     public string Type { get; init; } = "release";
@@ -48,6 +49,18 @@ public sealed class GameVersionItem : INotifyPropertyChanged
     }
 
     public bool HasNotes => !string.IsNullOrWhiteSpace(_notes);
+
+    public string IconGlyph
+    {
+        get => _iconGlyph;
+        set
+        {
+            if (_iconGlyph == value)
+                return;
+            _iconGlyph = value;
+            OnPropertyChanged();
+        }
+    }
 
     /// <summary>Absolute path to <c>ardel-icon.*</c> when present.</summary>
     public string? IconPath

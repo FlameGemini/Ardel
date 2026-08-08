@@ -86,4 +86,12 @@ public sealed partial class InstanceSettingsPage : Page
 
         visual.StartAnimation("Opacity", animation);
     }
+
+    private void PresetIcon_ItemClick(object sender, ItemClickEventArgs e)
+    {
+        if (e.ClickedItem is string glyph)
+        {
+            ViewModel.SelectPresetIconCommand.Execute(glyph);
+        }
+    }
 }

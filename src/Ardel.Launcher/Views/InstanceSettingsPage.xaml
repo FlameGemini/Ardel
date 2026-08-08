@@ -40,12 +40,12 @@
                 Height="48"
                 CornerRadius="8"
                 VerticalAlignment="Center"
-                Background="{ThemeResource SubtleFillColorSecondaryBrush}">
+                Background="{ThemeResource ArdelSoftAccentBrush}">
                 <Grid>
                     <FontIcon
-                        Glyph="&#xE7FC;"
+                        Glyph="{x:Bind ViewModel.IconGlyph, Mode=OneWay}"
                         FontSize="20"
-                        Opacity="0.45"
+                        Foreground="{ThemeResource ArdelAccentBrush}"
                         HorizontalAlignment="Center"
                         VerticalAlignment="Center"
                         Visibility="{x:Bind ViewModel.HasCustomIcon, Mode=OneWay, Converter={StaticResource InverseBoolToVisibility}}" />
@@ -132,6 +132,37 @@
                                     Command="{x:Bind ViewModel.ClearIconCommand}"
                                     IsEnabled="{x:Bind ViewModel.HasCustomIcon, Mode=OneWay}" />
                             </StackPanel>
+                            <TextBlock Text="预设图标库" FontSize="12" Opacity="0.55" Margin="0,4,0,0" />
+                            <GridView
+                                ItemsSource="{x:Bind ViewModel.PresetGlyphs}"
+                                SelectionMode="None"
+                                IsItemClickEnabled="True"
+                                ItemClick="PresetIcon_ItemClick"
+                                Padding="0"
+                                Margin="0,4,0,0">
+                                <GridView.ItemsPanel>
+                                    <ItemsPanelTemplate>
+                                        <ItemsWrapGrid Orientation="Horizontal" MaximumRowsOrColumns="8" />
+                                    </ItemsPanelTemplate>
+                                </GridView.ItemsPanel>
+                                <GridView.ItemTemplate>
+                                    <DataTemplate x:DataType="x:String">
+                                        <Border
+                                            Width="36"
+                                            Height="36"
+                                            CornerRadius="6"
+                                            Background="{ThemeResource ArdelSoftAccentBrush}"
+                                            Margin="2">
+                                            <FontIcon
+                                                Glyph="{x:Bind}"
+                                                FontSize="16"
+                                                Foreground="{ThemeResource ArdelAccentBrush}"
+                                                HorizontalAlignment="Center"
+                                                VerticalAlignment="Center" />
+                                        </Border>
+                                    </DataTemplate>
+                                </GridView.ItemTemplate>
+                            </GridView>
                         </StackPanel>
 
                         <StackPanel Spacing="8">

@@ -68,12 +68,10 @@
                                     Height="44"
                                     CornerRadius="8"
                                     VerticalAlignment="Center"
-                                    Background="{ThemeResource ArdelSoftAccentBrush}"
-                                    BorderBrush="{ThemeResource ArdelAccentBrush}"
-                                    BorderThickness="1">
+                                    Background="{ThemeResource ArdelSoftAccentBrush}">
                                     <Grid>
                                         <FontIcon
-                                            Glyph="&#xE7FC;"
+                                            Glyph="{x:Bind IconGlyph, Mode=OneWay}"
                                             FontSize="18"
                                             Foreground="{ThemeResource ArdelAccentBrush}"
                                             HorizontalAlignment="Center"

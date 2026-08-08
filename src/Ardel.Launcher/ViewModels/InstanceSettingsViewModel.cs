@@ -105,8 +105,28 @@ public partial class InstanceSettingsViewModel : ObservableObject
 
     [ObservableProperty] private Microsoft.UI.Xaml.Media.Imaging.BitmapImage? _iconImage;
     [ObservableProperty] private bool _hasCustomIcon;
+    [ObservableProperty] private string _iconGlyph = "\uE7FC";
     [ObservableProperty] private bool _canLaunch = true;
     [ObservableProperty] private bool _canDuplicate = true;
+
+    public string[] PresetGlyphs { get; } = [
+        "\uE7FC", // Cube
+        "\uE704", // Globe
+        "\uE7C8", // Shield
+        "\uE7E7", // Lightning
+        "\uEC1B", // Crown
+        "\uE70A", // Star
+        "\uE8A5", // Heart
+        "\uE91C", // Puzzle
+        "\uED55", // Controller
+        "\uE724", // Compass
+        "\uE7B5", // Wrench
+        "\uE734", // Trophy
+        "\uE80F", // Home
+        "\uEB51", // Cloud
+        "\uE909", // Fire
+        "\uEA18"  // Hourglass
+    ];
 
     public void AttachXamlRoot(XamlRoot? root)
     {
@@ -213,6 +233,7 @@ public partial class InstanceSettingsViewModel : ObservableObject
 
         var settings = _store.Load(_versionId, global.GameDirectory);
         Notes = settings.Notes ?? string.Empty;
+        IconGlyph = settings.IconGlyph ?? "\uE7FC";
         OverrideJava = settings.OverrideJava;
         JavaPath = settings.JavaPath;
         OverrideMemory = settings.OverrideMemory;
@@ -458,7 +479,37 @@ public partial class InstanceSettingsViewModel : ObservableObject
         InstanceIconHelper.Clear(_instanceDirectory);
         RefreshIconPreview();
         SyncIconToList(null);
+        IconGlyph = "\uE7FC";
+        var item = _launch.Versions.FirstOrDefault(v =>
+            string.Equals(v.Id, _versionId, StringComparison.OrdinalIgnoreCase));
+        if (item is not null)
+        {
+            item.IconGlyph = "\uE7FC";
+        }
+        ScheduleAutoSave();
         StatusText = Loc.Get(LocKeys.InstanceSettings_IconCleared);
+    }
+
+    [RelayCommand]
+    private void SelectPresetIcon(string glyph)
+    {
+        if (!_loaded || string.IsNullOrWhiteSpace(_versionId) || string.IsNullOrWhiteSpace(glyph))
+            return;
+
+        InstanceIconHelper.Clear(_instanceDirectory);
+        RefreshIconPreview();
+        SyncIconToList(null);
+
+        IconGlyph = glyph;
+        var item = _launch.Versions.FirstOrDefault(v =>
+            string.Equals(v.Id, _versionId, StringComparison.OrdinalIgnoreCase));
+        if (item is not null)
+        {
+            item.IconGlyph = glyph;
+        }
+
+        ScheduleAutoSave();
+        StatusText = Loc.Get(LocKeys.InstanceSettings_IconUpdated);
     }
 
     private void SyncIconToList(string? iconPath)
@@ -791,6 +842,7 @@ public partial class InstanceSettingsViewModel : ObservableObject
         SuggestedJavaText = javaLabel ?? Loc.Get(LocKeys.InstanceSettings_InfoJavaUnknown);
     }
 
+    // Resolve the recommened Java major version in the background
     private async Task ResolveSuggestedJavaAsync(string versionId, string? minecraftRoot)
     {
         var major = await Task.Run(() => OfficialJavaRequirements.TryReadLocal(versionId, minecraftRoot)).ConfigureAwait(true);
@@ -851,7 +903,8 @@ public partial class InstanceSettingsViewModel : ObservableObject
             ExtraJvmArguments = ExtraJvmArguments ?? string.Empty,
             ExtraGameArguments = ExtraGameArguments ?? string.Empty,
             FullScreen = FullScreen,
-            ServerIp = ServerIp?.Trim() ?? string.Empty
+            ServerIp = ServerIp?.Trim() ?? string.Empty,
+            IconGlyph = IconGlyph
         };
         error = string.Empty;
 

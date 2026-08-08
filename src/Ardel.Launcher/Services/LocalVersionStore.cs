@@ -39,7 +39,9 @@ public sealed class LocalVersionStore
                 continue;
 
             var jsonPath = Path.Combine(dir, id + ".json");
-            var notes = _instanceSettings.Load(id, gameDirectory).Notes ?? string.Empty;
+            var instSettings = _instanceSettings.Load(id, gameDirectory);
+            var notes = instSettings.Notes ?? string.Empty;
+            var iconGlyph = instSettings.IconGlyph ?? "\uE7FC";
             var iconPath = InstanceIconHelper.FindPath(dir);
             candidates.Add((
                 new GameVersionItem
@@ -51,6 +53,7 @@ public sealed class LocalVersionStore
                     ReleaseTime = File.GetLastWriteTimeUtc(jsonPath),
                     Notes = notes,
                     IconPath = iconPath,
+                    IconGlyph = iconGlyph,
                     OfficialJavaMajor = OfficialJavaRequirements.TryGetCached(id, out var cachedMajor) ? cachedMajor : 0
                 },
                 ReadInheritsFrom(jsonPath)));

@@ -43,4 +43,7 @@ public sealed class InstanceSettings
 
     /// <summary>Used when <see cref="ServerIp"/> is set. 0 = Minecraft default (25565).</summary>
     public int ServerPort { get; set; }
+
+    /// <summary>Segoe Fluent/MDL2 icon glyph character representation (e.g. "\uE7FC").</summary>
+    public string? IconGlyph { get; set; }
 }
