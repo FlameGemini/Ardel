@@ -44,3 +44,6 @@ _list_probe/
 ## Legacy
 /runtime/
 .minecraft/runtime/
+
+## Publish artifacts
+publish-selfcontained/
