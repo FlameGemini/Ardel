@@ -81,6 +81,9 @@ public partial class InstanceSettingsViewModel : ObservableObject
     [ObservableProperty] private bool _overrideJava;
     [ObservableProperty] private string? _javaPath;
     [ObservableProperty] private string _javaVersionHint = string.Empty;
+    [ObservableProperty] private string _kindLabelText = string.Empty;
+    [ObservableProperty] private string _baseLabelText = string.Empty;
+    [ObservableProperty] private string _suggestedJavaText = string.Empty;
     [ObservableProperty] private bool _isJavaBusy;
     [ObservableProperty] private bool _canEditJava = true;
 
@@ -237,6 +240,7 @@ public partial class InstanceSettingsViewModel : ObservableObject
         _loaded = true;
         _ = EnsureJavaListAsync();
         _ = UpdateJavaHintAsync();
+        _ = ResolveSuggestedJavaAsync(_versionId, global.GameDirectory);
     }
 
     private void RefreshIconPreview()
@@ -556,7 +560,7 @@ public partial class InstanceSettingsViewModel : ObservableObject
     [RelayCommand]
     private async Task ResetSettingsAsync()
     {
-        var root = _xamlRoot;
+        var root = _xamlRoot ?? _window.Content?.XamlRoot;
         if (root is null)
             return;
 
@@ -600,7 +604,7 @@ public partial class InstanceSettingsViewModel : ObservableObject
         if (!_loaded || string.IsNullOrWhiteSpace(_versionId) || !CanDelete)
             return;
 
-        var root = _xamlRoot;
+        var root = _xamlRoot ?? _window.Content?.XamlRoot;
         if (root is null)
         {
             StatusText = Loc.Get(LocKeys.Instances_DeleteNoUi);
@@ -781,6 +785,33 @@ public partial class InstanceSettingsViewModel : ObservableObject
         InfoSummary = string.Join(
             " · ",
             new[] { kindLabel, baseLabel, javaLabel }.Where(s => !string.IsNullOrWhiteSpace(s)));
+
+        KindLabelText = kindLabel;
+        BaseLabelText = baseLabel ?? versionId;
+        SuggestedJavaText = javaLabel ?? Loc.Get(LocKeys.InstanceSettings_InfoJavaUnknown);
+    }
+
+    private async Task ResolveSuggestedJavaAsync(string versionId, string? minecraftRoot)
+    {
+        var major = await Task.Run(() => OfficialJavaRequirements.TryReadLocal(versionId, minecraftRoot)).ConfigureAwait(true);
+        if (major is int resolvedMajor and > 0)
+        {
+            var item = _launch.Versions.FirstOrDefault(v =>
+                string.Equals(v.Id, versionId, StringComparison.OrdinalIgnoreCase));
+            if (item is not null)
+            {
+                item.OfficialJavaMajor = resolvedMajor;
+            }
+
+            var javaLabel = Loc.Format(LocKeys.Settings_JavaSelected, resolvedMajor);
+            SuggestedJavaText = javaLabel;
+
+            var kindLabel = KindLabelText;
+            var baseLabel = string.Equals(BaseLabelText, versionId, StringComparison.OrdinalIgnoreCase) ? null : BaseLabelText;
+            InfoSummary = string.Join(
+                " · ",
+                new[] { kindLabel, baseLabel, javaLabel }.Where(s => !string.IsNullOrWhiteSpace(s)));
+        }
     }
 
     private void OpenSubfolder(string? relative)
@@ -887,27 +918,117 @@ public partial class InstanceSettingsViewModel : ObservableObject
 
     private async Task UpdateJavaHintAsync()
     {
-        if (!OverrideJava)
+        string? path = null;
+        bool isGlobal = !OverrideJava;
+
+        if (isGlobal)
         {
-            JavaVersionHint = Loc.Get(LocKeys.InstanceSettings_JavaFollowGlobal);
-            return;
+            var global = _settingsService.Load();
+            path = global.JavaPath;
+        }
+        else
+        {
+            path = JavaPath;
         }
 
-        var path = JavaPath;
         if (string.IsNullOrWhiteSpace(path) || !File.Exists(path))
         {
-            JavaVersionHint = Loc.Get(LocKeys.Settings_JavaAuto);
+            string autoText = Loc.Get(LocKeys.Settings_JavaAuto);
+            JavaVersionHint = isGlobal
+                ? $"{Loc.Get(LocKeys.InstanceSettings_JavaFollowGlobal)} ({autoText})"
+                : autoText;
             return;
         }
 
         try
         {
             var major = await Task.Run(() => JavaLocator.GetJavaVersion(path)).ConfigureAwait(true);
-            JavaVersionHint = Loc.Format(LocKeys.Settings_JavaSelected, major);
+            string versionStr = Loc.Format(LocKeys.Settings_JavaSelected, major);
+            JavaVersionHint = isGlobal
+                ? $"{Loc.Get(LocKeys.InstanceSettings_JavaFollowGlobal)} ({versionStr})"
+                : versionStr;
         }
         catch (Exception ex)
         {
             JavaVersionHint = ex.Message;
         }
+    }
+
+    [RelayCommand]
+    private void ImportJvmPreset(string presetType)
+    {
+        if (presetType == "clean")
+        {
+            ExtraJvmArguments = string.Empty;
+            return;
+        }
+
+        string preset = presetType switch
+        {
+            "g1gc" => "-XX:+UseG1GC -XX:+UnlockExperimentalVMOptions -XX:G1NewSizePercent=20 -XX:G1ReservePercent=20 -XX:MaxGCPauseMillis=50 -XX:G1HeapRegionSize=32M",
+            "shenandoah" => "-XX:+UseShenandoahGC -XX:+UnlockExperimentalVMOptions -XX:ShenandoahGCHeuristics=adaptive",
+            "zgc" => "-XX:+UseZGC -XX:+UnlockExperimentalVMOptions -XX:ZGCAllocationSpikeTolerance=5",
+            "genzgc" => "-XX:+UseZGC -XX:+ZGenerational -XX:+UnlockExperimentalVMOptions -XX:ZGCAllocationSpikeTolerance=5",
+            "graalvm" => "-XX:+UnlockExperimentalVMOptions -XX:+AlwaysPreTouch -XX:+UseNUMA",
+            "lowlatency" => "-XX:+UseG1GC -XX:+UnlockExperimentalVMOptions -XX:MaxGCPauseMillis=15 -XX:G1ReservePercent=15 -XX:G1NewSizePercent=30 -XX:G1HeapRegionSize=16M -XX:+ParallelRefProcEnabled",
+            "lowpc" => "-XX:+UseSerialGC -XX:MinHeapFreeRatio=10 -XX:MaxHeapFreeRatio=20",
+            "aikar" => "-XX:+UseG1GC -XX:+ParallelRefProcEnabled -XX:MaxGCPauseMillis=200 -XX:+UnlockExperimentalVMOptions -XX:+DisableExplicitGC -XX:+AlwaysPreTouch -XX:G1NewSizePercent=30 -XX:G1MaxNewSizePercent=40 -XX:G1HeapRegionSize=8M -XX:G1ReservePercent=20 -XX:G1HeapWastePercent=5 -XX:G1MixedGCCountTarget=4 -XX:InitiatingHeapOccupancyPercent=15 -XX:G1MixedGCLiveThresholdPercent=90 -XX:G1RSetUpdatingPauseTimePercent=5 -XX:SurvivorRatio=32 -XX:+PerfDisableSharedMem -XX:MaxTenuringThreshold=1",
+            _ => string.Empty
+        };
+
+        if (string.IsNullOrWhiteSpace(preset))
+            return;
+
+        var newList = string.IsNullOrWhiteSpace(ExtraJvmArguments)
+            ? new List<string>()
+            : new List<string>(ExtraJvmArguments.Split(' ', StringSplitOptions.RemoveEmptyEntries));
+
+        bool hasGc = preset.Contains("-XX:+UseG1GC") || preset.Contains("-XX:+UseZGC") ||
+                     preset.Contains("-XX:+UseShenandoahGC") || preset.Contains("-XX:+UseSerialGC");
+
+        if (hasGc)
+        {
+            newList.RemoveAll(x => x.StartsWith("-XX:+UseG1GC") || x.StartsWith("-XX:+UseZGC") ||
+                                   x.StartsWith("-XX:+UseShenandoahGC") || x.StartsWith("-XX:+UseSerialGC") ||
+                                   x.StartsWith("-XX:+UseParallelGC") || x.StartsWith("-XX:+UseConcMarkSweepGC"));
+
+            if (!preset.Contains("-XX:+UseZGC"))
+            {
+                newList.RemoveAll(x => x.StartsWith("-XX:+ZGenerational") || x.StartsWith("-XX:ZGCAllocationSpikeTolerance"));
+            }
+
+            if (!preset.Contains("-XX:+UseG1GC"))
+            {
+                newList.RemoveAll(x => x.StartsWith("-XX:G1NewSizePercent") || 
+                                       x.StartsWith("-XX:G1ReservePercent") || 
+                                       x.StartsWith("-XX:G1HeapRegionSize") ||
+                                       x.StartsWith("-XX:G1MaxNewSizePercent") ||
+                                       x.StartsWith("-XX:G1HeapWastePercent") ||
+                                       x.StartsWith("-XX:G1MixedGCCountTarget") ||
+                                       x.StartsWith("-XX:G1MixedGCLiveThresholdPercent") ||
+                                       x.StartsWith("-XX:G1RSetUpdatingPauseTimePercent"));
+            }
+
+            if (!preset.Contains("-XX:+UseShenandoahGC"))
+            {
+                newList.RemoveAll(x => x.StartsWith("-XX:ShenandoahGCHeuristics"));
+            }
+
+            if (!preset.Contains("-XX:+UseSerialGC"))
+            {
+                newList.RemoveAll(x => x.StartsWith("-XX:MinHeapFreeRatio") || x.StartsWith("-XX:MaxHeapFreeRatio"));
+            }
+        }
+
+        var toAdd = preset.Split(' ', StringSplitOptions.RemoveEmptyEntries);
+        foreach (var flag in toAdd)
+        {
+            if (!newList.Contains(flag))
+            {
+                newList.Add(flag);
+            }
+        }
+
+        ExtraJvmArguments = string.Join(' ', newList);
     }
 }

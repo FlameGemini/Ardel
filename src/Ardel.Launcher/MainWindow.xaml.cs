@@ -56,7 +56,7 @@ public sealed partial class MainWindow : Window
 
     public void InitializeNavigation()
     {
-        SystemBackdrop = null;
+        SystemBackdrop = new Microsoft.UI.Xaml.Media.MicaBackdrop();
         ApplyLocalization(navigateToSettings: false);
     }
 

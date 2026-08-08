@@ -1,5 +1,6 @@
 using System.Collections.Concurrent;
 using System.Diagnostics;
+using System.Text.Json;
 using System.Text.RegularExpressions;
 using Microsoft.Win32;
 using Ardel.Launcher.Localization;
@@ -14,6 +15,54 @@ namespace Ardel.Launcher.Helpers;
 public static partial class JavaLocator
 {
     private static readonly ConcurrentDictionary<string, int> VersionCache = new(StringComparer.OrdinalIgnoreCase);
+
+    private static string CachePath =>
+        Path.Combine(
+            Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData),
+            "Ardel",
+            "java_version_cache.json");
+
+    static JavaLocator()
+    {
+        try
+        {
+            var path = CachePath;
+            if (File.Exists(path))
+            {
+                var json = File.ReadAllText(path);
+                var dict = JsonSerializer.Deserialize<Dictionary<string, int>>(json);
+                if (dict is not null)
+                {
+                    foreach (var kv in dict)
+                    {
+                        if (File.Exists(kv.Key))
+                            VersionCache[kv.Key] = kv.Value;
+                    }
+                }
+            }
+        }
+        catch
+        {
+            // best-effort
+        }
+    }
+
+    private static void SaveCache()
+    {
+        try
+        {
+            var dir = Path.GetDirectoryName(CachePath);
+            if (dir is not null)
+                Directory.CreateDirectory(dir);
+
+            var json = JsonSerializer.Serialize(VersionCache);
+            File.WriteAllText(CachePath, json);
+        }
+        catch
+        {
+            // best-effort
+        }
+    }
 
     private static readonly string[] CommonRoots =
     [
@@ -210,6 +259,7 @@ public static partial class JavaLocator
                 Loc.Format(LocKeys.Error_JavaVersionParse, Environment.NewLine, text));
 
         VersionCache[javaExePath] = major;
+        SaveCache();
         return major;
     }
 

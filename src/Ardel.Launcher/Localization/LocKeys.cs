@@ -31,6 +31,7 @@ public static class LocKeys
     public const string Action_OpenMinecraftFolder = "Action_OpenMinecraftFolder";
     public const string Action_Delete = "Action_Delete";
     public const string Action_Back = "Action_Back";
+    public const string Action_Apply = "Action_Apply";
 
     // Home
     public const string Home_Tagline = "Home_Tagline";
@@ -103,6 +104,7 @@ public static class LocKeys
     public const string InstanceSettings_NavRuntime = "InstanceSettings_NavRuntime";
     public const string InstanceSettings_NavWindow = "InstanceSettings_NavWindow";
     public const string InstanceSettings_NavAdvanced = "InstanceSettings_NavAdvanced";
+    public const string InstanceSettings_NavSettings = "InstanceSettings_NavSettings";
     public const string InstanceSettings_NavManage = "InstanceSettings_NavManage";
     public const string InstanceSettings_Name = "InstanceSettings_Name";
     public const string InstanceSettings_Rename = "InstanceSettings_Rename";

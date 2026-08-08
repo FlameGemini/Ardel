@@ -11,33 +11,76 @@
                 <XamlControlsResources xmlns="using:Microsoft.UI.Xaml.Controls" />
             </ResourceDictionary.MergedDictionaries>
 
-            <Color x:Key="ArdelAccentColor">#2D8A5B</Color>
-            <Color x:Key="ArdelAccentDarkColor">#1F6B45</Color>
-            <SolidColorBrush x:Key="ArdelAccentBrush" Color="{StaticResource ArdelAccentColor}" />
-            <SolidColorBrush x:Key="ArdelAccentDarkBrush" Color="{StaticResource ArdelAccentDarkColor}" />
+            <ResourceDictionary.ThemeDictionaries>
+                <ResourceDictionary x:Key="Default">
+                    <!-- Dark theme resources -->
+                    <Color x:Key="ArdelAccentColor">#3DAA72</Color>
+                    <Color x:Key="ArdelAccentDarkColor">#2D8A5B</Color>
+                    <Color x:Key="ArdelSoftAccentColor">#1A3326</Color>
+                    <Color x:Key="ArdelCanvasColor">#121A16</Color>
+                    <Color x:Key="ArdelRailColor">#18211C</Color>
+                    <Color x:Key="ArdelInkColor">#E8F0EA</Color>
+                    <Color x:Key="ArdelMuteColor">#9AABA0</Color>
+                </ResourceDictionary>
+                <ResourceDictionary x:Key="Light">
+                    <!-- Light theme resources -->
+                    <Color x:Key="ArdelAccentColor">#1F7A4D</Color>
+                    <Color x:Key="ArdelAccentDarkColor">#145C38</Color>
+                    <Color x:Key="ArdelSoftAccentColor">#D8EBDD</Color>
+                    <Color x:Key="ArdelCanvasColor">#F3EFE6</Color>
+                    <Color x:Key="ArdelRailColor">#E8E2D6</Color>
+                    <Color x:Key="ArdelInkColor">#1A2420</Color>
+                    <Color x:Key="ArdelMuteColor">#5C6B62</Color>
+                </ResourceDictionary>
+            </ResourceDictionary.ThemeDictionaries>
+
+            <SolidColorBrush x:Key="ArdelAccentBrush" Color="{ThemeResource ArdelAccentColor}" />
+            <SolidColorBrush x:Key="ArdelAccentDarkBrush" Color="{ThemeResource ArdelAccentDarkColor}" />
+            <SolidColorBrush x:Key="ArdelSoftAccentBrush" Color="{ThemeResource ArdelSoftAccentColor}" />
+            <SolidColorBrush x:Key="ArdelCanvasBrush" Color="{ThemeResource ArdelCanvasColor}" />
+            <SolidColorBrush x:Key="ArdelRailBrush" Color="{ThemeResource ArdelRailColor}" />
+            <SolidColorBrush x:Key="ArdelInkBrush" Color="{ThemeResource ArdelInkColor}" />
+            <SolidColorBrush x:Key="ArdelMuteBrush" Color="{ThemeResource ArdelMuteColor}" />
+
+            <!-- Global NavigationView Overrides for Custom Canvas & Rail Colors -->
+            <StaticResource x:Key="NavigationViewDefaultPaneBackground" ResourceKey="ArdelRailBrush" />
+            <StaticResource x:Key="NavigationViewExpandedPaneBackground" ResourceKey="ArdelRailBrush" />
+            <StaticResource x:Key="NavigationViewContentGridBackground" ResourceKey="ArdelCanvasBrush" />
 
             <converters:BoolToVisibilityConverter x:Key="BoolToVisibility" />
             <converters:BoolToVisibilityConverter x:Key="InverseBoolToVisibility" Invert="True" />
             <converters:NullToBoolConverter x:Key="NullToBool" />
+            <converters:EqualValueToVisibilityConverter x:Key="EqualValueToVisibility" />
+
+            <Style x:Key="CategoryListItemStyle" TargetType="ListViewItem">
+                <Setter Property="MinHeight" Value="40" />
+                <Setter Property="Padding" Value="0" />
+                <Setter Property="Margin" Value="0,0,0,4" />
+                <Setter Property="CornerRadius" Value="6" />
+            </Style>
 
             <Style x:Key="ArdelPageTitleStyle" TargetType="TextBlock" BasedOn="{StaticResource TitleLargeTextBlockStyle}">
+                <Setter Property="FontFamily" Value="ms-appx:///Assets/Fonts/Syne.ttf#Syne" />
                 <Setter Property="FontWeight" Value="SemiBold" />
                 <Setter Property="FontSize" Value="32" />
                 <Setter Property="Margin" Value="0,0,0,20" />
             </Style>
 
             <Style x:Key="ArdelSectionCaptionStyle" TargetType="TextBlock" BasedOn="{StaticResource BodyStrongTextBlockStyle}">
+                <Setter Property="FontFamily" Value="ms-appx:///Assets/Fonts/Outfit.ttf#Outfit" />
                 <Setter Property="Opacity" Value="0.62" />
                 <Setter Property="Margin" Value="0,0,0,16" />
             </Style>
 
             <Style x:Key="LaunchButtonStyle" TargetType="Button" BasedOn="{StaticResource AccentButtonStyle}">
+                <Setter Property="FontFamily" Value="ms-appx:///Assets/Fonts/Outfit.ttf#Outfit" />
                 <Setter Property="MinWidth" Value="200" />
                 <Setter Property="MinHeight" Value="56" />
                 <Setter Property="Padding" Value="28,12" />
                 <Setter Property="FontSize" Value="17" />
                 <Setter Property="FontWeight" Value="SemiBold" />
                 <Setter Property="CornerRadius" Value="6" />
+                <Setter Property="Background" Value="{ThemeResource ArdelAccentBrush}" />
             </Style>
         </ResourceDictionary>
     </Application.Resources>

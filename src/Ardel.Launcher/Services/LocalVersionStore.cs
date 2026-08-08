@@ -50,7 +50,8 @@ public sealed class LocalVersionStore
                     IsInstalled = true,
                     ReleaseTime = File.GetLastWriteTimeUtc(jsonPath),
                     Notes = notes,
-                    IconPath = iconPath
+                    IconPath = iconPath,
+                    OfficialJavaMajor = OfficialJavaRequirements.TryGetCached(id, out var cachedMajor) ? cachedMajor : 0
                 },
                 ReadInheritsFrom(jsonPath)));
         }

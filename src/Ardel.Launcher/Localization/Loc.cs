@@ -51,6 +51,7 @@ public static partial class Loc
         [LocKeys.Action_OpenMinecraftFolder] = "Open .minecraft",
         [LocKeys.Action_Delete] = "Delete",
         [LocKeys.Action_Back] = "Back",
+        [LocKeys.Action_Apply] = "Apply",
 
         [LocKeys.Home_Tagline] = "Launch Minecraft",
         [LocKeys.Home_Version] = "Version",
@@ -122,6 +123,7 @@ public static partial class Loc
         [LocKeys.InstanceSettings_NavRuntime] = "Runtime",
         [LocKeys.InstanceSettings_NavWindow] = "Window & server",
         [LocKeys.InstanceSettings_NavAdvanced] = "Advanced",
+        [LocKeys.InstanceSettings_NavSettings] = "Settings",
         [LocKeys.InstanceSettings_NavManage] = "Manage",
         [LocKeys.InstanceSettings_Name] = "Instance name",
         [LocKeys.InstanceSettings_Rename] = "Rename",

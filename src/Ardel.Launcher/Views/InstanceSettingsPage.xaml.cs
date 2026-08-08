@@ -70,4 +70,20 @@ public sealed partial class InstanceSettingsPage : Page
 
         Frame.Navigate(typeof(InstancesPage), null, new EntranceNavigationTransitionInfo());
     }
+
+    private void CategoryList_SelectionChanged(object sender, SelectionChangedEventArgs e)
+    {
+        if (SettingPanelsContainer is null)
+            return;
+
+        var visual = Microsoft.UI.Xaml.Hosting.ElementCompositionPreview.GetElementVisual(SettingPanelsContainer);
+        var compositor = visual.Compositor;
+
+        var animation = compositor.CreateScalarKeyFrameAnimation();
+        animation.InsertKeyFrame(0.0f, 0.0f);
+        animation.InsertKeyFrame(1.0f, 1.0f);
+        animation.Duration = System.TimeSpan.FromMilliseconds(200);
+
+        visual.StartAnimation("Opacity", animation);
+    }
 }

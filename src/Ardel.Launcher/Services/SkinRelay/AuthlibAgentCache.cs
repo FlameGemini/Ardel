@@ -34,6 +34,12 @@ internal static class AuthlibAgentCache
             "agents");
         Directory.CreateDirectory(root);
 
+        var existing = Directory.EnumerateFiles(root, "authlib-injector-*.jar")
+            .OrderByDescending(File.GetLastWriteTimeUtc)
+            .FirstOrDefault(f => new FileInfo(f).Length > 10_000);
+        if (existing is not null)
+            return existing;
+
         var catalog = await TryFetchCatalogAsync(http, preferMirror, cancellationToken)
             .ConfigureAwait(false);
         catalog ??= await TryFetchCatalogAsync(http, preferMirror: false, cancellationToken)

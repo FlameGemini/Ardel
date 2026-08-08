@@ -24,6 +24,7 @@ public sealed class GameVersionItem : INotifyPropertyChanged
     private string _notes = string.Empty;
     private string? _iconPath;
     private Microsoft.UI.Xaml.Media.Imaging.BitmapImage? _iconImage;
+    private bool _hasCustomIcon;
 
     public required string Id { get; init; }
     public string Type { get; init; } = "release";
@@ -57,21 +58,34 @@ public sealed class GameVersionItem : INotifyPropertyChanged
             if (_iconPath == value)
                 return;
             _iconPath = value;
-            _iconImage = Helpers.InstanceIconHelper.CreateImage(value, decodePixels: 48);
+            _iconImage = null;
+            _cachedJavaLabel = null;
+            _hasCustomIcon = !string.IsNullOrWhiteSpace(value) && File.Exists(value);
             OnPropertyChanged();
             OnPropertyChanged(nameof(HasCustomIcon));
             OnPropertyChanged(nameof(IconImage));
         }
     }
 
-    public bool HasCustomIcon => _iconImage is not null;
+    public bool HasCustomIcon => _hasCustomIcon;
 
-    public Microsoft.UI.Xaml.Media.Imaging.BitmapImage? IconImage => _iconImage;
+    public Microsoft.UI.Xaml.Media.Imaging.BitmapImage? IconImage
+    {
+        get
+        {
+            if (_iconImage is null && !string.IsNullOrWhiteSpace(_iconPath))
+            {
+                _iconImage = Helpers.InstanceIconHelper.CreateImage(_iconPath, decodePixels: 48);
+            }
+            return _iconImage;
+        }
+    }
 
     /// <summary>Reload icon bitmap after the file on disk was replaced.</summary>
     public void RefreshIcon()
     {
-        _iconImage = Helpers.InstanceIconHelper.CreateImage(_iconPath, decodePixels: 48);
+        _iconImage = null;
+        _hasCustomIcon = !string.IsNullOrWhiteSpace(_iconPath) && File.Exists(_iconPath);
         OnPropertyChanged(nameof(HasCustomIcon));
         OnPropertyChanged(nameof(IconImage));
     }
