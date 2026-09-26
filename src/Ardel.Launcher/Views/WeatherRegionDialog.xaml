@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="utf-8"?>
+<UserControl
+    x:Class="Ardel.Launcher.Views.WeatherRegionDialog"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:loc="using:Ardel.Launcher.Localization"
+    xmlns:services="using:Ardel.Launcher.Services"
+    MinWidth="440"
+    MaxWidth="520">
+
+    <StackPanel Spacing="12" Padding="4,4,4,8">
+        <Border
+            Background="{ThemeResource SubtleFillColorSecondaryBrush}"
+            CornerRadius="8"
+            Padding="12,10">
+            <StackPanel Orientation="Horizontal" Spacing="10">
+                <FontIcon
+                    Glyph="&#xE946;"
+                    FontFamily="Segoe Fluent Icons"
+                    FontSize="16"
+                    VerticalAlignment="Top"
+                    Margin="0,2,0,0"
+                    Foreground="{ThemeResource ArdelAccentBrush}" />
+                <TextBlock
+                    Text="{loc:String Key=Settings_HomeWidgetsRegionEnglishTip}"
+                    TextWrapping="Wrap"
+                    LineHeight="20"
+                    FontWeight="SemiBold" />
+            </StackPanel>
+        </Border>
+
+        <Button
+            x:Name="CurrentLocationButton"
+            HorizontalAlignment="Stretch"
+            Click="CurrentLocationButton_Click">
+            <StackPanel Orientation="Horizontal" Spacing="8">
+                <FontIcon Glyph="&#xE1C4;" FontFamily="Segoe Fluent Icons" FontSize="14" />
+                <TextBlock Text="{loc:String Key=Settings_HomeWidgetsUseCurrentLocation}" VerticalAlignment="Center" />
+            </StackPanel>
+        </Button>
+
+        <Grid ColumnSpacing="8">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="Auto" />
+            </Grid.ColumnDefinitions>
+            <TextBox
+                x:Name="QueryBox"
+                PlaceholderText="{loc:String Key=Settings_HomeWidgetsRegionPlaceholder}"
+                KeyDown="QueryBox_KeyDown" />
+            <Button
+                x:Name="SearchButton"
+                Grid.Column="1"
+                Content="{loc:String Key=Action_Search}"
+                Click="SearchButton_Click"
+                MinWidth="88" />
+        </Grid>
+
+        <TextBlock
+            x:Name="StatusText"
+            Opacity="0.7"
+            TextWrapping="Wrap"
+            Visibility="Collapsed" />
+
+        <ListView
+            x:Name="ResultsList"
+            MaxHeight="260"
+            SelectionMode="Single"
+            SelectionChanged="ResultsList_SelectionChanged">
+            <ListView.ItemTemplate>
+                <DataTemplate x:DataType="services:WeatherPlace">
+                    <TextBlock Text="{x:Bind DisplayName}" TextWrapping="Wrap" Margin="0,6" />
+                </DataTemplate>
+            </ListView.ItemTemplate>
+        </ListView>
+    </StackPanel>
+</UserControl>

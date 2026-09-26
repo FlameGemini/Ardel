@@ -1,0 +1,30 @@
+{
+  "update": {
+    "Download_JavaTag": "Java {0}",
+    "Download_SectionMinecraft": "Minecraft",
+    "Download_SectionMod": "Modifiche",
+    "InstanceSettings_JvmPresetShenandoah": "ShenandoahGC (Java 11 o successivo)",
+    "InstanceSettings_JvmPresetZgc": "ZGC (Java 15 o successivo)",
+    "InstanceSettings_SaveValueNo": "No",
+    "Java_NamedWithPath": "Java {0} — {1}",
+    "Java_NamedWithSource": "Java {0} ({1})",
+    "LoaderTag_Named": "{0} ({1})",
+    "Mod_DetailChannelBeta": "Beta",
+    "Mod_DetailTitle": "Modifica",
+    "Nav_Account": "Profilo",
+    "Nav_Download": "Scarica",
+    "Nav_Play": "Inizio",
+    "Progress_FileFallback": "archivio",
+    "Settings_ThemeAurora": "Aurora boreale"
+  },
+  "add": {
+    "Oobe_StepBreak_Title": "Angolo dell'acqua",
+    "Oobe_StepBreak_Body": "",
+    "Oobe_StepAccount_Title": "Aggiungi un account offline",
+    "Oobe_StepAccount_Subtitle": "Facoltativo — puoi aggiungere altri account in seguito.",
+    "Oobe_StepHydrate_Title": "Acqua",
+    "Oobe_StepHydrate_Body": "",
+    "Modpack_ResolvingFiles": "Risoluzione dei file del modpack…",
+    "Modpack_MissingFile": "File del modpack mancante: {0}"
+  }
+}

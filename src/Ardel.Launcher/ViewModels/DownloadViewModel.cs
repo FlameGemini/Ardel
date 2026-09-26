@@ -1,0 +1,1143 @@
+using System.Collections.ObjectModel;
+using System.Collections.Specialized;
+using System.Diagnostics;
+using CommunityToolkit.Mvvm.ComponentModel;
+using CommunityToolkit.Mvvm.Input;
+using Microsoft.UI.Dispatching;
+using Ardel.Launcher.Helpers;
+using Ardel.Launcher.Localization;
+using Ardel.Launcher.Models;
+using Ardel.Launcher.Services;
+
+namespace Ardel.Launcher.ViewModels;
+
+public enum DownloadSection
+{
+    Minecraft,
+    Mod,
+    ResourcePack,
+    Datapack,
+    ShaderPack,
+    Modpack
+}
+
+/// <summary>
+/// Download page: release / snapshot / April Fools vanilla clients. Supports concurrent installs.
+/// </summary>
+public partial class DownloadViewModel : ObservableObject
+{
+    public const string CategoryIdRelease = "release";
+    public const string CategoryIdSnapshot = "snapshot";
+    public const string CategoryIdAprilFools = "april_fools";
+
+    /// <summary>Soft cap for release/snapshot lists — search lifts the cap.</summary>
+    private const int DefaultListCap = 120;
+    private const int SnapshotListCap = 240;
+
+    private readonly Lazy<IMinecraftLaunchService> _launchService;
+    private readonly LaunchViewModel _launchViewModel;
+    private readonly DispatcherQueue _dispatcher;
+    private readonly DispatcherQueueTimer _filterTimer;
+    private readonly object _jobsGate = new();
+
+    /// <summary>Raised on UI thread when a download finishes (success or failure toast).</summary>
+    public event EventHandler<DownloadToastEventArgs>? ToastRequested;
+
+    public DownloadViewModel(
+        Lazy<IMinecraftLaunchService> launchService,
+        LaunchViewModel launchViewModel,
+        DispatcherQueue dispatcher)
+    {
+        _launchService = launchService;
+        _launchViewModel = launchViewModel;
+        _dispatcher = dispatcher;
+        _filterTimer = dispatcher.CreateTimer();
+        _filterTimer.IsRepeating = false;
+        _filterTimer.Interval = TimeSpan.FromMilliseconds(180);
+        _filterTimer.Tick += (_, _) => ApplyFilter();
+        CategoryOptions =
+        [
+            new NamedOption { Id = CategoryIdRelease, Name = Loc.Get(LocKeys.Category_Release) },
+            new NamedOption { Id = CategoryIdSnapshot, Name = Loc.Get(LocKeys.Category_Snapshot) },
+            new NamedOption { Id = CategoryIdAprilFools, Name = Loc.Get(LocKeys.Category_AprilFools) }
+        ];
+        _selectedCategory = CategoryOptions[0];
+        _statusText = Loc.Get(LocKeys.Download_SelectHint);
+        ActiveDownloads.CollectionChanged += OnActiveDownloadsChanged;
+        RefreshGameDirectory();
+        ModSearch = new ModSearchViewModel(dispatcher);
+        ModDetail = new ModDetailViewModel(dispatcher);
+        ModDetail.PropertyChanged += OnModDetailPropertyChanged;
+    }
+
+    private void OnModDetailPropertyChanged(object? sender, System.ComponentModel.PropertyChangedEventArgs e)
+    {
+        if (e.PropertyName != nameof(ModDetailViewModel.IsOpen) || ModDetail.IsOpen)
+            return;
+
+        var returnArgs = ReturnToModpackContents;
+        if (returnArgs is null)
+            return;
+
+        ReturnToModpackContents = null;
+        _dispatcher.TryEnqueue(() =>
+        {
+            // Restore modpack section without kicking a Mod search.
+            _suppressSectionSearch = true;
+            _keepSearchFilters = true;
+            try
+            {
+                SelectedSection = DownloadSection.Modpack;
+            }
+            finally
+            {
+                _suppressSectionSearch = false;
+                _keepSearchFilters = false;
+            }
+
+            if (returnArgs.PackProject is { } pack)
+                _ = ModDetail.OpenAsync(pack, null, CatalogProjectKind.Modpack);
+
+            if (App.MainWindowInstance is MainWindow main)
+                main.NavigateToModpackContents(returnArgs);
+        });
+    }
+
+    /// <summary>Mod section filters and catalog results.</summary>
+    public ModSearchViewModel ModSearch { get; }
+
+    /// <summary>Opened Mod project detail overlay.</summary>
+    public ModDetailViewModel ModDetail { get; }
+
+    public List<GameVersionItem> AllVersions { get; } = [];
+
+    /// <summary>Bound list — replaced as a whole so ListView gets one update, not N adds.</summary>
+    [ObservableProperty] private IReadOnlyList<GameVersionItem> _filteredVersions = Array.Empty<GameVersionItem>();
+
+    public ObservableCollection<DownloadJob> ActiveDownloads { get; } = [];
+
+    public IReadOnlyList<NamedOption> CategoryOptions { get; }
+
+    [ObservableProperty] private string _filterText = string.Empty;
+    [ObservableProperty] private NamedOption? _selectedCategory;
+    [ObservableProperty] private GameVersionItem? _selectedVersion;
+    [ObservableProperty] private bool _hasActiveDownloads;
+    [ObservableProperty] private bool _hasFinishedDownloads;
+    [ObservableProperty] private string _statusText;
+    [ObservableProperty] private string _gameDirectory = string.Empty;
+    [ObservableProperty] private int _activeDownloadCount;
+    [ObservableProperty] private bool _isLoadingVersions;
+    [ObservableProperty] private bool _minecraftLoadFailed;
+    [ObservableProperty] private string _minecraftEmptyText = string.Empty;
+    [ObservableProperty] private DownloadSection _selectedSection = DownloadSection.Minecraft;
+
+    public bool ShowMinecraftEmpty =>
+        !IsLoadingVersions &&
+        FilteredVersions.Count == 0 &&
+        !string.IsNullOrEmpty(MinecraftEmptyText);
+
+    partial void OnIsLoadingVersionsChanged(bool value) =>
+        OnPropertyChanged(nameof(ShowMinecraftEmpty));
+
+    partial void OnMinecraftLoadFailedChanged(bool value) =>
+        OnPropertyChanged(nameof(ShowMinecraftEmpty));
+
+    partial void OnMinecraftEmptyTextChanged(string value) =>
+        OnPropertyChanged(nameof(ShowMinecraftEmpty));
+
+    public bool IsMinecraftSection => SelectedSection == DownloadSection.Minecraft;
+    public bool IsCatalogSection => SelectedSection is
+        DownloadSection.Mod or DownloadSection.ResourcePack or DownloadSection.Datapack
+        or DownloadSection.ShaderPack or DownloadSection.Modpack;
+
+    public bool IsModSection => IsCatalogSection;
+
+    public bool CanDownloadSelected =>
+        SelectedVersion is not null && !IsVersionBusy(SelectedVersion.Id);
+
+    private bool _keepSearchFilters;
+    private bool _suppressSectionSearch;
+    private bool _preserveSectionOnEnter;
+
+    /// <summary>
+    /// Keep the current <see cref="SelectedSection"/> on the next download-page navigation
+    /// (instance mod search, catalog detail, modpack contents back, etc.).
+    /// </summary>
+    public void MarkSectionIntentional() => _preserveSectionOnEnter = true;
+
+    /// <summary>
+    /// Sidebar / generic download nav: default to Minecraft unless a caller just set a section.
+    /// </summary>
+    public void ApplyDownloadPageEntry()
+    {
+        if (_preserveSectionOnEnter)
+        {
+            _preserveSectionOnEnter = false;
+            return;
+        }
+
+        SelectedSection = DownloadSection.Minecraft;
+    }
+
+    /// <summary>
+    /// After closing a Mod detail that was opened from a modpack contents page,
+    /// navigate back to that contents list instead of dumping the user on Mod search.
+    /// </summary>
+    public ModpackContentsNavArgs? ReturnToModpackContents { get; set; }
+
+    public void BeginInstanceModSearch(string gameVersion, string loaderId, string? keyword = null)
+    {
+        MarkSectionIntentional();
+        _keepSearchFilters = true;
+        _suppressSectionSearch = true;
+        try
+        {
+            SelectedSection = DownloadSection.Mod;
+            ModSearch.ApplyHint(new ModSearchHint(gameVersion, loaderId));
+            if (!string.IsNullOrWhiteSpace(keyword))
+                ModSearch.Keyword = keyword.Trim();
+
+            if (ModSearch.SearchCommand.CanExecute(null))
+                _ = ModSearch.SearchCommand.ExecuteAsync(null);
+        }
+        finally
+        {
+            _suppressSectionSearch = false;
+            _keepSearchFilters = false;
+        }
+    }
+
+    public void OpenCatalogProject(ModProjectItem project, CatalogProjectKind kind, ModSearchHint? hint = null)
+    {
+        MarkSectionIntentional();
+        _keepSearchFilters = true;
+        _suppressSectionSearch = true;
+        try
+        {
+            SelectedSection = kind switch
+            {
+                CatalogProjectKind.ResourcePack => DownloadSection.ResourcePack,
+                CatalogProjectKind.Datapack => DownloadSection.Datapack,
+                CatalogProjectKind.ShaderPack => DownloadSection.ShaderPack,
+                CatalogProjectKind.Modpack => DownloadSection.Modpack,
+                _ => DownloadSection.Mod
+            };
+
+            if (hint is not null)
+                ModSearch.ApplyHint(hint);
+
+            _ = ModDetail.OpenAsync(project, hint, kind);
+        }
+        finally
+        {
+            _keepSearchFilters = false;
+            _suppressSectionSearch = false;
+        }
+    }
+
+    partial void OnSelectedSectionChanged(DownloadSection value)
+    {
+        OnPropertyChanged(nameof(IsMinecraftSection));
+        OnPropertyChanged(nameof(IsModSection));
+        OnPropertyChanged(nameof(IsCatalogSection));
+
+        if (!IsCatalogSection)
+            return;
+
+        var kind = value switch
+        {
+            DownloadSection.ResourcePack => CatalogProjectKind.ResourcePack,
+            DownloadSection.Datapack => CatalogProjectKind.Datapack,
+            DownloadSection.ShaderPack => CatalogProjectKind.ShaderPack,
+            DownloadSection.Modpack => CatalogProjectKind.Modpack,
+            _ => CatalogProjectKind.Mod
+        };
+
+        var kindChanged = ModSearch.ProjectKind != kind;
+        ModSearch.SetProjectKind(kind, resetFilters: !_keepSearchFilters);
+
+        if (_suppressSectionSearch)
+            return;
+
+        if ((kindChanged || ModSearch.Results.Count == 0) &&
+            !ModSearch.IsSearching &&
+            ModSearch.SearchCommand.CanExecute(null))
+        {
+            _ = ModSearch.SearchCommand.ExecuteAsync(null);
+        }
+    }
+
+    /// <summary>Refresh localized labels after <see cref="Loc.SetLanguage"/>.</summary>
+    public void Relocalize()
+    {
+        if (CategoryOptions.Count >= 3)
+        {
+            CategoryOptions[0].Name = Loc.Get(LocKeys.Category_Release);
+            CategoryOptions[1].Name = Loc.Get(LocKeys.Category_Snapshot);
+            CategoryOptions[2].Name = Loc.Get(LocKeys.Category_AprilFools);
+        }
+
+        ModSearch.Relocalize();
+        ModDetail.Relocalize();
+        foreach (var version in AllVersions)
+            version.NotifyLocalization();
+        foreach (var version in FilteredVersions)
+            version.NotifyLocalization();
+        foreach (var job in ActiveDownloads)
+            job.Relocalize();
+
+        if (!MinecraftLoadFailed && !IsLoadingVersions && FilteredVersions.Count == 0)
+            MinecraftEmptyText = Loc.Get(LocKeys.Download_NoResults);
+
+        RefreshShellStatusText();
+    }
+
+    private void RefreshShellStatusText()
+    {
+        if (IsCatalogSection)
+            return;
+
+        if (MinecraftLoadFailed)
+            return;
+
+        if (HasActiveDownloads)
+        {
+            StatusText = Loc.Format(
+                LocKeys.Download_AvailableBusy,
+                ActiveDownloadCount,
+                FilteredVersions.Count);
+            return;
+        }
+
+        if (!IsLoadingVersions && AllVersions.Count > 0)
+        {
+            StatusText = Loc.Format(LocKeys.Download_Available, FilteredVersions.Count);
+            return;
+        }
+
+        StatusText = Loc.Get(LocKeys.Download_SelectHint);
+    }
+
+    public void RefreshGameDirectory()
+    {
+        GameDirectory = GamePaths.GetMinecraftRoot();
+    }
+
+    public LauncherSettings SnapshotSettingsForInstall() => _launchViewModel.SnapshotSettings();
+
+    /// <summary>Brief busy chrome when revisiting Download with a cached version list.</summary>
+    public async Task AcknowledgeCachedVersionsAsync()
+    {
+        IsLoadingVersions = true;
+        try
+        {
+            await Task.Yield();
+        }
+        finally
+        {
+            IsLoadingVersions = false;
+        }
+    }
+
+    partial void OnFilterTextChanged(string value)
+    {
+        _filterTimer.Stop();
+        _filterTimer.Start();
+    }
+
+    partial void OnSelectedCategoryChanged(NamedOption? value)
+    {
+        ApplyFilter();
+    }
+
+    [RelayCommand]
+    private async Task LoadAsync()
+    {
+        var showSpinner = AllVersions.Count == 0;
+        try
+        {
+            if (showSpinner)
+                IsLoadingVersions = true;
+            MinecraftLoadFailed = false;
+
+            var settings = _launchViewModel.SnapshotSettingsWithoutFlush();
+            var items = await Task.Run(async () =>
+                    await _launchService.Value.GetVersionsAsync(settings).ConfigureAwait(false))
+                .ConfigureAwait(true);
+
+            AllVersions.Clear();
+            AllVersions.AddRange(items);
+            ApplyFilter();
+            MinecraftLoadFailed = false;
+            MinecraftEmptyText = Loc.Get(LocKeys.Download_NoResults);
+        }
+        catch (Exception ex)
+        {
+            MinecraftLoadFailed = true;
+            MinecraftEmptyText = Loc.Format(LocKeys.Download_LoadFailed, ex.Message);
+            Debug.WriteLine(ex);
+        }
+        finally
+        {
+            IsLoadingVersions = false;
+        }
+    }
+
+    /// <summary>Enqueue an install from the options dialog.</summary>
+    public void StartInstall(InstallRequest request)
+    {
+        ArgumentNullException.ThrowIfNull(request);
+
+        var targetId = request.CustomVersionName.Trim();
+        if (IsVersionBusy(targetId) || IsVersionBusy(request.MinecraftVersionId))
+        {
+            StatusText = Loc.Format(LocKeys.Download_AlreadyRunning, targetId);
+            return;
+        }
+
+        var preexisting = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
+
+        var job = new DownloadJob(request, OnJobCancelFromUi)
+        {
+            WasAlreadyInstalled = false,
+            PreexistingVersionFolders = preexisting
+        };
+
+        ActiveDownloads.Insert(0, job);
+        NotifyCanDownload();
+        StatusText = Loc.Format(LocKeys.Download_Started, targetId, ActiveDownloadCount);
+
+        _ = RunDownloadAsync(job);
+    }
+
+    /// <summary>Enqueue a Mod jar download into an instance mods folder.</summary>
+    public void StartModInstall(ModFileInstallRequest request)
+    {
+        ArgumentNullException.ThrowIfNull(request);
+
+        var display = request.DisplayName.Trim();
+        if (string.IsNullOrEmpty(display))
+            display = request.FileName;
+
+        if (IsModFileBusy(request.ModsDirectory, request.FileName))
+        {
+            StatusText = Loc.Format(LocKeys.Download_AlreadyRunning, display);
+            return;
+        }
+
+        var job = new DownloadJob(request, OnJobCancelFromUi);
+        ActiveDownloads.Insert(0, job);
+        NotifyCanDownload();
+        StatusText = Loc.Format(LocKeys.Download_Started, display, ActiveDownloadCount);
+        _ = RunDownloadAsync(job);
+    }
+
+    public void StartModInstallBatch(IReadOnlyList<ModFileInstallRequest> requests)
+    {
+        ArgumentNullException.ThrowIfNull(requests);
+        if (requests.Count == 0)
+            return;
+
+        foreach (var request in requests)
+            StartModInstall(request);
+    }
+
+    /// <summary>Enqueue a full modpack install into a new isolated instance.</summary>
+    public void StartModpackInstall(ModpackInstallRequest request)
+    {
+        ArgumentNullException.ThrowIfNull(request);
+
+        var instanceId = request.InstanceName.Trim();
+        if (IsVersionBusy(instanceId))
+        {
+            StatusText = Loc.Format(LocKeys.Download_AlreadyRunning, instanceId);
+            return;
+        }
+
+        var job = new DownloadJob(request, OnJobCancelFromUi);
+        ActiveDownloads.Insert(0, job);
+        NotifyCanDownload();
+        StatusText = Loc.Format(LocKeys.Download_Started, request.DisplayName, ActiveDownloadCount);
+        _ = RunDownloadAsync(job);
+    }
+
+    private bool IsModFileBusy(string modsDirectory, string fileName)
+    {
+        var target = Path.Combine(modsDirectory, fileName);
+        foreach (var job in ActiveDownloads)
+        {
+            if (!job.IsActive || job.Kind != DownloadJobKind.ModFile || job.ModRequest is null)
+                continue;
+
+            var other = Path.Combine(job.ModRequest.ModsDirectory, job.ModRequest.FileName);
+            if (string.Equals(other, target, StringComparison.OrdinalIgnoreCase))
+                return true;
+        }
+
+        return false;
+    }
+
+    [RelayCommand]
+    private void Download()
+    {
+        // Dialog is shown by DownloadPage (ItemClick / Download button).
+    }
+
+    private void NotifyCanDownload()
+    {
+        OnPropertyChanged(nameof(CanDownloadSelected));
+        DownloadCommand.NotifyCanExecuteChanged();
+    }
+
+    private void OnJobCancelFromUi(DownloadJob job)
+    {
+        StatusText = Loc.Format(LocKeys.Download_CancelledNamed, job.VersionId);
+        _ = FinishCancelledAsync(job);
+    }
+
+    [RelayCommand]
+    private void CancelDownload(DownloadJob? job)
+    {
+        if (job is null || !job.CanCancel)
+            return;
+
+        job.Cancel();
+        OnJobCancelFromUi(job);
+    }
+
+    private async Task RunDownloadAsync(DownloadJob job)
+    {
+        if (job.Kind == DownloadJobKind.ModFile)
+        {
+            await RunModFileDownloadAsync(job).ConfigureAwait(false);
+            return;
+        }
+
+        if (job.Kind == DownloadJobKind.Modpack)
+        {
+            await RunModpackDownloadAsync(job).ConfigureAwait(false);
+            return;
+        }
+
+        job.State = DownloadJobState.Running;
+        job.IsIndeterminate = true;
+        job.SetLocalizedStatus(LocKeys.Download_Waiting);
+
+        // Snapshot folders off the UI thread before install mutates versions/.
+        var gameDir = GameDirectory;
+        var targetId = job.VersionId;
+        var snapshot = await Task.Run(() => (
+            WasInstalled: GamePaths.IsVersionFullyInstalled(targetId, gameDir),
+            Folders: (IReadOnlySet<string>)new HashSet<string>(
+                GamePaths.ListVersionFolderNames(gameDir),
+                StringComparer.OrdinalIgnoreCase))).ConfigureAwait(false);
+        job.WasAlreadyInstalled = snapshot.WasInstalled;
+        job.PreexistingVersionFolders = snapshot.Folders;
+
+        var uiProgress = new CoalescedUiProgress(_dispatcher, (status, progress, indeterminate) =>
+        {
+            if (!job.IsRunning)
+                return;
+
+            // One batched assignment path — avoid three separate PropertyChanged storms.
+            job.ApplyProgress(status, progress, indeterminate);
+        });
+
+        IProgress<FileProgressInfo> fileProgress = new DirectProgress<FileProgressInfo>(e =>
+        {
+            if (e.TotalTasks <= 0)
+            {
+                uiProgress.ReportStatus(
+                    string.IsNullOrWhiteSpace(e.Name)
+                        ? Loc.Get(LocKeys.Progress_FileFallback)
+                        : e.Name);
+                return;
+            }
+
+            uiProgress.ReportFile(
+                string.IsNullOrWhiteSpace(e.Name) ? Loc.Get(LocKeys.Progress_FileFallback) : e.Name,
+                e.ProgressedTasks,
+                e.TotalTasks);
+        });
+
+        var settings = _launchViewModel.SnapshotSettings();
+
+        try
+        {
+            var installedId = await Task.Run(() => _launchService.Value.InstallAsync(
+                    settings,
+                    job.Request,
+                    fileProgress,
+                    byteProgress: null,
+                    job.Token))
+                .ConfigureAwait(false);
+
+            if (job.IsCancelRequested)
+            {
+                await FinishCancelledAsync(job).ConfigureAwait(false);
+                return;
+            }
+
+            RunOnUi(() =>
+            {
+                job.ProgressValue = 100;
+                job.IsIndeterminate = false;
+                job.State = DownloadJobState.Completed;
+                job.SetLocalizedStatus(LocKeys.Download_Downloaded);
+                RefreshActiveFlags();
+                RefreshGameDirectory();
+                SetInstalledFlag(job.MinecraftVersionId, installed: true);
+                // Must stay on UI thread — ObservableCollection + WinUI bindings throw COMException off-thread.
+                _ = _launchViewModel.SelectInstalledVersionAsync(installedId);
+                StatusText = Loc.Format(LocKeys.Download_DownloadedNamed, installedId);
+                NotifyCanDownload();
+                ToastRequested?.Invoke(this, new DownloadToastEventArgs(
+                    Loc.Format(LocKeys.Download_CompleteToast, installedId),
+                    isError: false));
+            });
+        }
+        catch (Exception ex) when (IsCancellation(ex, job))
+        {
+            await FinishCancelledAsync(job).ConfigureAwait(false);
+        }
+        catch (Exception ex)
+        {
+            var message = UnwrapMessage(ex);
+            Debug.WriteLine(ex);
+
+            if (job.IsCancelRequested)
+            {
+                await FinishCancelledAsync(job).ConfigureAwait(false);
+                return;
+            }
+
+            RunOnUi(() =>
+            {
+                if (!ActiveDownloads.Contains(job))
+                    return;
+
+                job.State = DownloadJobState.Failed;
+                job.IsIndeterminate = false;
+                job.ProgressValue = 0;
+                job.StatusText = message;
+                RefreshActiveFlags();
+                StatusText = Loc.Format(LocKeys.Download_Failed, job.VersionId, message);
+                NotifyCanDownload();
+                ToastRequested?.Invoke(this, new DownloadToastEventArgs(
+                    Loc.Format(LocKeys.Download_Failed, job.VersionId, message),
+                    isError: true));
+            });
+        }
+        finally
+        {
+            job.DisposeToken();
+        }
+    }
+
+    private async Task RunModFileDownloadAsync(DownloadJob job)
+    {
+        var request = job.ModRequest
+                      ?? throw new InvalidOperationException("Missing mod request.");
+
+        job.State = DownloadJobState.Running;
+        job.IsIndeterminate = true;
+        job.SetLocalizedStatus(LocKeys.Mod_InstallDownloading);
+
+        var catalog = new ModCatalogService();
+        var targetPath = Path.Combine(request.ModsDirectory, request.FileName);
+
+        try
+        {
+            await Task.Run(async () =>
+                {
+                    Directory.CreateDirectory(request.ModsDirectory);
+                    await catalog.DownloadFileAsync(
+                            request.DownloadUrl,
+                            targetPath,
+                            new DirectProgress<double>(p =>
+                            {
+                                RunOnUi(() =>
+                                {
+                                    if (!job.IsRunning)
+                                        return;
+                                    job.ApplyProgress(
+                                        Loc.Format(LocKeys.Mod_InstallProgress, request.FileName),
+                                        p,
+                                        indeterminate: false);
+                                });
+                            }),
+                            job.Token)
+                        .ConfigureAwait(false);
+                },
+                job.Token).ConfigureAwait(false);
+
+            if (job.IsCancelRequested)
+            {
+                TryDeletePartialMod(targetPath);
+                await FinishCancelledAsync(job).ConfigureAwait(false);
+                return;
+            }
+
+            RunOnUi(() =>
+            {
+                job.ProgressValue = 100;
+                job.IsIndeterminate = false;
+                job.State = DownloadJobState.Completed;
+                job.SetLocalizedStatus(LocKeys.Download_Downloaded);
+                RefreshActiveFlags();
+                StatusText = Loc.Format(LocKeys.Mod_InstallComplete, request.FileName, request.TargetInstanceId);
+                NotifyCanDownload();
+                ToastRequested?.Invoke(this, new DownloadToastEventArgs(
+                    Loc.Format(LocKeys.Mod_InstallComplete, request.FileName, request.TargetInstanceId),
+                    isError: false));
+            });
+        }
+        catch (Exception ex) when (IsCancellation(ex, job))
+        {
+            TryDeletePartialMod(targetPath);
+            await FinishCancelledAsync(job).ConfigureAwait(false);
+        }
+        catch (Exception ex)
+        {
+            var message = UnwrapMessage(ex);
+            Debug.WriteLine(ex);
+            TryDeletePartialMod(targetPath);
+
+            if (job.IsCancelRequested)
+            {
+                await FinishCancelledAsync(job).ConfigureAwait(false);
+                return;
+            }
+
+            RunOnUi(() =>
+            {
+                if (!ActiveDownloads.Contains(job))
+                    return;
+
+                job.State = DownloadJobState.Failed;
+                job.IsIndeterminate = false;
+                job.ProgressValue = 0;
+                job.StatusText = message;
+                RefreshActiveFlags();
+                StatusText = Loc.Format(LocKeys.Download_Failed, job.VersionId, message);
+                NotifyCanDownload();
+                ToastRequested?.Invoke(this, new DownloadToastEventArgs(
+                    Loc.Format(LocKeys.Download_Failed, job.VersionId, message),
+                    isError: true));
+            });
+        }
+        finally
+        {
+            job.DisposeToken();
+        }
+    }
+
+    private static void TryDeletePartialMod(string targetPath)
+    {
+        try
+        {
+            if (File.Exists(targetPath))
+                File.Delete(targetPath);
+            var tmp = targetPath + ".tmp";
+            if (File.Exists(tmp))
+                File.Delete(tmp);
+        }
+        catch
+        {
+            // ignore cleanup failures
+        }
+    }
+
+    private async Task RunModpackDownloadAsync(DownloadJob job)
+    {
+        var request = job.ModpackRequest
+                      ?? throw new InvalidOperationException("Missing modpack request.");
+
+        job.State = DownloadJobState.Running;
+        job.IsIndeterminate = true;
+        job.SetLocalizedStatus(LocKeys.Modpack_Installing);
+
+        var gameDir = GameDirectory;
+        var snapshot = await Task.Run(() => (
+            WasInstalled: GamePaths.IsVersionFullyInstalled(request.InstanceName, gameDir),
+            Folders: (IReadOnlySet<string>)new HashSet<string>(
+                GamePaths.ListVersionFolderNames(gameDir),
+                StringComparer.OrdinalIgnoreCase))).ConfigureAwait(false);
+        job.WasAlreadyInstalled = snapshot.WasInstalled;
+        job.PreexistingVersionFolders = snapshot.Folders;
+
+        var uiProgress = new CoalescedUiProgress(_dispatcher, (status, progress, indeterminate) =>
+        {
+            if (!job.IsRunning)
+                return;
+            job.ApplyProgress(status, progress, indeterminate);
+        });
+
+        IProgress<FileProgressInfo> fileProgress = new DirectProgress<FileProgressInfo>(e =>
+        {
+            if (e.TotalTasks <= 0)
+            {
+                uiProgress.ReportStatus(
+                    string.IsNullOrWhiteSpace(e.Name)
+                        ? Loc.Get(LocKeys.Modpack_Installing)
+                        : e.Name);
+                return;
+            }
+
+            uiProgress.ReportFile(
+                string.IsNullOrWhiteSpace(e.Name) ? Loc.Get(LocKeys.Modpack_Installing) : e.Name,
+                e.ProgressedTasks,
+                e.TotalTasks);
+        });
+
+        var settings = _launchViewModel.SnapshotSettings();
+
+        try
+        {
+            using var installer = new ModpackInstallService(_launchService.Value);
+            await Task.Run(() => installer.InstallAsync(settings, request, fileProgress, job.Token), job.Token)
+                .ConfigureAwait(false);
+
+            if (job.IsCancelRequested)
+            {
+                await FinishCancelledAsync(job).ConfigureAwait(false);
+                return;
+            }
+
+            RunOnUi(() =>
+            {
+                job.ProgressValue = 100;
+                job.IsIndeterminate = false;
+                job.State = DownloadJobState.Completed;
+                job.SetLocalizedStatus(LocKeys.Download_Downloaded);
+                RefreshActiveFlags();
+                RefreshGameDirectory();
+                _ = _launchViewModel.SelectInstalledVersionAsync(request.InstanceName);
+                StatusText = Loc.Format(LocKeys.Modpack_InstallComplete, request.InstanceName);
+                NotifyCanDownload();
+                ToastRequested?.Invoke(this, new DownloadToastEventArgs(
+                    Loc.Format(LocKeys.Modpack_InstallComplete, request.InstanceName),
+                    isError: false));
+            });
+        }
+        catch (Exception ex) when (IsCancellation(ex, job))
+        {
+            await FinishCancelledAsync(job).ConfigureAwait(false);
+        }
+        catch (Exception ex)
+        {
+            var message = UnwrapMessage(ex);
+            Debug.WriteLine(ex);
+
+            if (job.IsCancelRequested)
+            {
+                await FinishCancelledAsync(job).ConfigureAwait(false);
+                return;
+            }
+
+            // Incomplete pack install — remove the instance folder.
+            if (job.TryBeginCleanup())
+            {
+                await GamePaths.PurgeCancelledVersionAsync(
+                        request.InstanceName,
+                        wasAlreadyInstalled: false,
+                        minecraftRoot: GameDirectory)
+                    .ConfigureAwait(false);
+            }
+
+            RunOnUi(() =>
+            {
+                if (!ActiveDownloads.Contains(job))
+                    return;
+
+                job.State = DownloadJobState.Failed;
+                job.IsIndeterminate = false;
+                job.ProgressValue = 0;
+                job.StatusText = message;
+                RefreshActiveFlags();
+                StatusText = Loc.Format(LocKeys.Download_Failed, request.InstanceName, message);
+                NotifyCanDownload();
+                ToastRequested?.Invoke(this, new DownloadToastEventArgs(
+                    Loc.Format(LocKeys.Download_Failed, request.InstanceName, message),
+                    isError: true));
+            });
+        }
+        finally
+        {
+            job.DisposeToken();
+        }
+    }
+
+    private async Task FinishCancelledAsync(DownloadJob job)
+    {
+        if (!job.TryBeginCleanup())
+            return;
+
+        job.State = DownloadJobState.Cancelled;
+        job.IsIndeterminate = false;
+        job.ProgressValue = 0;
+        job.SetLocalizedStatus(LocKeys.Download_Cancelled);
+
+        if (job.Kind == DownloadJobKind.ModFile)
+        {
+            if (job.ModRequest is not null)
+                TryDeletePartialMod(Path.Combine(job.ModRequest.ModsDirectory, job.ModRequest.FileName));
+
+            RunOnUi(() =>
+            {
+                RefreshActiveFlags();
+                StatusText = Loc.Format(LocKeys.Download_CancelledNamed, job.VersionId);
+                NotifyCanDownload();
+            });
+            return;
+        }
+
+        // Purge the target folder (respect pre-existing complete installs).
+        await GamePaths.PurgeCancelledVersionAsync(
+                job.VersionId,
+                job.WasAlreadyInstalled,
+                minecraftRoot: GameDirectory)
+            .ConfigureAwait(false);
+
+        // Forge/NeoForge leave default forge-* / neoforge-* folders until rename —
+        // remove any folder that did not exist when the job started.
+        foreach (var name in GamePaths.ListVersionFolderNames(GameDirectory))
+        {
+            if (job.PreexistingVersionFolders.Contains(name))
+                continue;
+
+            if (string.Equals(name, job.VersionId, StringComparison.OrdinalIgnoreCase))
+                continue;
+
+            await GamePaths.PurgeCancelledVersionAsync(
+                    name,
+                    wasAlreadyInstalled: false,
+                    minecraftRoot: GameDirectory)
+                .ConfigureAwait(false);
+        }
+
+        var vanillaStill = GamePaths.IsVersionFullyInstalled(job.MinecraftVersionId, GameDirectory);
+
+        RunOnUi(() =>
+        {
+            SetInstalledFlag(job.MinecraftVersionId, vanillaStill);
+            RefreshActiveFlags();
+            StatusText = Loc.Format(LocKeys.Download_CancelledNamed, job.VersionId);
+            NotifyCanDownload();
+            _ = _launchViewModel.LoadLocalVersionsAsync();
+        });
+    }
+
+    private static bool IsCancellation(Exception ex, DownloadJob job)
+    {
+        if (job.IsCancelRequested)
+            return true;
+
+        for (Exception? e = ex; e is not null; e = e.InnerException)
+        {
+            if (e is OperationCanceledException)
+                return true;
+
+            if (e is AggregateException agg &&
+                agg.InnerExceptions.Any(inner => inner is OperationCanceledException))
+                return true;
+        }
+
+        return false;
+    }
+
+    private static string UnwrapMessage(Exception ex)
+    {
+        while (ex is AggregateException { InnerExceptions.Count: 1 } agg)
+            ex = agg.InnerExceptions[0];
+
+        while (ex.InnerException is not null &&
+               ex is not HttpRequestException and not IOException and not InvalidOperationException)
+            ex = ex.InnerException;
+
+        return string.IsNullOrWhiteSpace(ex.Message) ? ex.GetType().Name : ex.Message;
+    }
+
+    private void SetInstalledFlag(string versionId, bool installed)
+    {
+        // Installed badge was removed from the download list — keep data in sync only.
+        for (var i = 0; i < AllVersions.Count; i++)
+        {
+            var item = AllVersions[i];
+            if (!string.Equals(item.Id, versionId, StringComparison.OrdinalIgnoreCase))
+                continue;
+
+            if (item.IsInstalled == installed)
+                return;
+
+            AllVersions[i].IsInstalled = installed;
+            return;
+        }
+    }
+
+    private void RemoveJob(DownloadJob job)
+    {
+        lock (_jobsGate)
+        {
+            if (ActiveDownloads.Contains(job))
+                ActiveDownloads.Remove(job);
+        }
+
+        RefreshActiveFlags();
+        NotifyCanDownload();
+    }
+
+    private bool IsVersionBusy(string versionId)
+    {
+        foreach (var job in ActiveDownloads)
+        {
+            if (!job.IsActive)
+                continue;
+
+            if (string.Equals(job.VersionId, versionId, StringComparison.OrdinalIgnoreCase) ||
+                string.Equals(job.MinecraftVersionId, versionId, StringComparison.OrdinalIgnoreCase))
+                return true;
+        }
+
+        return false;
+    }
+
+    private void OnActiveDownloadsChanged(object? sender, NotifyCollectionChangedEventArgs e)
+    {
+        if (ActiveDownloads.Count > 0 &&
+            App.MainWindowInstance is MainWindow main)
+            main.EnsureDownloadFlyoutBound();
+
+        RefreshActiveFlags();
+    }
+
+    private void RefreshActiveFlags()
+    {
+        ActiveDownloadCount = ActiveDownloads.Count(j => j.IsActive);
+        HasActiveDownloads = ActiveDownloads.Count > 0;
+        HasFinishedDownloads = ActiveDownloads.Any(j => j.CanDismiss);
+        NotifyCanDownload();
+    }
+
+    [RelayCommand]
+    private void RetryJob(DownloadJob? job)
+    {
+        if (job is null || !job.CanRetry)
+            return;
+
+        RemoveJob(job);
+        switch (job.Kind)
+        {
+            case DownloadJobKind.VersionInstall when job.VersionRequest is { } request:
+                StartInstall(request);
+                break;
+            case DownloadJobKind.ModFile when job.ModRequest is { } modRequest:
+                StartModInstall(modRequest);
+                break;
+            case DownloadJobKind.Modpack when job.ModpackRequest is { } packRequest:
+                StartModpackInstall(packRequest);
+                break;
+        }
+    }
+
+    [RelayCommand]
+    private void DismissJob(DownloadJob? job)
+    {
+        if (job is null || !job.CanDismiss)
+            return;
+
+        RemoveJob(job);
+    }
+
+    [RelayCommand]
+    private void ClearFinished()
+    {
+        List<DownloadJob> done;
+        lock (_jobsGate)
+            done = ActiveDownloads.Where(j => j.CanDismiss).ToList();
+
+        foreach (var job in done)
+            RemoveJob(job);
+    }
+
+    partial void OnSelectedVersionChanged(GameVersionItem? value) =>
+        NotifyCanDownload();
+
+    private void ApplyFilter()
+    {
+        var categoryId = SelectedCategory?.Id ?? CategoryIdRelease;
+        var filter = FilterText.AsSpan().Trim();
+        var searching = !filter.IsEmpty;
+        var cap = searching
+            ? int.MaxValue
+            : categoryId switch
+            {
+                CategoryIdAprilFools => int.MaxValue,
+                CategoryIdSnapshot => SnapshotListCap,
+                _ => DefaultListCap
+            };
+
+        // Build off the UI binding, then swap once.
+        var buffer = new List<GameVersionItem>(
+            categoryId == CategoryIdAprilFools ? 32 : 80);
+        foreach (var v in AllVersions)
+        {
+            if (v.Kind != VersionKind.Vanilla)
+                continue;
+
+            if (categoryId == CategoryIdAprilFools)
+            {
+                if (!MinecraftAprilFools.IsAprilFools(v.Id, v.Type, v.ReleaseTime))
+                    continue;
+            }
+            else if (categoryId == CategoryIdSnapshot)
+            {
+                if (v.Type != "snapshot")
+                    continue;
+            }
+            else if (v.Type != "release")
+            {
+                continue;
+            }
+
+            if (searching &&
+                !v.Id.AsSpan().Contains(filter, StringComparison.OrdinalIgnoreCase))
+                continue;
+
+            buffer.Add(v);
+            if (buffer.Count >= cap)
+                break;
+        }
+
+        FilteredVersions = buffer;
+        if (!IsLoadingVersions && buffer.Count == 0)
+        {
+            MinecraftEmptyText = MinecraftLoadFailed && AllVersions.Count == 0
+                ? MinecraftEmptyText
+                : Loc.Get(LocKeys.Download_NoResults);
+        }
+
+        OnPropertyChanged(nameof(ShowMinecraftEmpty));
+        RefreshShellStatusText();
+    }
+
+    private void RunOnUi(Action action)
+    {
+        if (_dispatcher.HasThreadAccess)
+            action();
+        else
+            _dispatcher.TryEnqueue(() => action());
+    }
+}
+
+public sealed class DownloadToastEventArgs : EventArgs
+{
+    public DownloadToastEventArgs(string message, bool isError)
+    {
+        Message = message;
+        IsError = isError;
+    }
+
+    public string Message { get; }
+    public bool IsError { get; }
+}

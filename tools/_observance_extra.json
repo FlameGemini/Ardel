@@ -1,0 +1,858 @@
+{
+  "0101": [
+    "día de año nuevo",
+    "설날",
+    "Neujahr",
+    "Dia de ano novo",
+    "Capodanno",
+    "Новый год"
+  ],
+  "0104": [
+    "Día Mundial del Braille",
+    "세계 점자의 날",
+    "Welt-Braille-Tag",
+    "Dia Mundial do Braille",
+    "Giornata mondiale del Braille",
+    "Всемирный день Брайля"
+  ],
+  "0106": [
+    "Epifanía",
+    "출현",
+    "Epiphanie",
+    "Epifania",
+    "Epifania",
+    "Крещение"
+  ],
+  "0124": [
+    "Día Internacional de la Educación",
+    "국제 교육의 날",
+    "Internationaler Tag der Bildung",
+    "Dia Internacional da Educação",
+    "Giornata internazionale dell'educazione",
+    "Международный день образования"
+  ],
+  "0126": [
+    "Día de Australia",
+    "호주의 날",
+    "Australien-Tag",
+    "Dia da Austrália",
+    "Giorno dell'Australia",
+    "День Австралии"
+  ],
+  "0202": [
+    "Día Mundial de los Humedales",
+    "세계 습지의 날",
+    "Weltfeuchtgebietstag",
+    "Dia Mundial das Zonas Húmidas",
+    "Giornata mondiale delle zone umide",
+    "Всемирный день водно-болотных угодий"
+  ],
+  "0204": [
+    "Día Mundial contra el Cáncer",
+    "세계 암의 날",
+    "Weltkrebstag",
+    "Dia Mundial do Câncer",
+    "Giornata mondiale contro il cancro",
+    "Всемирный день борьбы с раком"
+  ],
+  "0210": [
+    "Día Mundial de las Legumbres",
+    "세계 펄스의 날",
+    "Welttag der Hülsenfrüchte",
+    "Dia Mundial das Leguminosas",
+    "Giornata mondiale dei legumi",
+    "Всемирный день зернобобовых"
+  ],
+  "0211": [
+    "Día Internacional de las Mujeres y las Niñas en la Ciencia",
+    "세계 여성과 소녀의 과학의 날",
+    "Internationaler Tag der Frauen und Mädchen in der Wissenschaft",
+    "Dia Internacional das Mulheres e Meninas na Ciência",
+    "Giornata internazionale delle donne e delle ragazze nella scienza",
+    "Международный день женщин и девочек в науке"
+  ],
+  "0213": [
+    "Día Mundial de la Radio",
+    "세계 라디오의 날",
+    "Weltradiotag",
+    "Dia Mundial da Rádio",
+    "Giornata mondiale della radio",
+    "Всемирный день радио"
+  ],
+  "0214": [
+    "Día de San Valentín",
+    "발렌타인 데이",
+    "Valentinstag",
+    "Dia dos Namorados",
+    "San Valentino",
+    "День святого Валентина"
+  ],
+  "0220": [
+    "Día Mundial de la Justicia Social",
+    "세계 사회 정의의 날",
+    "Welttag der sozialen Gerechtigkeit",
+    "Dia Mundial da Justiça Social",
+    "Giornata mondiale della giustizia sociale",
+    "Всемирный день социальной справедливости"
+  ],
+  "0221": [
+    "Día Internacional de la Lengua Materna",
+    "국제 모국어의 날",
+    "Internationaler Tag der Muttersprache",
+    "Dia Internacional da Língua Materna",
+    "Giornata internazionale della lingua madre",
+    "Международный день родного языка"
+  ],
+  "0229": [
+    "Día bisiesto",
+    "윤일",
+    "Schalttag",
+    "Dia bissexto",
+    "Giorno bisestile",
+    "Високосный день"
+  ],
+  "0301": [
+    "Día Cero Discriminación",
+    "차별 제로의 날",
+    "Tag der Nulldiskriminierung",
+    "Dia da Discriminação Zero",
+    "Giornata contro le discriminazioni zero",
+    "День нулевой дискриминации"
+  ],
+  "0303": [
+    "Día Mundial de la Vida Silvestre",
+    "세계 야생동물의 날",
+    "Welttag der Tierwelt",
+    "Dia Mundial da Vida Selvagem",
+    "Giornata mondiale della fauna selvatica",
+    "Всемирный день дикой природы"
+  ],
+  "0308": [
+    "Día Internacional de la Mujer",
+    "세계 여성의 날",
+    "Internationaler Frauentag",
+    "Dia Internacional da Mulher",
+    "Giornata internazionale della donna",
+    "Международный женский день"
+  ],
+  "0314": [
+    "Día Pi",
+    "파이 데이",
+    "Pi-Tag",
+    "Dia do Pi",
+    "Giorno Pi",
+    "День Пи"
+  ],
+  "0320": [
+    "Día Internacional de la Felicidad",
+    "국제 행복의 날",
+    "Internationaler Tag des Glücks",
+    "Dia Internacional da Felicidade",
+    "Giornata internazionale della felicità",
+    "Международный день счастья"
+  ],
+  "0321": [
+    "Día Internacional de los Bosques",
+    "세계 숲의 날",
+    "Internationaler Tag des Waldes",
+    "Dia Internacional das Florestas",
+    "Giornata internazionale delle foreste",
+    "Международный день лесов"
+  ],
+  "0322": [
+    "Día Mundial del Agua",
+    "세계 물의 날",
+    "Weltwassertag",
+    "Dia Mundial da Água",
+    "Giornata mondiale dell'acqua",
+    "Всемирный день воды"
+  ],
+  "0323": [
+    "Día Meteorológico Mundial",
+    "세계 기상의 날",
+    "Welttag der Meteorologie",
+    "Dia Meteorológico Mundial",
+    "Giornata mondiale della meteorologia",
+    "Всемирный метеорологический день"
+  ],
+  "0324": [
+    "Día Mundial de la Tuberculosis",
+    "세계 결핵의 날",
+    "Welttuberkulosetag",
+    "Dia Mundial da Tuberculose",
+    "Giornata mondiale contro la tubercolosi",
+    "Всемирный день борьбы с туберкулезом"
+  ],
+  "0327": [
+    "Día Mundial del Teatro",
+    "세계 연극의 날",
+    "Welttheatertag",
+    "Dia Mundial do Teatro",
+    "Giornata Mondiale del Teatro",
+    "Всемирный день театра"
+  ],
+  "0401": [
+    "Día de los Inocentes",
+    "만우절",
+    "Aprilscherz",
+    "Dia da Mentira",
+    "Primo d'aprile",
+    "Первоапрельский день дурака"
+  ],
+  "0402": [
+    "Día Mundial de Concientización sobre el Autismo",
+    "세계 자폐증 인식의 날",
+    "Welt-Autismus-Bewusstseinstag",
+    "Dia Mundial da Conscientização do Autismo",
+    "Giornata Mondiale per la Consapevolezza sull'Autismo",
+    "Всемирный день распространения информации об аутизме"
+  ],
+  "0406": [
+    "Día Internacional del Deporte para el Desarrollo y la Paz",
+    "발전과 평화를 위한 세계 스포츠의 날",
+    "Internationaler Tag des Sports für Entwicklung und Frieden",
+    "Dia Internacional do Esporte para o Desenvolvimento e a Paz",
+    "Giornata internazionale dello sport per lo sviluppo e la pace",
+    "Международный день спорта на благо развития и мира"
+  ],
+  "0407": [
+    "Día Mundial de la Salud",
+    "세계 보건의 날",
+    "Weltgesundheitstag",
+    "Dia Mundial da Saúde",
+    "Giornata Mondiale della Salute",
+    "Всемирный день здоровья"
+  ],
+  "0412": [
+    "Día Internacional de los Vuelos Espaciales Tripulados",
+    "국제 인간 우주 비행의 날",
+    "Internationaler Tag der bemannten Raumfahrt",
+    "Dia Internacional do Voo Espacial Humano",
+    "Giornata internazionale del volo umano nello spazio",
+    "Международный день полета человека в космос"
+  ],
+  "0422": [
+    "Día de la Tierra",
+    "지구의 날",
+    "Tag der Erde",
+    "Dia da Terra",
+    "Giornata della Terra",
+    "День Земли"
+  ],
+  "0423": [
+    "Día Mundial del Libro y del Derecho de Autor",
+    "세계 도서 및 저작권의 날",
+    "Welttag des Buches und des Urheberrechts",
+    "Dia Mundial do Livro e dos Direitos Autorais",
+    "Giornata mondiale del libro e del diritto d'autore",
+    "Всемирный день книги и авторского права"
+  ],
+  "0425": [
+    "Día Mundial de la Malaria",
+    "세계 말라리아의 날",
+    "Welt-Malaria-Tag",
+    "Dia Mundial da Malária",
+    "Giornata Mondiale contro la Malaria",
+    "Всемирный день борьбы с малярией"
+  ],
+  "0426": [
+    "Día Mundial de la Propiedad Intelectual",
+    "세계 지적재산권의 날",
+    "Welttag des geistigen Eigentums",
+    "Dia Mundial da Propriedade Intelectual",
+    "Giornata mondiale della proprietà intellettuale",
+    "Всемирный день интеллектуальной собственности"
+  ],
+  "0428": [
+    "Día Mundial de la Seguridad y Salud en el Trabajo",
+    "직장에서의 안전과 건강을 위한 세계의 날",
+    "Welttag für Sicherheit und Gesundheit am Arbeitsplatz",
+    "Dia Mundial da Segurança e Saúde no Trabalho",
+    "Giornata mondiale per la sicurezza e la salute sul lavoro",
+    "Всемирный день безопасности и гигиены труда"
+  ],
+  "0430": [
+    "Día Internacional del Jazz",
+    "국제 재즈의 날",
+    "Internationaler Jazztag",
+    "Dia Internacional do Jazz",
+    "Giornata internazionale del jazz",
+    "Международный день джаза"
+  ],
+  "0501": [
+    "Día Internacional de los Trabajadores",
+    "국제 노동자의 날",
+    "Internationaler Arbeitertag",
+    "Dia Internacional dos Trabalhadores",
+    "Giornata internazionale dei lavoratori",
+    "Международный день трудящихся"
+  ],
+  "0504": [
+    "Día de la Guerra de las Galaxias",
+    "스타워즈 데이",
+    "Star Wars-Tag",
+    "Dia de Guerra nas Estrelas",
+    "Giornata di Guerre Stellari",
+    "День Звездных войн"
+  ],
+  "0508": [
+    "Día Mundial de la Cruz Roja y de la Media Luna Roja",
+    "세계 적십자 및 적신월의 날",
+    "Weltrotkreuz- und Rothalbmondtag",
+    "Dia Mundial da Cruz Vermelha e do Crescente Vermelho",
+    "Giornata Mondiale della Croce Rossa e della Mezzaluna Rossa",
+    "Всемирный день Красного Креста и Красного Полумесяца"
+  ],
+  "0515": [
+    "Día Internacional de las Familias",
+    "국제 가족의 날",
+    "Internationaler Tag der Familie",
+    "Dia Internacional das Famílias",
+    "Giornata internazionale delle famiglie",
+    "Международный день семьи"
+  ],
+  "0517": [
+    "Día Mundial de las Telecomunicaciones y la Sociedad de la Información",
+    "세계 전기통신 및 정보사회의 날",
+    "Welttag der Telekommunikation und Informationsgesellschaft",
+    "Dia Mundial das Telecomunicações e da Sociedade da Informação",
+    "Giornata mondiale delle telecomunicazioni e della società dell'informazione",
+    "Всемирный день электросвязи и информационного общества"
+  ],
+  "0518": [
+    "Día Internacional de los Museos",
+    "국제 박물관의 날",
+    "Internationaler Museumstag",
+    "Dia Internacional dos Museus",
+    "Giornata internazionale dei musei",
+    "Международный день музеев"
+  ],
+  "0521": [
+    "Día Mundial de la Diversidad Cultural",
+    "세계 문화 다양성의 날",
+    "Welttag für kulturelle Vielfalt",
+    "Dia Mundial da Diversidade Cultural",
+    "Giornata mondiale per la diversità culturale",
+    "Всемирный день культурного разнообразия"
+  ],
+  "0522": [
+    "Día Internacional de la Diversidad Biológica",
+    "국제 생물 다양성의 날",
+    "Internationaler Tag der biologischen Vielfalt",
+    "Dia Internacional da Diversidade Biológica",
+    "Giornata internazionale per la diversità biologica",
+    "Международный день биологического разнообразия"
+  ],
+  "0531": [
+    "Día Mundial Sin Tabaco",
+    "세계 금연의 날",
+    "Weltnichtrauchertag",
+    "Dia Mundial Sem Tabaco",
+    "Giornata mondiale senza tabacco",
+    "Всемирный день без табака"
+  ],
+  "0601": [
+    "Día Internacional del Niño",
+    "국제 어린이날",
+    "Internationaler Kindertag",
+    "Dia Internacional da Criança",
+    "Giornata internazionale dei bambini",
+    "Международный день защиты детей"
+  ],
+  "0602": [
+    "Día de la República de Italia",
+    "이탈리아 공화국의 날",
+    "Tag der italienischen Republik",
+    "Dia da República da Itália",
+    "Festa della Repubblica Italiana",
+    "День Республики Италия"
+  ],
+  "0605": [
+    "Día Mundial del Medio Ambiente",
+    "세계 환경의 날",
+    "Weltumwelttag",
+    "Dia Mundial do Meio Ambiente",
+    "Giornata mondiale dell'ambiente",
+    "Всемирный день окружающей среды"
+  ],
+  "0606": [
+    "Día Nacional de Suecia",
+    "스웨덴 국경일",
+    "Schwedischer Nationalfeiertag",
+    "Dia Nacional da Suécia",
+    "Festa nazionale della Svezia",
+    "Национальный день Швеции"
+  ],
+  "0607": [
+    "Día Mundial de la Inocuidad de los Alimentos",
+    "세계 식품 안전의 날",
+    "Welttag der Lebensmittelsicherheit",
+    "Dia Mundial da Segurança Alimentar",
+    "Giornata mondiale della sicurezza alimentare",
+    "Всемирный день безопасности пищевых продуктов"
+  ],
+  "0608": [
+    "Día Mundial de los Océanos",
+    "세계 해양의 날",
+    "Welttag der Ozeane",
+    "Dia Mundial dos Oceanos",
+    "Giornata mondiale degli oceani",
+    "Всемирный день океанов"
+  ],
+  "0614": [
+    "Día Mundial del Donante de Sangre",
+    "세계 헌혈자의 날",
+    "Weltblutspendetag",
+    "Dia Mundial do Doador de Sangue",
+    "Giornata mondiale del donatore di sangue",
+    "Всемирный день донора крови"
+  ],
+  "0617": [
+    "Día Mundial de Lucha contra la Desertificación y la Sequía",
+    "사막화 및 가뭄 퇴치를 위한 세계의 날",
+    "Welttag zur Bekämpfung von Wüstenbildung und Dürre",
+    "Dia Mundial de Combate à Desertificação e à Seca",
+    "Giornata mondiale contro la desertificazione e la siccità",
+    "Всемирный день борьбы с опустыниванием и засухой"
+  ],
+  "0621": [
+    "Día Internacional del Yoga / Día Mundial de la Música",
+    "세계 요가의 날 / 세계 음악의 날",
+    "Internationaler Tag des Yoga / Weltmusiktag",
+    "Dia Internacional do Yoga / Dia Mundial da Música",
+    "Giornata internazionale dello yoga/Giornata mondiale della musica",
+    "Международный день йоги/Всемирный день музыки"
+  ],
+  "0623": [
+    "Día Olímpico Internacional",
+    "국제 올림픽의 날",
+    "Internationaler Olympischer Tag",
+    "Dia Olímpico Internacional",
+    "Giornata Olimpica Internazionale",
+    "Международный олимпийский день"
+  ],
+  "0626": [
+    "Día Internacional contra el Abuso de Drogas",
+    "국제 약물 남용 방지의 날",
+    "Internationaler Tag gegen Drogenmissbrauch",
+    "Dia Internacional contra o Abuso de Drogas",
+    "Giornata internazionale contro l'abuso di droga",
+    "Международный день борьбы со злоупотреблением наркотиками"
+  ],
+  "0701": [
+    "Día de Canadá",
+    "캐나다 데이",
+    "Kanada-Tag",
+    "Dia do Canadá",
+    "Giornata del Canada",
+    "День Канады"
+  ],
+  "0704": [
+    "Día de la Independencia de Estados Unidos",
+    "미국 독립기념일",
+    "US-Unabhängigkeitstag",
+    "Dia da Independência dos EUA",
+    "Giorno dell'Indipendenza degli Stati Uniti",
+    "День независимости США"
+  ],
+  "0711": [
+    "Día Mundial de la Población",
+    "세계 인구의 날",
+    "Weltbevölkerungstag",
+    "Dia Mundial da População",
+    "Giornata mondiale della popolazione",
+    "Всемирный день народонаселения"
+  ],
+  "0714": [
+    "Día de la Bastilla",
+    "바스티유 데이",
+    "Bastille-Tag",
+    "Dia da Bastilha",
+    "Giorno della Bastiglia",
+    "День взятия Бастилии"
+  ],
+  "0720": [
+    "Día Internacional de la Luna",
+    "국제 달의 날",
+    "Internationaler Mondtag",
+    "Dia Internacional da Lua",
+    "Giornata Internazionale della Luna",
+    "Международный день Луны"
+  ],
+  "0730": [
+    "Día Internacional de la Amistad",
+    "국제 우정의 날",
+    "Internationaler Tag der Freundschaft",
+    "Dia Internacional da Amizade",
+    "Giornata internazionale dell'amicizia",
+    "Международный день дружбы"
+  ],
+  "0801": [
+    "Día Nacional Suizo",
+    "스위스 국경일",
+    "Schweizer Nationalfeiertag",
+    "Dia Nacional Suíço",
+    "Festa nazionale svizzera",
+    "Национальный день Швейцарии"
+  ],
+  "0808": [
+    "Día Internacional del Gato",
+    "국제 고양이의 날",
+    "Internationaler Katzentag",
+    "Dia Internacional do Gato",
+    "Giornata internazionale del gatto",
+    "Международный день кошек"
+  ],
+  "0812": [
+    "Día Internacional de la Juventud",
+    "국제 청소년의 날",
+    "Internationaler Jugendtag",
+    "Dia Internacional da Juventude",
+    "Giornata Internazionale della Gioventù",
+    "Международный день молодежи"
+  ],
+  "0819": [
+    "Día Mundial Humanitario",
+    "세계 인도주의의 날",
+    "Welttag der humanitären Hilfe",
+    "Dia Mundial Humanitário",
+    "Giornata umanitaria mondiale",
+    "Всемирный день гуманитарной помощи"
+  ],
+  "0826": [
+    "Día Internacional del Perro",
+    "국제 개 날",
+    "Internationaler Tag des Hundes",
+    "Dia Internacional do Cão",
+    "Giornata internazionale del cane",
+    "Международный день собаки"
+  ],
+  "0905": [
+    "Día Internacional de la Caridad",
+    "국제 자선의 날",
+    "Internationaler Tag der Nächstenliebe",
+    "Dia Internacional da Caridade",
+    "Giornata Internazionale della Carità",
+    "Международный день благотворительности"
+  ],
+  "0907": [
+    "Día de la Independencia de Brasil",
+    "브라질 독립기념일",
+    "Brasiliens Unabhängigkeitstag",
+    "Dia da Independência do Brasil",
+    "Giorno dell'Indipendenza del Brasile",
+    "День независимости Бразилии"
+  ],
+  "0908": [
+    "Día Internacional de la Alfabetización",
+    "국제 문맹의 날",
+    "Internationaler Tag der Alphabetisierung",
+    "Dia Internacional da Alfabetização",
+    "Giornata internazionale dell'alfabetizzazione",
+    "Международный день грамотности"
+  ],
+  "0916": [
+    "Día de la Independencia de México / Día Internacional de la Preservación de la Capa de Ozono",
+    "멕시코 독립기념일 / 국제 오존층 보존의 날",
+    "Mexiko-Unabhängigkeitstag / Internationaler Tag zur Erhaltung der Ozonschicht",
+    "Dia da Independência do México / Dia Internacional para a Preservação da Camada de Ozônio",
+    "Giorno dell'Indipendenza del Messico/Giornata internazionale per la preservazione dello strato di ozono",
+    "День независимости Мексики / Международный день охраны озонового слоя"
+  ],
+  "0921": [
+    "Día Internacional de la Paz",
+    "국제 평화의 날",
+    "Internationaler Tag des Friedens",
+    "Dia Internacional da Paz",
+    "Giornata internazionale della pace",
+    "Международный день мира"
+  ],
+  "0922": [
+    "Día Mundial Sin Coches",
+    "세계 차 없는 날",
+    "Weltautofreier Tag",
+    "Dia Mundial Sem Carro",
+    "Giornata mondiale senza auto",
+    "Всемирный день без автомобилей"
+  ],
+  "0927": [
+    "Día Mundial del Turismo",
+    "세계 관광의 날",
+    "Welttourismustag",
+    "Dia Mundial do Turismo",
+    "Giornata Mondiale del Turismo",
+    "Всемирный день туризма"
+  ],
+  "0928": [
+    "Día Internacional del Acceso Universal a la Información",
+    "정보에 대한 보편적 접근을 위한 국제 날",
+    "Internationaler Tag für den universellen Zugang zu Informationen",
+    "Dia Internacional do Acesso Universal à Informação",
+    "Giornata internazionale per l'accesso universale alle informazioni",
+    "Международный день всеобщего доступа к информации"
+  ],
+  "0929": [
+    "Día Internacional de Concientización sobre la Pérdida y el Desperdicio de Alimentos",
+    "국제 식량 손실 및 폐기물 인식의 날",
+    "Internationaler Tag des Bewusstseins für Lebensmittelverluste und -verschwendung",
+    "Dia Internacional de Conscientização sobre Perda e Desperdício de Alimentos",
+    "Giornata internazionale di sensibilizzazione sulle perdite e sugli sprechi alimentari",
+    "Международный день борьбы с продовольственными потерями и порчей"
+  ],
+  "0930": [
+    "Día Internacional de la Traducción",
+    "국제 번역의 날",
+    "Internationaler Übersetzungstag",
+    "Dia Internacional da Tradução",
+    "Giornata internazionale della traduzione",
+    "Международный день перевода"
+  ],
+  "1001": [
+    "Día Nacional de China",
+    "중국 국경일",
+    "China-Nationalfeiertag",
+    "Dia Nacional da China",
+    "Giornata nazionale cinese",
+    "Национальный день Китая"
+  ],
+  "1002": [
+    "Día Internacional de la No Violencia",
+    "국제 비폭력의 날",
+    "Internationaler Tag der Gewaltlosigkeit",
+    "Dia Internacional da Não-Violência",
+    "Giornata internazionale della nonviolenza",
+    "Международный день ненасилия"
+  ],
+  "1003": [
+    "Día de la Unidad Alemana",
+    "독일 통일의 날",
+    "Tag der Deutschen Einheit",
+    "Dia da Unidade Alemã",
+    "Giorno dell'Unità Tedesca",
+    "День немецкого единства"
+  ],
+  "1005": [
+    "Día Mundial de los Docentes",
+    "세계 교사의 날",
+    "Weltlehrertag",
+    "Dia Mundial dos Professores",
+    "Giornata mondiale degli insegnanti",
+    "Всемирный день учителя"
+  ],
+  "1009": [
+    "Día Mundial del Correo",
+    "세계 우편의 날",
+    "Weltposttag",
+    "Dia Mundial dos Correios",
+    "Giornata mondiale della posta",
+    "Всемирный день почты"
+  ],
+  "1010": [
+    "Día Mundial de la Salud Mental",
+    "세계 정신 건강의 날",
+    "Welttag der psychischen Gesundheit",
+    "Dia Mundial da Saúde Mental",
+    "Giornata mondiale della salute mentale",
+    "Всемирный день психического здоровья"
+  ],
+  "1011": [
+    "Día Internacional de la Niña",
+    "국제 여아의 날",
+    "Internationaler Tag des Mädchenkindes",
+    "Dia Internacional da Menina",
+    "Giornata internazionale delle bambine",
+    "Международный день девочек"
+  ],
+  "1012": [
+    "Día Nacional de España",
+    "스페인 국경일",
+    "Spanischer Nationalfeiertag",
+    "Dia Nacional da Espanha",
+    "Festa Nazionale della Spagna",
+    "Национальный день Испании"
+  ],
+  "1013": [
+    "Día Internacional para la Reducción del Riesgo de Desastres",
+    "국제 재해 위험 감소의 날",
+    "Internationaler Tag zur Reduzierung des Katastrophenrisikos",
+    "Dia Internacional para a Redução do Risco de Desastres",
+    "Giornata internazionale per la riduzione del rischio di catastrofi",
+    "Международный день снижения риска стихийных бедствий"
+  ],
+  "1016": [
+    "Día Mundial de la Alimentación",
+    "세계 식량의 날",
+    "Welternährungstag",
+    "Dia Mundial da Alimentação",
+    "Giornata mondiale dell'alimentazione",
+    "Всемирный день еды"
+  ],
+  "1017": [
+    "Día Internacional para la Erradicación de la Pobreza",
+    "세계 빈곤 퇴치의 날",
+    "Internationaler Tag zur Beseitigung der Armut",
+    "Dia Internacional para a Erradicação da Pobreza",
+    "Giornata internazionale per l'eliminazione della povertà",
+    "Международный день борьбы за ликвидацию бедности"
+  ],
+  "1024": [
+    "Día de las Naciones Unidas",
+    "유엔의 날",
+    "Tag der Vereinten Nationen",
+    "Dia das Nações Unidas",
+    "Giornata delle Nazioni Unite",
+    "День Организации Объединенных Наций"
+  ],
+  "1031": [
+    "Día Mundial de las Ciudades / Halloween",
+    "세계 도시의 날 / 할로윈",
+    "Weltstädtetag / Halloween",
+    "Dia Mundial das Cidades / Halloween",
+    "Giornata Mondiale delle Città/Halloween",
+    "Всемирный день городов / Хэллоуин"
+  ],
+  "1101": [
+    "Día Mundial del Vegano",
+    "세계 비건의 날",
+    "Welt-Vegan-Tag",
+    "Dia Mundial Vegano",
+    "Giornata mondiale vegana",
+    "Всемирный день вегана"
+  ],
+  "1110": [
+    "Día Mundial de la Ciencia para la Paz y el Desarrollo",
+    "평화와 발전을 위한 세계 과학의 날",
+    "Weltwissenschaftstag für Frieden und Entwicklung",
+    "Dia Mundial da Ciência para a Paz e o Desenvolvimento",
+    "Giornata mondiale della scienza per la pace e lo sviluppo",
+    "Всемирный день науки за мир и развитие"
+  ],
+  "1111": [
+    "Día del Armisticio / Día de la Independencia de Polonia / Día de los Solteros",
+    "휴전일 / 폴란드 독립기념일 / 광군절",
+    "Tag des Waffenstillstands / Unabhängigkeitstag Polens / Tag der Singles",
+    "Dia do Armistício / Dia da Independência da Polónia / Dia dos Solteiros",
+    "Giorno dell'Armistizio / Giorno dell'Indipendenza della Polonia / Giorno dei Single",
+    "День перемирия / День независимости Польши / День холостяков"
+  ],
+  "1114": [
+    "Día Mundial de la Diabetes",
+    "세계 당뇨병의 날",
+    "Weltdiabetestag",
+    "Dia Mundial do Diabetes",
+    "Giornata mondiale del diabete",
+    "Всемирный день борьбы с диабетом"
+  ],
+  "1116": [
+    "Día Internacional de la Tolerancia",
+    "국제 관용의 날",
+    "Internationaler Tag der Toleranz",
+    "Dia Internacional da Tolerância",
+    "Giornata internazionale per la tolleranza",
+    "Международный день толерантности"
+  ],
+  "1119": [
+    "Día Mundial del Retrete",
+    "세계 화장실의 날",
+    "Welttoilettentag",
+    "Dia Mundial do Banheiro",
+    "Giornata mondiale della toilette",
+    "Всемирный день туалета"
+  ],
+  "1120": [
+    "Día Mundial del Niño",
+    "세계 어린이날",
+    "Weltkindertag",
+    "Dia Mundial da Criança",
+    "Giornata mondiale dei bambini",
+    "Всемирный день детей"
+  ],
+  "1121": [
+    "Día Mundial de la Televisión",
+    "세계 텔레비전의 날",
+    "Weltfernsehtag",
+    "Dia Mundial da Televisão",
+    "Giornata mondiale della televisione",
+    "Всемирный день телевидения"
+  ],
+  "1203": [
+    "Día Internacional de las Personas con Discapacidad",
+    "세계 장애인의 날",
+    "Internationaler Tag der Menschen mit Behinderungen",
+    "Dia Internacional das Pessoas com Deficiência",
+    "Giornata internazionale delle persone con disabilità",
+    "Международный день людей с ограниченными возможностями"
+  ],
+  "1205": [
+    "Día Internacional del Voluntariado",
+    "국제 자원봉사자의 날",
+    "Internationaler Tag der Freiwilligen",
+    "Dia Internacional do Voluntário",
+    "Giornata Internazionale del Volontariato",
+    "Международный день волонтеров"
+  ],
+  "1206": [
+    "Día de la Independencia de Finlandia",
+    "핀란드 독립기념일",
+    "Unabhängigkeitstag Finnlands",
+    "Dia da Independência da Finlândia",
+    "Giorno dell'indipendenza della Finlandia",
+    "День независимости Финляндии"
+  ],
+  "1207": [
+    "Día Internacional de la Aviación Civil",
+    "국제 민간 항공의 날",
+    "Internationaler Tag der Zivilluftfahrt",
+    "Dia Internacional da Aviação Civil",
+    "Giornata internazionale dell'aviazione civile",
+    "Международный день гражданской авиации"
+  ],
+  "1211": [
+    "Día Internacional de la Montaña",
+    "국제 산의 날",
+    "Internationaler Bergtag",
+    "Dia Internacional da Montanha",
+    "Giornata Internazionale della Montagna",
+    "Международный день гор"
+  ],
+  "1218": [
+    "Día Internacional del Migrante",
+    "국제 이민자의 날",
+    "Internationaler Tag der Migranten",
+    "Dia Internacional dos Migrantes",
+    "Giornata internazionale dei migranti",
+    "Международный день мигрантов"
+  ],
+  "1220": [
+    "Día Internacional de la Solidaridad Humana",
+    "국제인류연대의 날",
+    "Internationaler Tag der menschlichen Solidarität",
+    "Dia Internacional da Solidariedade Humana",
+    "Giornata internazionale della solidarietà umana",
+    "Международный день человеческой солидарности"
+  ],
+  "1224": [
+    "Nochebuena",
+    "크리스마스 이브",
+    "Heiligabend",
+    "Noite de Natal",
+    "Vigilia di Natale",
+    "сочельник"
+  ],
+  "1225": [
+    "Navidad",
+    "크리스마스",
+    "Weihnachten",
+    "Natal",
+    "Natale",
+    "Рождество"
+  ],
+  "1231": [
+    "Nochevieja",
+    "새해 전날",
+    "Silvester",
+    "Véspera de Ano Novo",
+    "Vigilia di Capodanno",
+    "Канун Нового года"
+  ]
+}

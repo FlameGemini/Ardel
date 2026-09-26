@@ -1,0 +1,23 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <!-- Ardel: retargeted from upstream net10.0; only the 3D head renderers are compiled
+       (full Image package also needs MinecraftSkinRender core for SkinType). -->
+  <PropertyGroup>
+    <TargetFramework>net8.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+    <RootNamespace>MinecraftSkinRender.Image</RootNamespace>
+    <AssemblyName>MinecraftSkinRender.Image</AssemblyName>
+    <LangVersion>latest</LangVersion>
+    <GenerateDocumentationFile>false</GenerateDocumentationFile>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Compile Remove="Skin2DTypeA.cs" />
+    <Compile Remove="Skin2DTypeB.cs" />
+    <Compile Remove="Cape2DTypaA.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="SkiaSharp" Version="3.119.0" />
+  </ItemGroup>
+</Project>

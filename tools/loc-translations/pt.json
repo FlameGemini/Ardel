@@ -1,0 +1,33 @@
+{
+  "update": {
+    "Catalog_KindModpack": "pacotes de mods",
+    "Download_JavaTag": "Java {0}",
+    "Download_SectionMinecraft": "Minecraft",
+    "FabricApi_BothFailed": "Falha no Modrinth: {0}; CurseForge: {1}",
+    "InstanceSettings_JvmPresetShenandoah": "ShenandoahGC (Java 11 ou superior)",
+    "InstanceSettings_JvmPresetZgc": "ZGC (Java 15 ou superior)",
+    "InstanceSettings_MemoryTotal": "no total",
+    "Java_NamedWithPath": "Java {0} — {1}",
+    "Java_NamedWithSource": "Java {0} ({1})",
+    "LoaderTag_Named": "{0} ({1})",
+    "Mod_CategoryRedstone": "Redstone",
+    "Mod_DetailChannelBeta": "Beta",
+    "Mod_DownloadsExact": "{0} transferências",
+    "Mod_DownloadsThousands": "{0} mil transferências",
+    "Modpack_ContentsCount": "{0} mods",
+    "Modpack_ContentsSubtitle": "{0} · {1} mods",
+    "Nav_Skins": "Aspectos",
+    "Settings_Java": "Java",
+    "Skin_Count": "{0} skins"
+  },
+  "add": {
+    "Oobe_StepBreak_Title": "Bar de água",
+    "Oobe_StepBreak_Body": "",
+    "Oobe_StepAccount_Title": "Adicionar conta offline",
+    "Oobe_StepAccount_Subtitle": "Opcional — pode adicionar mais contas mais tarde.",
+    "Oobe_StepHydrate_Title": "Água",
+    "Oobe_StepHydrate_Body": "",
+    "Modpack_ResolvingFiles": "A resolver ficheiros do modpack…",
+    "Modpack_MissingFile": "Ficheiro do modpack em falta: {0}"
+  }
+}

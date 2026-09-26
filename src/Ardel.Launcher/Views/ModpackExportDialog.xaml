@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?>
+<UserControl
+    x:Class="Ardel.Launcher.Views.ModpackExportDialog"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:loc="using:Ardel.Launcher.Localization"
+    MinWidth="420"
+    MaxWidth="520">
+
+    <ScrollViewer VerticalScrollBarVisibility="Auto" MaxHeight="480">
+        <StackPanel Spacing="12" Padding="4,4,4,8">
+            <TextBlock
+                Text="{loc:String Key=Modpack_ExportDialogSubtitle}"
+                FontSize="12"
+                Opacity="0.65"
+                TextWrapping="Wrap" />
+
+            <TextBlock Text="{loc:String Key=Modpack_ExportIncludeHeading}" FontWeight="SemiBold" />
+
+            <CheckBox x:Name="ModsCheck" IsChecked="True" Content="{loc:String Key=Modpack_ExportIncludeMods}" />
+            <CheckBox x:Name="ConfigCheck" IsChecked="True" Content="{loc:String Key=Modpack_ExportIncludeConfig}" />
+            <CheckBox x:Name="ResourcePacksCheck" IsChecked="True" Content="{loc:String Key=Modpack_ExportIncludeResourcePacks}" />
+            <CheckBox x:Name="ShaderPacksCheck" IsChecked="True" Content="{loc:String Key=Modpack_ExportIncludeShaderPacks}" />
+            <CheckBox x:Name="DatapacksCheck" IsChecked="True" Content="{loc:String Key=Modpack_ExportIncludeDatapacks}" />
+            <CheckBox x:Name="OptionsCheck" IsChecked="True" Content="{loc:String Key=Modpack_ExportIncludeOptions}" />
+            <CheckBox x:Name="SavesCheck" IsChecked="False" Content="{loc:String Key=Modpack_ExportIncludeSaves}" />
+            <CheckBox x:Name="ScreenshotsCheck" IsChecked="False" Content="{loc:String Key=Modpack_ExportIncludeScreenshots}" />
+
+            <Border Height="1" Background="{ThemeResource DividerStrokeColorDefaultBrush}" Opacity="0.45" />
+
+            <CheckBox
+                x:Name="ThinPackCheck"
+                IsChecked="True"
+                Content="{loc:String Key=Modpack_ExportThinPack}" />
+            <TextBlock
+                Text="{loc:String Key=Modpack_ExportThinPackHint}"
+                FontSize="12"
+                Opacity="0.6"
+                TextWrapping="Wrap"
+                Margin="28,0,0,0" />
+        </StackPanel>
+    </ScrollViewer>
+</UserControl>

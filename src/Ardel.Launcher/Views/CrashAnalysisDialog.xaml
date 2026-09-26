@@ -1,0 +1,156 @@
+<?xml version="1.0" encoding="utf-8"?>
+<UserControl
+    x:Class="Ardel.Launcher.Views.CrashAnalysisDialog"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:loc="using:Ardel.Launcher.Localization"
+    MinWidth="480"
+    MaxWidth="560">
+
+    <ScrollViewer
+        VerticalScrollBarVisibility="Auto"
+        HorizontalScrollBarVisibility="Disabled"
+        MaxHeight="520">
+        <StackPanel Spacing="14" Padding="4,4,4,8">
+            <!-- Status badge -->
+            <Border
+                x:Name="BadgeBar"
+                Background="{ThemeResource SubtleFillColorSecondaryBrush}"
+                CornerRadius="8"
+                Padding="12,10">
+                <Grid ColumnSpacing="10">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="Auto" />
+                        <ColumnDefinition Width="*" />
+                        <ColumnDefinition Width="Auto" />
+                    </Grid.ColumnDefinitions>
+                    <FontIcon
+                        x:Name="BadgeIcon"
+                        Glyph="&#xE946;"
+                        FontFamily="Segoe Fluent Icons"
+                        FontSize="16"
+                        VerticalAlignment="Center"
+                        Foreground="{ThemeResource ArdelAccentBrush}" />
+                    <TextBlock
+                        x:Name="BadgeText"
+                        Grid.Column="1"
+                        TextWrapping="Wrap"
+                        FontWeight="SemiBold"
+                        VerticalAlignment="Center" />
+                    <TextBlock
+                        x:Name="RuleIdText"
+                        Grid.Column="2"
+                        Opacity="0.45"
+                        FontSize="12"
+                        VerticalAlignment="Center" />
+                </Grid>
+            </Border>
+
+            <!-- Title -->
+            <TextBlock
+                x:Name="TitleText"
+                FontSize="18"
+                FontWeight="SemiBold"
+                TextWrapping="Wrap" />
+
+            <TextBlock
+                x:Name="ConfidenceText"
+                FontSize="12"
+                Opacity="0.6"
+                Visibility="Collapsed" />
+
+            <!-- Real crash-report Description (never invented) -->
+            <Border
+                x:Name="ReportHeadBar"
+                Background="{ThemeResource SubtleFillColorSecondaryBrush}"
+                CornerRadius="8"
+                Padding="12,10"
+                Visibility="Collapsed">
+                <TextBlock
+                    x:Name="ReportHeadText"
+                    TextWrapping="Wrap"
+                    FontFamily="Consolas"
+                    FontSize="12"
+                    LineHeight="18"
+                    Opacity="0.9" />
+            </Border>
+
+            <!-- Explain -->
+            <StackPanel Spacing="4">
+                <TextBlock
+                    Text="{loc:String Key=Crash_SectionExplain}"
+                    FontSize="12"
+                    Opacity="0.7"
+                    FontWeight="SemiBold" />
+                <TextBlock
+                    x:Name="ExplainText"
+                    TextWrapping="Wrap"
+                    LineHeight="22" />
+            </StackPanel>
+
+            <!-- Solution -->
+            <StackPanel Spacing="4">
+                <TextBlock
+                    Text="{loc:String Key=Crash_SectionSolution}"
+                    FontSize="12"
+                    Opacity="0.7"
+                    FontWeight="SemiBold" />
+                <Border
+                    Background="{ThemeResource SubtleFillColorSecondaryBrush}"
+                    CornerRadius="{ThemeResource ArdelCardCornerRadius}"
+                    Padding="12,10">
+                    <TextBlock
+                        x:Name="SolutionText"
+                        TextWrapping="Wrap"
+                        LineHeight="22" />
+                </Border>
+            </StackPanel>
+
+            <!-- Chips -->
+            <ItemsControl x:Name="ChipList" Visibility="Collapsed">
+                <ItemsControl.ItemsPanel>
+                    <ItemsPanelTemplate>
+                        <ItemsWrapGrid Orientation="Horizontal" MaximumRowsOrColumns="8" />
+                    </ItemsPanelTemplate>
+                </ItemsControl.ItemsPanel>
+                <ItemsControl.ItemTemplate>
+                    <DataTemplate>
+                        <Border
+                            Background="{ThemeResource SubtleFillColorSecondaryBrush}"
+                            CornerRadius="6"
+                            Padding="8,4"
+                            Margin="0,0,6,6">
+                            <TextBlock Text="{Binding}" FontSize="12" />
+                        </Border>
+                    </DataTemplate>
+                </ItemsControl.ItemTemplate>
+            </ItemsControl>
+
+            <!-- Evidence -->
+            <Expander
+                x:Name="EvidenceExpander"
+                Header="{loc:String Key=Crash_Evidence}"
+                HorizontalAlignment="Stretch"
+                HorizontalContentAlignment="Stretch"
+                IsExpanded="False">
+                <StackPanel Spacing="8">
+                    <TextBox
+                        x:Name="EvidenceBox"
+                        IsReadOnly="True"
+                        AcceptsReturn="True"
+                        TextWrapping="Wrap"
+                        FontFamily="Consolas"
+                        FontSize="12"
+                        MinHeight="80"
+                        MaxHeight="180" />
+                    <HyperlinkButton
+                        x:Name="CopyEvidenceButton"
+                        Content="{loc:String Key=Crash_CopyEvidence}"
+                        Click="CopyEvidenceButton_Click"
+                        Padding="0"
+                        FontSize="12" />
+                </StackPanel>
+            </Expander>
+        </StackPanel>
+    </ScrollViewer>
+</UserControl>

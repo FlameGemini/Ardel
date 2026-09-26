@@ -1,0 +1,654 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Page
+    x:Class="Ardel.Launcher.Views.AccountPage"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:vm="using:Ardel.Launcher.ViewModels"
+    xmlns:loc="using:Ardel.Launcher.Localization"
+    NavigationCacheMode="Required">
+
+    <Grid x:Name="RootGrid" Padding="36,28,36,28" RowSpacing="20">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" />
+            <RowDefinition Height="Auto" />
+        </Grid.RowDefinitions>
+
+        <!-- Page Header -->
+        <Grid Grid.Row="0">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="Auto" />
+            </Grid.ColumnDefinitions>
+            <StackPanel Spacing="4">
+                <TextBlock Text="{loc:String Key=Account_Title}" Style="{StaticResource ArdelPageTitleStyle}" Margin="0" />
+                <TextBlock Text="{loc:String Key=Account_Subtitle}" Style="{StaticResource ArdelSectionCaptionStyle}" Margin="0" />
+            </StackPanel>
+            <Button
+                Grid.Column="1"
+                Style="{StaticResource AccentButtonStyle}"
+                VerticalAlignment="Center"
+                MinHeight="36"
+                Padding="16,8"
+                Click="AddAccount_Click">
+                <StackPanel Orientation="Horizontal" Spacing="8">
+                    <FontIcon Glyph="&#xE710;" FontSize="13" />
+                    <TextBlock Text="{loc:String Key=Account_Add}" />
+                </StackPanel>
+            </Button>
+        </Grid>
+
+        <!-- Master-Detail Content Area -->
+        <Grid Grid.Row="1" ColumnSpacing="20">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="260" MinWidth="220" MaxWidth="300" />
+                <ColumnDefinition Width="*" />
+            </Grid.ColumnDefinitions>
+
+            <!-- LEFT COLUMN: Account Switcher -->
+            <Border
+                Grid.Column="0"
+                Background="{ThemeResource CardBackgroundFillColorDefaultBrush}"
+                BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}"
+                BorderThickness="1"
+                CornerRadius="12"
+                Padding="8">
+                <Grid>
+                    <ListView
+                        x:Name="AccountList"
+                        ItemsSource="{x:Bind ViewModel.Items, Mode=OneWay}"
+                        SelectedItem="{x:Bind ViewModel.SelectedAccount, Mode=TwoWay}"
+                        SelectionMode="Single"
+                        IsItemClickEnabled="True"
+                        ItemClick="AccountList_ItemClick"
+                        SelectionChanged="AccountList_SelectionChanged"
+                        CanDragItems="True"
+                        CanReorderItems="True"
+                        AllowDrop="True"
+                        DragItemsStarting="AccountList_DragItemsStarting"
+                        DragItemsCompleted="AccountList_DragItemsCompleted"
+                        ShowsScrollingPlaceholders="False">
+                        <ListView.ItemContainerTransitions>
+                            <TransitionCollection>
+                                <RepositionThemeTransition />
+                            </TransitionCollection>
+                        </ListView.ItemContainerTransitions>
+                        <ListView.ItemContainerStyle>
+                            <Style TargetType="ListViewItem">
+                                <Setter Property="HorizontalContentAlignment" Value="Stretch" />
+                                <Setter Property="Padding" Value="0" />
+                                <Setter Property="Margin" Value="0,0,0,4" />
+                                <Setter Property="MinHeight" Value="50" />
+                                <Setter Property="CornerRadius" Value="8" />
+                            </Style>
+                        </ListView.ItemContainerStyle>
+                        <ListView.ItemTemplate>
+                            <DataTemplate x:DataType="vm:AccountItemViewModel">
+                                <Grid Padding="8,6" ColumnSpacing="10">
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="Auto" />
+                                        <ColumnDefinition Width="*" />
+                                        <ColumnDefinition Width="Auto" />
+                                    </Grid.ColumnDefinitions>
+
+                                    <!-- 34x34 Avatar -->
+                                    <Border
+                                        Width="34"
+                                        Height="34"
+                                        CornerRadius="7"
+                                        Background="{ThemeResource SubtleFillColorSecondaryBrush}"
+                                        BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}"
+                                        BorderThickness="1">
+                                        <Grid>
+                                            <TextBlock
+                                                Text="{x:Bind AvatarInitial, Mode=OneWay}"
+                                                FontSize="14"
+                                                FontWeight="SemiBold"
+                                                HorizontalAlignment="Center"
+                                                VerticalAlignment="Center"
+                                                Visibility="{x:Bind HasAvatarImage, Mode=OneWay, Converter={StaticResource InverseBoolToVisibility}}" />
+                                            <Image
+                                                Source="{x:Bind AvatarImage, Mode=OneWay}"
+                                                Stretch="Uniform"
+                                                HorizontalAlignment="Center"
+                                                VerticalAlignment="Center"
+                                                Margin="2"
+                                                Visibility="{x:Bind HasAvatarImage, Mode=OneWay, Converter={StaticResource BoolToVisibility}}" />
+                                        </Grid>
+                                    </Border>
+
+                                    <!-- Name & Kind -->
+                                    <StackPanel Grid.Column="1" VerticalAlignment="Center" Spacing="2">
+                                        <TextBlock
+                                            Text="{x:Bind DisplayName, Mode=OneWay}"
+                                            FontSize="13"
+                                            FontWeight="SemiBold"
+                                            TextTrimming="CharacterEllipsis" />
+                                        <TextBlock
+                                            Text="{x:Bind KindLabel, Mode=OneWay}"
+                                            FontSize="11"
+                                            Opacity="0.55" />
+                                    </StackPanel>
+
+                                    <!-- Active Badge -->
+                                    <Border
+                                        Grid.Column="2"
+                                        VerticalAlignment="Center"
+                                        Padding="5,1.5"
+                                        CornerRadius="4"
+                                        Background="{ThemeResource AccentFillColorDefaultBrush}"
+                                        Visibility="{x:Bind IsActive, Mode=OneWay, Converter={StaticResource BoolToVisibility}}">
+                                        <TextBlock
+                                            Text="{loc:String Key=Account_ActiveBadge}"
+                                            FontSize="9"
+                                            FontWeight="SemiBold"
+                                            Foreground="{ThemeResource TextOnAccentFillColorPrimaryBrush}" />
+                                    </Border>
+
+                                    <!-- Locked Badge -->
+                                    <Border
+                                        Grid.Column="2"
+                                        VerticalAlignment="Center"
+                                        Padding="5,1.5"
+                                        CornerRadius="4"
+                                        Background="{ThemeResource SubtleFillColorSecondaryBrush}"
+                                        BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}"
+                                        BorderThickness="1"
+                                        ToolTipService.ToolTip="{x:Bind LockedToolTip, Mode=OneWay}"
+                                        Visibility="{x:Bind IsLocked, Mode=OneWay, Converter={StaticResource BoolToVisibility}}">
+                                        <StackPanel Orientation="Horizontal" Spacing="3">
+                                            <FontIcon Glyph="&#xE72E;" FontSize="9" Opacity="0.75" />
+                                            <TextBlock
+                                                Text="{x:Bind LockedBadgeText, Mode=OneWay}"
+                                                FontSize="9"
+                                                FontWeight="SemiBold"
+                                                Opacity="0.75" />
+                                        </StackPanel>
+                                    </Border>
+                                </Grid>
+                            </DataTemplate>
+                        </ListView.ItemTemplate>
+                    </ListView>
+
+                    <!-- Left Column Empty State -->
+                    <StackPanel
+                        HorizontalAlignment="Center"
+                        VerticalAlignment="Center"
+                        Spacing="8"
+                        Visibility="{x:Bind ViewModel.IsEmpty, Mode=OneWay, Converter={StaticResource BoolToVisibility}}">
+                        <FontIcon Glyph="&#xE77B;" FontSize="32" Opacity="0.3" HorizontalAlignment="Center" />
+                        <TextBlock
+                            Text="{loc:String Key=Account_Empty}"
+                            Opacity="0.5"
+                            FontSize="12"
+                            HorizontalAlignment="Center" />
+                    </StackPanel>
+                </Grid>
+            </Border>
+
+            <!-- RIGHT COLUMN: Account Persona Canvas -->
+            <Grid Grid.Column="1">
+                <!-- If No Account Selected -->
+                <Border
+                    Background="{ThemeResource CardBackgroundFillColorDefaultBrush}"
+                    BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}"
+                    BorderThickness="1"
+                    CornerRadius="14"
+                    Padding="32"
+                    Visibility="{x:Bind ViewModel.HasSelectedAccount, Mode=OneWay, Converter={StaticResource InverseBoolToVisibility}}">
+                    <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center" Spacing="12">
+                        <FontIcon Glyph="&#xE77B;" FontSize="44" Opacity="0.25" HorizontalAlignment="Center" />
+                        <TextBlock
+                            Text="{loc:String Key=Account_EmptyHint}"
+                            Opacity="0.5"
+                            FontSize="13"
+                            HorizontalAlignment="Center" />
+                    </StackPanel>
+                </Border>
+
+                <!-- If Account Selected -->
+                <Border
+                    Visibility="{x:Bind ViewModel.HasSelectedAccount, Mode=OneWay, Converter={StaticResource BoolToVisibility}}"
+                    Background="{ThemeResource CardBackgroundFillColorDefaultBrush}"
+                    BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}"
+                    BorderThickness="1"
+                    CornerRadius="14"
+                    Padding="28,24">
+                    <Grid RowSpacing="20">
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto" />  <!-- 0: Identity Bar -->
+                            <RowDefinition Height="*" />     <!-- 1: Appearance & Wardrobe Body -->
+                        </Grid.RowDefinitions>
+
+                        <!-- Row 0: Clean Identity Bar -->
+                        <Grid ColumnSpacing="16">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="Auto" />
+                                <ColumnDefinition Width="*" />
+                                <ColumnDefinition Width="Auto" />
+                            </Grid.ColumnDefinitions>
+
+                            <!-- 52x52 High-Res Avatar -->
+                            <Border
+                                Width="52"
+                                Height="52"
+                                CornerRadius="10"
+                                Background="{ThemeResource SubtleFillColorSecondaryBrush}"
+                                BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}"
+                                BorderThickness="1">
+                                <Grid>
+                                    <TextBlock
+                                        Text="{x:Bind ViewModel.SelectedAccount.AvatarInitial, Mode=OneWay}"
+                                        FontSize="20"
+                                        FontWeight="SemiBold"
+                                        HorizontalAlignment="Center"
+                                        VerticalAlignment="Center"
+                                        Visibility="{x:Bind ViewModel.SelectedAccount.HasAvatarImage, Mode=OneWay, Converter={StaticResource InverseBoolToVisibility}}" />
+                                    <Image
+                                        Source="{x:Bind ViewModel.SelectedAccount.AvatarImage, Mode=OneWay}"
+                                        Stretch="Uniform"
+                                        HorizontalAlignment="Center"
+                                        VerticalAlignment="Center"
+                                        Margin="2"
+                                        Visibility="{x:Bind ViewModel.SelectedAccount.HasAvatarImage, Mode=OneWay, Converter={StaticResource BoolToVisibility}}" />
+                                </Grid>
+                            </Border>
+
+                            <!-- Player Name & Badges -->
+                            <StackPanel Grid.Column="1" VerticalAlignment="Center" Spacing="4">
+                                <StackPanel Orientation="Horizontal" Spacing="8">
+                                    <TextBlock
+                                        Text="{x:Bind ViewModel.SelectedAccount.DisplayName, Mode=OneWay}"
+                                        FontSize="18"
+                                        FontWeight="Bold"
+                                        TextTrimming="CharacterEllipsis" />
+                                    <Border
+                                        VerticalAlignment="Center"
+                                        Padding="6,2"
+                                        CornerRadius="4"
+                                        Background="{ThemeResource SubtleFillColorSecondaryBrush}">
+                                        <TextBlock
+                                            Text="{x:Bind ViewModel.SelectedAccount.KindLabel, Mode=OneWay}"
+                                            FontSize="10"
+                                            Opacity="0.75" />
+                                    </Border>
+                                    <Border
+                                        VerticalAlignment="Center"
+                                        Padding="6,2"
+                                        CornerRadius="4"
+                                        Background="{ThemeResource AccentFillColorDefaultBrush}"
+                                        Visibility="{x:Bind ViewModel.SelectedAccount.IsActive, Mode=OneWay, Converter={StaticResource BoolToVisibility}}">
+                                        <TextBlock
+                                            Text="{loc:String Key=Account_ActiveBadge}"
+                                            FontSize="10"
+                                            FontWeight="SemiBold"
+                                            Foreground="{ThemeResource TextOnAccentFillColorPrimaryBrush}" />
+                                    </Border>
+                                    <Border
+                                        VerticalAlignment="Center"
+                                        Padding="6,2"
+                                        CornerRadius="4"
+                                        Background="{ThemeResource SubtleFillColorSecondaryBrush}"
+                                        BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}"
+                                        BorderThickness="1"
+                                        ToolTipService.ToolTip="{x:Bind ViewModel.SelectedAccount.LockedToolTip, Mode=OneWay}"
+                                        Visibility="{x:Bind ViewModel.SelectedAccount.IsLocked, Mode=OneWay, Converter={StaticResource BoolToVisibility}}">
+                                        <StackPanel Orientation="Horizontal" Spacing="4">
+                                            <FontIcon Glyph="&#xE72E;" FontSize="10" Opacity="0.75" />
+                                            <TextBlock
+                                                Text="{x:Bind ViewModel.SelectedAccount.LockedBadgeText, Mode=OneWay}"
+                                                FontSize="10"
+                                                FontWeight="SemiBold"
+                                                Opacity="0.75" />
+                                        </StackPanel>
+                                    </Border>
+                                </StackPanel>
+                            </StackPanel>
+
+                            <!-- Identity Action Controls -->
+                            <StackPanel Grid.Column="2" Orientation="Horizontal" Spacing="8" VerticalAlignment="Center">
+                                <!-- Set as Active Launch Account -->
+                                <Button
+                                    Click="SelectedAccountActivate_Click"
+                                    IsEnabled="{x:Bind ViewModel.CanActivateSelectedAccount, Mode=OneWay}"
+                                    Style="{ThemeResource AccentButtonStyle}">
+                                    <StackPanel Orientation="Horizontal" Spacing="6">
+                                        <FontIcon Glyph="&#xE8FB;" FontSize="12" />
+                                        <TextBlock Text="{x:Bind ViewModel.SelectedAccountActiveButtonText, Mode=OneWay}" />
+                                    </StackPanel>
+                                </Button>
+
+                                <!-- Microsoft: Change Player Name -->
+                                <Button
+                                    Click="ChangeName_Click"
+                                    Visibility="{x:Bind ViewModel.IsSelectedAccountMicrosoft, Mode=OneWay, Converter={StaticResource BoolToVisibility}}">
+                                    <StackPanel Orientation="Horizontal" Spacing="6">
+                                        <FontIcon Glyph="&#xE70F;" FontSize="12" />
+                                        <TextBlock Text="{loc:String Key=Account_TabName}" />
+                                    </StackPanel>
+                                </Button>
+
+                                <!-- Offline: Rename Player -->
+                                <Button
+                                    Click="RenameOffline_Click"
+                                    Visibility="{x:Bind ViewModel.IsSelectedAccountMicrosoft, Mode=OneWay, Converter={StaticResource InverseBoolToVisibility}}">
+                                    <StackPanel Orientation="Horizontal" Spacing="6">
+                                        <FontIcon Glyph="&#xE70F;" FontSize="12" />
+                                        <TextBlock Text="{loc:String Key=Account_Edit}" />
+                                    </StackPanel>
+                                </Button>
+
+                                <!-- Microsoft: Refresh Profile -->
+                                <Button
+                                    Click="RefreshSelectedMicrosoft_Click"
+                                    Padding="8"
+                                    ToolTipService.ToolTip="{loc:String Key=Account_MicrosoftRefresh}"
+                                    Visibility="{x:Bind ViewModel.IsSelectedAccountMicrosoft, Mode=OneWay, Converter={StaticResource BoolToVisibility}}">
+                                    <FontIcon Glyph="&#xE72C;" FontSize="12" />
+                                </Button>
+
+                                <!-- Delete Account -->
+                                <Button
+                                    Click="DeleteSelectedAccount_Click"
+                                    Padding="8"
+                                    ToolTipService.ToolTip="{loc:String Key=Action_Delete}">
+                                    <FontIcon Glyph="&#xE74D;" FontSize="12" />
+                                </Button>
+                            </StackPanel>
+                        </Grid>
+
+                        <!-- Row 1: Unified Appearance & Wardrobe Body -->
+                        <ScrollViewer
+                            Grid.Row="1"
+                            VerticalScrollBarVisibility="Auto"
+                            HorizontalScrollBarVisibility="Disabled">
+                            <StackPanel Spacing="24" Padding="0,4,0,16">
+
+                                <!-- Locked Warning Banner -->
+                                <Border
+                                    Background="{ThemeResource SubtleFillColorSecondaryBrush}"
+                                    BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}"
+                                    BorderThickness="1"
+                                    CornerRadius="8"
+                                    Padding="14,10"
+                                    Visibility="{x:Bind ViewModel.SelectedAccount.IsLocked, Mode=OneWay, Converter={StaticResource BoolToVisibility}}">
+                                    <Grid ColumnSpacing="10">
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="Auto" />
+                                            <ColumnDefinition Width="*" />
+                                        </Grid.ColumnDefinitions>
+                                        <FontIcon Glyph="&#xE72E;" FontSize="14" Opacity="0.8" VerticalAlignment="Center" />
+                                        <TextBlock
+                                            Grid.Column="1"
+                                            Text="{loc:String Key=Account_OfflineLockedHint}"
+                                            FontSize="12"
+                                            Opacity="0.8"
+                                            TextWrapping="Wrap"
+                                            VerticalAlignment="Center" />
+                                    </Grid>
+                                </Border>
+
+                                <Rectangle Height="1" Fill="{ThemeResource DividerStrokeColorDefaultBrush}" Opacity="0.4" />
+
+                                <!-- SECTION A: Skin & Model Customization -->
+                                <Grid ColumnSpacing="24">
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="Auto" />
+                                        <ColumnDefinition Width="*" />
+                                    </Grid.ColumnDefinitions>
+
+                                    <!-- 88x88 Skin Head Preview -->
+                                    <Border
+                                        Width="88"
+                                        Height="88"
+                                        CornerRadius="12"
+                                        Background="{ThemeResource SubtleFillColorSecondaryBrush}"
+                                        BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}"
+                                        BorderThickness="1">
+                                        <Image
+                                            x:Name="DetailSkinPreview"
+                                            Source="{x:Bind ViewModel.SelectedAccount.AvatarImage, Mode=OneWay}"
+                                            Stretch="Uniform"
+                                            Margin="4" />
+                                    </Border>
+
+                                    <!-- Skin Controls -->
+                                    <StackPanel Grid.Column="1" Spacing="12" VerticalAlignment="Center">
+                                        <!-- Microsoft Skin Controls -->
+                                        <StackPanel
+                                            Spacing="10"
+                                            Visibility="{x:Bind ViewModel.IsSelectedAccountMicrosoft, Mode=OneWay, Converter={StaticResource BoolToVisibility}}">
+                                            <StackPanel Orientation="Horizontal" Spacing="16">
+                                                <TextBlock
+                                                    Text="{loc:String Key=Account_ArmModelLabel}"
+                                                    FontSize="12"
+                                                    Opacity="0.7"
+                                                    VerticalAlignment="Center" />
+                                                <RadioButton
+                                                    x:Name="DetailArmClassicRadio"
+                                                    Content="{loc:String Key=Account_ArmModel_Classic}"
+                                                    GroupName="DetailArmModelGroup"
+                                                    IsChecked="{x:Bind ViewModel.IsClassicArmModel, Mode=TwoWay}"
+                                                    Checked="ArmModelRadio_Checked"
+                                                    IsTabStop="False" />
+                                                <RadioButton
+                                                    x:Name="DetailArmSlimRadio"
+                                                    Content="{loc:String Key=Account_ArmModel_Slim}"
+                                                    GroupName="DetailArmModelGroup"
+                                                    IsChecked="{x:Bind ViewModel.IsSlimArmModel, Mode=TwoWay}"
+                                                    Checked="ArmModelRadio_Checked"
+                                                    IsTabStop="False" />
+                                            </StackPanel>
+
+                                            <StackPanel Orientation="Horizontal" Spacing="10">
+                                                <Button
+                                                    x:Name="UploadSkinButton"
+                                                    Click="UploadSkin_Click">
+                                                    <StackPanel Orientation="Horizontal" Spacing="6">
+                                                        <FontIcon Glyph="&#xE898;" FontSize="13" />
+                                                        <TextBlock Text="{loc:String Key=Account_SelectSkinPng}" />
+                                                    </StackPanel>
+                                                </Button>
+
+                                                <Button
+                                                    x:Name="SaveArmModelButton"
+                                                    Click="SaveArmModel_Click"
+                                                    Visibility="Collapsed"
+                                                    Style="{ThemeResource AccentButtonStyle}">
+                                                    <StackPanel Orientation="Horizontal" Spacing="6">
+                                                        <FontIcon Glyph="&#xE74E;" FontSize="13" />
+                                                        <TextBlock Text="{loc:String Key=Account_SkinSave}" />
+                                                    </StackPanel>
+                                                </Button>
+                                            </StackPanel>
+
+                                            <!-- Pending PNG Confirmation Bar -->
+                                            <Border
+                                                x:Name="PendingSkinBar"
+                                                Visibility="Collapsed"
+                                                Padding="10,6"
+                                                CornerRadius="8"
+                                                Background="{ThemeResource SubtleFillColorSecondaryBrush}"
+                                                BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}"
+                                                BorderThickness="1">
+                                                <Grid ColumnSpacing="10">
+                                                    <Grid.ColumnDefinitions>
+                                                        <ColumnDefinition Width="*" />
+                                                        <ColumnDefinition Width="Auto" />
+                                                        <ColumnDefinition Width="Auto" />
+                                                    </Grid.ColumnDefinitions>
+                                                    <TextBlock
+                                                        x:Name="PendingSkinNameText"
+                                                        VerticalAlignment="Center"
+                                                        FontSize="12"
+                                                        FontWeight="SemiBold"
+                                                        TextTrimming="CharacterEllipsis" />
+                                                    <Button
+                                                        x:Name="ConfirmSkinUploadButton"
+                                                        Grid.Column="1"
+                                                        Style="{ThemeResource AccentButtonStyle}"
+                                                        Content="{loc:String Key=Account_ConfirmUploadSkin}"
+                                                        Click="ConfirmSkinUpload_Click" />
+                                                    <Button
+                                                        x:Name="CancelSkinUploadButton"
+                                                        Grid.Column="2"
+                                                        Content="{loc:String Key=Action_Cancel}"
+                                                        Click="CancelSkinUpload_Click" />
+                                                </Grid>
+                                            </Border>
+
+                                            <TextBlock
+                                                x:Name="SkinStatusText"
+                                                FontSize="12"
+                                                TextWrapping="Wrap" />
+                                        </StackPanel>
+
+                                        <!-- Offline Skin Controls -->
+                                        <StackPanel
+                                            Spacing="10"
+                                            Visibility="{x:Bind ViewModel.IsSelectedAccountMicrosoft, Mode=OneWay, Converter={StaticResource InverseBoolToVisibility}}">
+                                            <TextBlock
+                                                Text="{x:Bind ViewModel.SelectedAccount.SkinLabel, Mode=OneWay}"
+                                                FontSize="13"
+                                                FontWeight="Medium" />
+                                            <Button
+                                                Click="PickOfflineSkin_Click"
+                                                Style="{ThemeResource AccentButtonStyle}">
+                                                <StackPanel Orientation="Horizontal" Spacing="6">
+                                                    <FontIcon Glyph="&#xE8B9;" FontSize="13" />
+                                                    <TextBlock Text="{loc:String Key=Account_SkinPick}" />
+                                                </StackPanel>
+                                            </Button>
+                                        </StackPanel>
+                                    </StackPanel>
+                                </Grid>
+
+                                <ProgressBar x:Name="SkinProgressBar" IsIndeterminate="True" Visibility="Collapsed" />
+
+                                <!-- SECTION B: Cape Wardrobe (Microsoft Accounts Only) -->
+                                <StackPanel
+                                    Spacing="12"
+                                    Visibility="{x:Bind ViewModel.IsSelectedAccountMicrosoft, Mode=OneWay, Converter={StaticResource BoolToVisibility}}">
+                                    <Rectangle Height="1" Fill="{ThemeResource DividerStrokeColorDefaultBrush}" Opacity="0.4" />
+
+                                    <TextBlock
+                                        Text="{loc:String Key=Account_TabCape}"
+                                        FontSize="14"
+                                        FontWeight="SemiBold"
+                                        Opacity="0.85" />
+
+                                    <!-- Loading spinner -->
+                                    <ProgressBar
+                                        IsIndeterminate="True"
+                                        Visibility="{x:Bind ViewModel.IsCapesLoading, Mode=OneWay, Converter={StaticResource BoolToVisibility}}" />
+
+                                    <!-- Cape Gallery GridView -->
+                                    <GridView
+                                        x:Name="CapeGridView"
+                                        ItemsSource="{x:Bind ViewModel.Capes, Mode=OneWay}"
+                                        IsItemClickEnabled="True"
+                                        ItemClick="CapeGridView_ItemClick"
+                                        SelectionMode="None"
+                                        IsTabStop="False">
+                                        <GridView.ItemsPanel>
+                                            <ItemsPanelTemplate>
+                                                <ItemsWrapGrid Orientation="Horizontal" MaximumRowsOrColumns="6" />
+                                            </ItemsPanelTemplate>
+                                        </GridView.ItemsPanel>
+                                        <GridView.ItemTemplate>
+                                            <DataTemplate x:DataType="vm:CapeItemViewModel">
+                                                <Border
+                                                    Width="96"
+                                                    Height="140"
+                                                    Margin="4"
+                                                    Padding="6"
+                                                    CornerRadius="10"
+                                                    Background="{ThemeResource SubtleFillColorSecondaryBrush}"
+                                                    BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}"
+                                                    BorderThickness="1"
+                                                    Tapped="CapeCard_Tapped"
+                                                    Tag="{x:Bind}">
+                                                    <Grid RowSpacing="6">
+                                                        <Grid.RowDefinitions>
+                                                            <RowDefinition Height="Auto" />
+                                                            <RowDefinition Height="*" />
+                                                            <RowDefinition Height="Auto" />
+                                                        </Grid.RowDefinitions>
+
+                                                        <!-- Active highlight border -->
+                                                        <Border
+                                                            Grid.RowSpan="3"
+                                                            Margin="-6"
+                                                            CornerRadius="10"
+                                                            BorderBrush="{ThemeResource AccentFillColorDefaultBrush}"
+                                                            BorderThickness="2"
+                                                            IsHitTestVisible="False"
+                                                            Visibility="{x:Bind IsCurrentlyActive, Mode=OneWay, Converter={StaticResource BoolToVisibility}}" />
+
+                                                        <!-- Active badge at top right if active -->
+                                                        <Border
+                                                            HorizontalAlignment="Right"
+                                                            Padding="5,1"
+                                                            CornerRadius="3"
+                                                            Background="{ThemeResource AccentFillColorDefaultBrush}"
+                                                            Visibility="{x:Bind IsCurrentlyActive, Mode=OneWay, Converter={StaticResource BoolToVisibility}}">
+                                                            <TextBlock
+                                                                Text="{x:Bind ActiveBadgeText}"
+                                                                FontSize="9"
+                                                                FontWeight="SemiBold"
+                                                                Foreground="{ThemeResource TextOnAccentFillColorPrimaryBrush}" />
+                                                        </Border>
+
+                                                        <!-- Cape 10:16 Cropped Preview (46x74) -->
+                                                        <Border
+                                                            Grid.Row="1"
+                                                            Width="46"
+                                                            Height="74"
+                                                            HorizontalAlignment="Center"
+                                                            VerticalAlignment="Center"
+                                                            CornerRadius="4">
+                                                            <Image
+                                                                Source="{x:Bind DisplayImage, Mode=OneWay}"
+                                                                Stretch="Uniform"
+                                                                HorizontalAlignment="Center"
+                                                                VerticalAlignment="Center" />
+                                                        </Border>
+
+                                                        <!-- Cape Name -->
+                                                        <TextBlock
+                                                            Grid.Row="2"
+                                                            Text="{x:Bind Alias, Mode=OneWay}"
+                                                            FontSize="11"
+                                                            FontWeight="Medium"
+                                                            TextAlignment="Center"
+                                                            TextTrimming="CharacterEllipsis"
+                                                            HorizontalAlignment="Center" />
+                                                    </Grid>
+                                                </Border>
+                                            </DataTemplate>
+                                        </GridView.ItemTemplate>
+                                    </GridView>
+
+                                    <!-- Status / Cooldown Message -->
+                                    <TextBlock
+                                        x:Name="CapeStatusText"
+                                        FontSize="12"
+                                        TextWrapping="Wrap" />
+                                </StackPanel>
+                            </StackPanel>
+                        </ScrollViewer>
+                    </Grid>
+                </Border>
+            </Grid>
+        </Grid>
+
+        <!-- Global Status Bar -->
+        <TextBlock
+            Grid.Row="2"
+            Margin="0,4,0,0"
+            Text="{x:Bind ViewModel.StatusText, Mode=OneWay}"
+            FontSize="12"
+            Opacity="0.7"
+            TextWrapping="Wrap" />
+    </Grid>
+</Page>

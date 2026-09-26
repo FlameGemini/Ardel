@@ -1,0 +1,75 @@
+## Build
+bin/
+obj/
+.vs/
+*.user
+*.suo
+*.userosscache
+*.sln.docstates
+
+## NuGet
+**/packages/
+project.lock.json
+project.fragment.lock.json
+artifacts/
+
+## Publish / MSIX
+AppPackages/
+BundleArtifacts/
+Package.StoreAssociation.xml
+*_TemporaryKey.pfx
+*.appx
+*.msix
+*.msixbundle
+
+## IDE / OS
+.idea/
+.vscode/
+.cursor/
+*.swp
+Thumbs.db
+Desktop.ini
+
+## AI Assistant
+.agent/
+.codegraph/
+AI_RULES.md
+design.md
+
+## Logs & local settings
+*.log
+src/Ardel.Launcher/Assets/*.ico
+cache/
+config/launcher_config.json
+config/crash-reports/
+*.pkcs8
+*.pem
+*.pfx
+.env
+.env.*
+
+## Portable game data (dev)
+.minecraft/
+
+## Local scratch
+_tmp_api/
+_list_probe/
+/_tmp_*/
+/_*.py
+*.bak
+*.binlog
+/build-*.txt
+/build-*.binlog
+/xaml-*.txt
+src/Ardel.Launcher/Localization/_*
+**/__pycache__/
+
+## Portable auto-downloaded JREs ({exe}/java/{major})
+/java/
+## Legacy
+/runtime/
+.minecraft/runtime/
+
+# Voice frontend
+src/Ardel.Launcher/Assets/voice/node_modules/
+

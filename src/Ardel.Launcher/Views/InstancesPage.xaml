@@ -1,0 +1,271 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Page
+    x:Class="Ardel.Launcher.Views.InstancesPage"
+    x:Name="RootPage"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:models="using:Ardel.Launcher.Models"
+    xmlns:loc="using:Ardel.Launcher.Localization"
+    NavigationCacheMode="Required">
+
+    <Grid Padding="40,28,40,24" RowSpacing="12">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" />
+            <RowDefinition Height="Auto" />
+        </Grid.RowDefinitions>
+
+        <TextBlock
+            Text="{loc:String Key=Instances_Title}"
+            Style="{StaticResource ArdelPageTitleStyle}"
+            Margin="0" />
+
+        <TextBlock
+            Grid.Row="1"
+            Text="{loc:String Key=Instances_Subtitle}"
+            Style="{StaticResource ArdelSectionCaptionStyle}"
+            Margin="0,4,0,8" />
+
+        <Grid Grid.Row="2">
+            <ListView
+                x:Name="InstancesList"
+                ItemsSource="{x:Bind ViewModel.Instances, Mode=OneWay}"
+                SelectionMode="Single"
+                SingleSelectionFollowsFocus="False"
+                CanDragItems="True"
+                CanReorderItems="True"
+                AllowDrop="True"
+                IsItemClickEnabled="False"
+                AllowFocusOnInteraction="False"
+                IsTabStop="False"
+                HorizontalAlignment="Stretch"
+                VerticalAlignment="Stretch"
+                ScrollViewer.VerticalScrollBarVisibility="Auto"
+                ShowsScrollingPlaceholders="False"
+                SelectionChanged="InstancesList_SelectionChanged"
+                DragItemsStarting="InstancesList_DragItemsStarting"
+                DragItemsCompleted="InstancesList_DragItemsCompleted">
+                <ListView.ItemContainerTransitions>
+                    <TransitionCollection>
+                        <RepositionThemeTransition />
+                    </TransitionCollection>
+                </ListView.ItemContainerTransitions>
+                <ListView.ItemContainerStyle>
+                    <Style TargetType="ListViewItem">
+                        <Setter Property="HorizontalContentAlignment" Value="Stretch" />
+                        <Setter Property="Padding" Value="0" />
+                        <Setter Property="Margin" Value="0" />
+                        <Setter Property="MinHeight" Value="0" />
+                        <Setter Property="Background" Value="Transparent" />
+                        <Setter Property="BorderThickness" Value="0" />
+                        <Setter Property="IsTabStop" Value="False" />
+                        <Setter Property="AllowFocusOnInteraction" Value="False" />
+                        <Setter Property="FocusVisualPrimaryThickness" Value="0" />
+                        <Setter Property="FocusVisualSecondaryThickness" Value="0" />
+                        <Setter Property="UseSystemFocusVisuals" Value="False" />
+                        <!-- Reorder needs SelectionMode≠None; hide selection chrome so drag feels free. -->
+                        <Setter Property="Template">
+                            <Setter.Value>
+                                <ControlTemplate TargetType="ListViewItem">
+                                    <ListViewItemPresenter
+                                        ContentTransitions="{TemplateBinding ContentTransitions}"
+                                        SelectionCheckMarkVisualEnabled="False"
+                                        PointerOverBackground="Transparent"
+                                        PressedBackground="Transparent"
+                                        SelectedBackground="Transparent"
+                                        SelectedPointerOverBackground="Transparent"
+                                        SelectedPressedBackground="Transparent"
+                                        DisabledOpacity="{ThemeResource ListViewItemDisabledThemeOpacity}"
+                                        DragBackground="Transparent"
+                                        DragOpacity="0.92"
+                                        HorizontalContentAlignment="{TemplateBinding HorizontalContentAlignment}"
+                                        VerticalContentAlignment="{TemplateBinding VerticalContentAlignment}"
+                                        ContentMargin="{TemplateBinding Padding}" />
+                                </ControlTemplate>
+                            </Setter.Value>
+                        </Setter>
+                    </Style>
+                </ListView.ItemContainerStyle>
+                <ListView.ItemTemplate>
+                    <DataTemplate x:DataType="models:GameVersionItem">
+                        <Border
+                            Background="{ThemeResource CardBackgroundFillColorDefaultBrush}"
+                            BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}"
+                            BorderThickness="1"
+                            CornerRadius="{ThemeResource ArdelCardCornerRadius}"
+                            Padding="16,12"
+                            Margin="0,0,0,8">
+                            <Grid ColumnSpacing="16">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="Auto" />
+                                    <ColumnDefinition Width="*" />
+                                    <ColumnDefinition Width="Auto" />
+                                    <ColumnDefinition Width="Auto" />
+                                </Grid.ColumnDefinitions>
+
+                                <Border
+                                    Grid.Column="0"
+                                    Width="44"
+                                    Height="44"
+                                    CornerRadius="{ThemeResource ArdelIconCornerRadius}"
+                                    VerticalAlignment="Center"
+                                    Background="{ThemeResource ArdelSoftAccentBrush}">
+                                    <Grid>
+                                        <FontIcon
+                                            Glyph="{x:Bind IconGlyph, Mode=OneWay}"
+                                            FontSize="18"
+                                            Foreground="{ThemeResource ArdelAccentBrush}"
+                                            HorizontalAlignment="Center"
+                                            VerticalAlignment="Center"
+                                            Visibility="{x:Bind HasCustomIcon, Mode=OneWay, Converter={StaticResource InverseBoolToVisibility}}" />
+                                        <Image
+                                            Source="{x:Bind IconImage, Mode=OneWay}"
+                                            Stretch="UniformToFill"
+                                            Visibility="{x:Bind HasCustomIcon, Mode=OneWay, Converter={StaticResource BoolToVisibility}}" />
+                                    </Grid>
+                                </Border>
+
+                                <StackPanel Grid.Column="1" VerticalAlignment="Center" Spacing="2">
+                                    <TextBlock
+                                        Text="{x:Bind Id}"
+                                        FontSize="15"
+                                        FontWeight="SemiBold"
+                                        TextTrimming="CharacterEllipsis" />
+                                    <TextBlock
+                                        Text="{x:Bind Notes, Mode=OneWay}"
+                                        FontSize="12"
+                                        Opacity="0.6"
+                                        TextWrapping="WrapWholeWords"
+                                        TextTrimming="CharacterEllipsis"
+                                        MaxLines="2"
+                                        Visibility="{x:Bind HasNotes, Mode=OneWay, Converter={StaticResource BoolToVisibility}}" />
+                                </StackPanel>
+
+                                <Border
+                                    Grid.Column="2"
+                                    VerticalAlignment="Center"
+                                    Padding="10,4"
+                                    CornerRadius="{ThemeResource ArdelBtnCornerRadius}"
+                                    Background="{ThemeResource SubtleFillColorSecondaryBrush}">
+                                    <TextBlock
+                                        Text="{x:Bind KindLabel, Mode=OneWay}"
+                                        FontSize="12"
+                                        FontWeight="Medium"
+                                        Opacity="0.85" />
+                                </Border>
+
+                                <StackPanel
+                                    Grid.Column="3"
+                                    Orientation="Horizontal"
+                                    Spacing="8"
+                                    VerticalAlignment="Center">
+                                    <Button
+                                        Style="{StaticResource AccentButtonStyle}"
+                                        Background="{ThemeResource ArdelAccentBrush}"
+                                        ToolTipService.ToolTip="{loc:String Key=Action_Launch}"
+                                        Tag="{x:Bind}"
+                                        Click="LaunchButton_Click"
+                                        Width="40"
+                                        Height="36"
+                                        Padding="0">
+                                        <FontIcon Glyph="&#xE768;" FontSize="14" Foreground="White" />
+                                    </Button>
+                                    <Button
+                                        Style="{StaticResource ArdelIconButtonStyle}"
+                                        Background="{ThemeResource SubtleFillColorSecondaryBrush}"
+                                        Foreground="{ThemeResource TextFillColorPrimaryBrush}"
+                                        ToolTipService.ToolTip="{loc:String Key=Instances_OpenSettings}"
+                                        Tag="{x:Bind}"
+                                        Click="OpenSettingsButton_Click"
+                                        Width="40"
+                                        Height="36"
+                                        Padding="0">
+                                        <FontIcon Glyph="&#xE713;" FontSize="14" />
+                                    </Button>
+                                </StackPanel>
+                            </Grid>
+                        </Border>
+                    </DataTemplate>
+                </ListView.ItemTemplate>
+            </ListView>
+
+            <TextBlock
+                Text="{loc:String Key=Instances_Loading}"
+                HorizontalAlignment="Center"
+                VerticalAlignment="Center"
+                Opacity="0.5"
+                FontSize="14"
+                Visibility="{x:Bind ViewModel.IsLoading, Mode=OneWay, Converter={StaticResource BoolToVisibility}}" />
+
+            <StackPanel
+                HorizontalAlignment="Center"
+                VerticalAlignment="Center"
+                Spacing="12"
+                Visibility="{x:Bind ViewModel.IsEmpty, Mode=OneWay, Converter={StaticResource BoolToVisibility}}">
+                <TextBlock
+                    Text="{loc:String Key=Instances_Empty}"
+                    Opacity="0.5"
+                    FontSize="14"
+                    HorizontalAlignment="Center"
+                    TextAlignment="Center" />
+                <Button
+                    Content="{loc:String Key=Instances_GoDownload}"
+                    HorizontalAlignment="Center"
+                    Command="{x:Bind ViewModel.GoDownloadCommand}" />
+            </StackPanel>
+        </Grid>
+
+        <!-- Launch / Java download progress (restored after Home page removal) -->
+        <Grid
+            Grid.Row="3"
+            Margin="0,16,0,0"
+            Padding="0,16,0,0"
+            BorderBrush="{ThemeResource DividerStrokeColorDefaultBrush}"
+            BorderThickness="0,1,0,0"
+            ColumnSpacing="16">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="Auto" />
+            </Grid.ColumnDefinitions>
+            <StackPanel Spacing="10" VerticalAlignment="Center">
+                <TextBlock
+                    Text="{x:Bind ViewModel.Launch.StatusText, Mode=OneWay}"
+                    FontSize="14"
+                    Opacity="0.55"
+                    TextWrapping="WrapWholeWords" />
+                <ProgressBar
+                    Minimum="0"
+                    Maximum="100"
+                    Height="3"
+                    Value="{x:Bind ViewModel.Launch.ProgressValue, Mode=OneWay}"
+                    IsIndeterminate="{x:Bind ViewModel.Launch.IsIndeterminate, Mode=OneWay}"
+                    Visibility="{x:Bind ViewModel.Launch.IsLaunching, Mode=OneWay, Converter={StaticResource BoolToVisibility}}" />
+            </StackPanel>
+            <StackPanel
+                Grid.Column="1"
+                Orientation="Horizontal"
+                Spacing="8"
+                VerticalAlignment="Center">
+                <Button
+                    ToolTipService.ToolTip="{loc:String Key=Action_Cancel}"
+                    Width="40"
+                    Height="36"
+                    Padding="0"
+                    Command="{x:Bind ViewModel.Launch.CancelLaunchCommand}"
+                    Visibility="{x:Bind ViewModel.Launch.IsLaunching, Mode=OneWay, Converter={StaticResource BoolToVisibility}}">
+                    <FontIcon Glyph="&#xE711;" FontSize="14" />
+                </Button>
+                <Button
+                    ToolTipService.ToolTip="{loc:String Key=Instances_StopAll}"
+                    Width="40"
+                    Height="36"
+                    Padding="0"
+                    Command="{x:Bind ViewModel.Launch.StopAllGamesCommand}"
+                    Visibility="{x:Bind ViewModel.Launch.ShowStopGameButton, Mode=OneWay, Converter={StaticResource BoolToVisibility}}">
+                    <FontIcon Glyph="&#xE71A;" FontSize="14" />
+                </Button>
+            </StackPanel>
+        </Grid>
+    </Grid>
+</Page>

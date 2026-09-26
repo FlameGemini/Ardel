@@ -1,0 +1,111 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <OutputType>WinExe</OutputType>
+    <TargetFramework>net8.0-windows10.0.19041.0</TargetFramework>
+    <TargetPlatformMinVersion>10.0.17763.0</TargetPlatformMinVersion>
+    <RootNamespace>Ardel.Launcher</RootNamespace>
+    <ApplicationManifest>app.manifest</ApplicationManifest>
+    <Platforms>x86;x64;ARM64</Platforms>
+    <RuntimeIdentifiers>win-x86;win-x64;win-arm64</RuntimeIdentifiers>
+    <UseWinUI>true</UseWinUI>
+    <EnableMsixTooling>true</EnableMsixTooling>
+    <DefaultLanguage>en-US</DefaultLanguage>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <LangVersion>latest</LangVersion>
+    <WindowsPackageType>None</WindowsPackageType>
+    <WindowsAppSDKSelfContained>false</WindowsAppSDKSelfContained>
+    <AllowUnsafeBlocks>false</AllowUnsafeBlocks>
+    <NoWarn>$(NoWarn);MVVMTK0045</NoWarn>
+    <TieredCompilation>true</TieredCompilation>
+    <TieredCompilationQuickJit>true</TieredCompilationQuickJit>
+    <TieredPGO>true</TieredPGO>
+    <!-- R2R speeds cold start for both Debug and Release builds when publishing -->
+    <PublishReadyToRun>true</PublishReadyToRun>
+    <PackageLicenseExpression>OSL-3.0</PackageLicenseExpression>
+    <Authors>FlameGemini</Authors>
+    <Copyright>Copyright (c) 2026 FlameGemini</Copyright>
+  </PropertyGroup>
+
+  <!-- Debug: keep symbols, but still optimize IL for snappier F5 -->
+  <PropertyGroup Condition="'$(Configuration)'=='Debug'">
+    <Optimize>true</Optimize>
+    <DebugType>portable</DebugType>
+    <DebugSymbols>true</DebugSymbols>
+    <DefineConstants>$(DefineConstants);DEBUG;TRACE</DefineConstants>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)'=='Release'">
+    <Optimize>true</Optimize>
+    <DebugType>portable</DebugType>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Content Include="Assets\**">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Remove="Assets\_render_ardel_logo.py" />
+    <Content Remove="Assets\voice\node_modules\**" />
+    <Content Remove="Assets\voice\package.json" />
+    <Content Remove="Assets\voice\package-lock.json" />
+    <Content Remove="Assets\voice\tsconfig.json" />
+    <Content Remove="Assets\voice\src\**" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="CmlLib.Core" Version="4.0.6" />
+    <PackageReference Include="CmlLib.Core.Auth.Microsoft" Version="3.3.1" />
+    <PackageReference Include="CommunityToolkit.Mvvm" Version="8.4.0" />
+    <PackageReference Include="Microsoft.WindowsAppSDK" Version="1.7.250606001" />
+    <PackageReference Include="Microsoft.Windows.SDK.BuildTools" Version="10.0.26100.4188" />
+    <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="8.0.1" />
+    <PackageReference Include="Optifine.Installer" Version="1.0.1" />
+    <PackageReference Include="SkiaSharp" Version="3.119.0" />
+    <PackageReference Include="XboxAuthNet.Game.Msal" Version="0.1.3" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\third_party\CmlLib.Core.Installer.Forge\CmlLib.Core.Installer.Forge\CmlLib.Core.Installer.Forge.csproj" />
+    <ProjectReference Include="..\..\third_party\CmlLib.Core.Installer.NeoForge\CmlLib.Core.Installer.NeoForge\CmlLib.Core.Installer.NeoForge.csproj" />
+    <ProjectReference Include="..\..\third_party\MinecraftSkinRender\MinecraftSkinRender.Image\MinecraftSkinRender.Image.csproj" />
+    <ProjectReference Include="..\Ardel.LogViewer\Ardel.LogViewer.csproj" ReferenceOutputAssembly="false" Private="false" SetTargetFramework="TargetFramework=net8.0-windows" />
+  </ItemGroup>
+
+  <!-- Compile voice TypeScript → app.js / field.js before content copy -->
+  <Target Name="BuildVoiceTypeScript" BeforeTargets="BeforeBuild">
+    <PropertyGroup>
+      <_VoiceDir>$(MSBuildThisFileDirectory)Assets\voice</_VoiceDir>
+    </PropertyGroup>
+    <Exec WorkingDirectory="$(_VoiceDir)" Command="npm install --silent" Condition="!Exists('$(_VoiceDir)\node_modules\esbuild')" IgnoreExitCode="false" />
+    <Exec WorkingDirectory="$(_VoiceDir)" Command="npm run build --silent" IgnoreExitCode="false" />
+  </Target>
+
+  <!-- Ensure the independent log viewer EXE (+ deps) lands next to Ardel.Launcher.exe -->
+  <Target Name="CopyLogViewer" AfterTargets="Build">
+    <PropertyGroup>
+      <_LogViewerDir>$(MSBuildThisFileDirectory)..\Ardel.LogViewer\bin\$(Configuration)\net8.0-windows\</_LogViewerDir>
+      <_LogViewerDir Condition="'$(Platform)' != '' and '$(Platform)' != 'AnyCPU'">$(MSBuildThisFileDirectory)..\Ardel.LogViewer\bin\$(Platform)\$(Configuration)\net8.0-windows\</_LogViewerDir>
+      <_LogViewerDir Condition="!Exists('$(_LogViewerDir)Ardel.LogViewer.exe')">$(MSBuildThisFileDirectory)..\Ardel.LogViewer\bin\$(Configuration)\net8.0-windows\</_LogViewerDir>
+    </PropertyGroup>
+    <ItemGroup>
+      <_LogViewerFiles Include="$(_LogViewerDir)Ardel.LogViewer.exe" Condition="Exists('$(_LogViewerDir)Ardel.LogViewer.exe')" />
+      <_LogViewerFiles Include="$(_LogViewerDir)Ardel.LogViewer.dll" Condition="Exists('$(_LogViewerDir)Ardel.LogViewer.dll')" />
+      <_LogViewerFiles Include="$(_LogViewerDir)Ardel.LogViewer.deps.json" Condition="Exists('$(_LogViewerDir)Ardel.LogViewer.deps.json')" />
+      <_LogViewerFiles Include="$(_LogViewerDir)Ardel.LogViewer.runtimeconfig.json" Condition="Exists('$(_LogViewerDir)Ardel.LogViewer.runtimeconfig.json')" />
+    </ItemGroup>
+    <Copy SourceFiles="@(_LogViewerFiles)" DestinationFolder="$(TargetDir)" SkipUnchangedFiles="true" Condition="'@(_LogViewerFiles)' != ''" />
+    <Warning Text="Ardel.LogViewer.exe was not found to copy into $(TargetDir)" Condition="'@(_LogViewerFiles)' == ''" />
+  </Target>
+
+  <ItemGroup>
+    <None Include="..\..\NOTICE.txt" Link="NOTICE.txt" CopyToOutputDirectory="PreserveNewest" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Manifest Include="$(ApplicationManifest)" />
+  </ItemGroup>
+
+  <ItemGroup Condition="'$(DisableMsixProjectCapabilityAddedByProject)'!='true' and '$(EnableMsixTooling)'=='true'">
+    <ProjectCapability Include="Msix" />
+  </ItemGroup>
+</Project>

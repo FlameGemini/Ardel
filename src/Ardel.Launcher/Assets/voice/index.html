@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" />
+  <title>Ardel Voice</title>
+  <link rel="stylesheet" href="style.css?v=13" />
+</head>
+<body class="theme-dark view-home">
+  <input id="displayName" type="hidden" maxlength="24" />
+
+  <div id="connectedBanner" class="connected-banner" aria-hidden="true">
+    <div class="connected-frame">
+      <span class="connected-rail" aria-hidden="true"></span>
+      <div class="connected-copy">
+        <p class="connected-title">CONNECTED</p>
+        <p class="connected-sub">You are online now</p>
+      </div>
+      <span class="connected-rail" aria-hidden="true"></span>
+    </div>
+  </div>
+
+  <main class="shell">
+    <section id="stepHome" class="step home is-active" data-step="home">
+      <div id="fieldHost" class="field" aria-hidden="true"></div>
+      <div class="choices">
+        <button id="btnCreate" type="button" class="choice" data-i18n="createRoom">I want to create my own room</button>
+        <button id="btnGoJoin" type="button" class="choice secondary" data-i18n="joinRoom">I want to join another user's room</button>
+      </div>
+    </section>
+
+    <section id="stepJoin" class="step form" data-step="join" aria-hidden="true">
+      <div class="form-card">
+        <button id="btnBackHome" type="button" class="text" data-i18n="back">Back</button>
+        <h1 data-i18n="joinLabel">Join with invite code</h1>
+        <label for="sessionCode" data-i18n="inviteCode">Invite code</label>
+        <input id="sessionCode" maxlength="8" data-i18n-placeholder="codePlaceholder" placeholder="676767" autocomplete="off" spellcheck="false" />
+        <p id="joinHint" class="msg"></p>
+        <button id="btnJoin" type="button" data-i18n="join">Join</button>
+      </div>
+    </section>
+
+    <section id="stepLive" class="step form" data-step="live" aria-hidden="true">
+      <div class="form-card">
+        <p class="eyebrow" data-i18n="inviteCode">Invite code</p>
+        <div class="code-row">
+          <strong id="codeLabel" class="code"></strong>
+          <button id="btnCopy" type="button" class="text inline" data-i18n="copy">Copy</button>
+        </div>
+        <p id="status" class="msg" data-i18n="statusIdle">Ready</p>
+        <h2 data-i18n="members">Members</h2>
+        <ul id="members"></ul>
+        <div class="footer">
+          <button id="btnMute" type="button" class="secondary" data-i18n="mute">Mute mic</button>
+          <button id="btnLeave" type="button" class="danger" data-i18n="leave">Leave</button>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <div id="audioSink"></div>
+  <script src="field.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>

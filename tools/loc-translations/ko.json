@@ -1,0 +1,15 @@
+{
+  "update": {
+    "LoaderTag_Named": "{0}（{1}）"
+  },
+  "add": {
+    "Oobe_StepBreak_Title": "워터 바",
+    "Oobe_StepBreak_Body": "",
+    "Oobe_StepAccount_Title": "오프라인 계정 추가",
+    "Oobe_StepAccount_Subtitle": "선택 사항 — 나중에 계정 페이지에서 더 추가할 수 있습니다.",
+    "Oobe_StepHydrate_Title": "물",
+    "Oobe_StepHydrate_Body": "",
+    "Modpack_ResolvingFiles": "모드팩 파일 확인 중…",
+    "Modpack_MissingFile": "모드팩 파일이 없습니다: {0}"
+  }
+}

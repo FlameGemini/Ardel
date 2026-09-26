@@ -1,0 +1,3140 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <data name="Brand_Name" xml:space="preserve">
+    <value>Ardel</value>
+  </data>
+  <data name="Nav_Play" xml:space="preserve">
+    <value>Home</value>
+  </data>
+  <data name="Nav_Download" xml:space="preserve">
+    <value>Download</value>
+  </data>
+  <data name="Nav_Instances" xml:space="preserve">
+    <value>Profiles</value>
+  </data>
+  <data name="Nav_Settings" xml:space="preserve">
+    <value>Settings</value>
+  </data>
+  <data name="Nav_Account" xml:space="preserve">
+    <value>Account</value>
+  </data>
+  <data name="Nav_Skins" xml:space="preserve">
+    <value>Skins</value>
+  </data>
+  <data name="Nav_About" xml:space="preserve">
+    <value>About</value>
+  </data>
+  <data name="Action_Launch" xml:space="preserve">
+    <value>Launch</value>
+  </data>
+  <data name="Action_Cancel" xml:space="preserve">
+    <value>Cancel</value>
+  </data>
+  <data name="Action_Download" xml:space="preserve">
+    <value>Download</value>
+  </data>
+  <data name="Action_Refresh" xml:space="preserve">
+    <value>Refresh</value>
+  </data>
+  <data name="Action_Search" xml:space="preserve">
+    <value>Search</value>
+  </data>
+  <data name="Action_Reset" xml:space="preserve">
+    <value>Reset</value>
+  </data>
+  <data name="Action_Save" xml:space="preserve">
+    <value>Save</value>
+  </data>
+  <data name="Action_Rescan" xml:space="preserve">
+    <value>Rescan</value>
+  </data>
+  <data name="Action_Browse" xml:space="preserve">
+    <value>Browse…</value>
+  </data>
+  <data name="Action_OpenFolder" xml:space="preserve">
+    <value>Open folder</value>
+  </data>
+  <data name="Action_OpenMinecraftFolder" xml:space="preserve">
+    <value>Open .minecraft</value>
+  </data>
+  <data name="Action_Delete" xml:space="preserve">
+    <value>Delete</value>
+  </data>
+  <data name="Action_Back" xml:space="preserve">
+    <value>Back</value>
+  </data>
+  <data name="Action_Apply" xml:space="preserve">
+    <value>Apply</value>
+  </data>
+  <data name="Action_Close" xml:space="preserve">
+    <value>Close</value>
+  </data>
+  <data name="Action_ClearSelection" xml:space="preserve">
+    <value>Clear selection</value>
+  </data>
+  <data name="Home_GreetingEarlyMorning" xml:space="preserve">
+    <value>Good morning</value>
+  </data>
+  <data name="Home_GreetingMorning" xml:space="preserve">
+    <value>Good morning</value>
+  </data>
+  <data name="Home_GreetingNoon" xml:space="preserve">
+    <value>Good noon</value>
+  </data>
+  <data name="Home_GreetingAfternoon" xml:space="preserve">
+    <value>Good afternoon</value>
+  </data>
+  <data name="Home_GreetingEvening" xml:space="preserve">
+    <value>Good evening</value>
+  </data>
+  <data name="Home_LaunchGame" xml:space="preserve">
+    <value>Launch game</value>
+  </data>
+  <data name="Home_QuickLaunchNone" xml:space="preserve">
+    <value>Pin an instance in its settings to use quick launch.</value>
+  </data>
+  <data name="Home_QuickLaunchMissing" xml:space="preserve">
+    <value>Pinned instance “{0}” was not found.</value>
+  </data>
+  <data name="Home_VoiceCardTitle" xml:space="preserve">
+    <value>Voice</value>
+  </data>
+  <data name="Home_VoiceCardSubtitle" xml:space="preserve">
+    <value>Talk with friends</value>
+  </data>
+  <data name="Voice_WindowTitle" xml:space="preserve">
+    <value>Ardel Voice</value>
+  </data>
+  <data name="Voice_Tagline" xml:space="preserve">
+    <value>Voice chat only — not game matchmaking or hosting.</value>
+  </data>
+  <data name="Voice_DisplayName" xml:space="preserve">
+    <value>Display name</value>
+  </data>
+  <data name="Voice_StartSession" xml:space="preserve">
+    <value>Start session</value>
+  </data>
+  <data name="Voice_CreateRoom" xml:space="preserve">
+    <value>I want to create my own room</value>
+  </data>
+  <data name="Voice_JoinRoom" xml:space="preserve">
+    <value>I want to join another user's room</value>
+  </data>
+  <data name="Voice_JoinLabel" xml:space="preserve">
+    <value>Join with invite code</value>
+  </data>
+  <data name="Voice_CodePlaceholder" xml:space="preserve">
+    <value>676767</value>
+  </data>
+  <data name="Voice_Join" xml:space="preserve">
+    <value>Join</value>
+  </data>
+  <data name="Voice_InviteCode" xml:space="preserve">
+    <value>Invite code</value>
+  </data>
+  <data name="Voice_Copy" xml:space="preserve">
+    <value>Copy</value>
+  </data>
+  <data name="Voice_Mute" xml:space="preserve">
+    <value>Mute mic</value>
+  </data>
+  <data name="Voice_Unmute" xml:space="preserve">
+    <value>Unmute mic</value>
+  </data>
+  <data name="Voice_Leave" xml:space="preserve">
+    <value>Leave</value>
+  </data>
+  <data name="Voice_Members" xml:space="preserve">
+    <value>Members</value>
+  </data>
+  <data name="Voice_YouSuffix" xml:space="preserve">
+    <value>(you)</value>
+  </data>
+  <data name="Voice_GuestName" xml:space="preserve">
+    <value>Guest</value>
+  </data>
+  <data name="Voice_StatusIdle" xml:space="preserve">
+    <value>Ready when you are.</value>
+  </data>
+  <data name="Voice_StatusMic" xml:space="preserve">
+    <value>Requesting microphone…</value>
+  </data>
+  <data name="Voice_StatusSignaling" xml:space="preserve">
+    <value>Connecting…</value>
+  </data>
+  <data name="Voice_StatusInSession" xml:space="preserve">
+    <value>In session</value>
+  </data>
+  <data name="Voice_StatusLeft" xml:space="preserve">
+    <value>Left session</value>
+  </data>
+  <data name="Voice_StatusCopied" xml:space="preserve">
+    <value>Invite code copied</value>
+  </data>
+  <data name="Voice_StatusCopyFail" xml:space="preserve">
+    <value>Could not copy</value>
+  </data>
+  <data name="Voice_StatusNeedCode" xml:space="preserve">
+    <value>Enter an invite code</value>
+  </data>
+  <data name="Voice_StatusDisconnected" xml:space="preserve">
+    <value>Disconnected</value>
+  </data>
+  <data name="Voice_ErrNotFound" xml:space="preserve">
+    <value>Session not found</value>
+  </data>
+  <data name="Voice_ErrFull" xml:space="preserve">
+    <value>Session is full (max 8)</value>
+  </data>
+  <data name="Voice_ErrGeneric" xml:space="preserve">
+    <value>Something went wrong</value>
+  </data>
+  <data name="Home_Tagline" xml:space="preserve">
+    <value>Launch Minecraft</value>
+  </data>
+  <data name="Home_Version" xml:space="preserve">
+    <value>Version</value>
+  </data>
+  <data name="Home_PlayerOffline" xml:space="preserve">
+    <value>Player (offline)</value>
+  </data>
+  <data name="Home_Ready" xml:space="preserve">
+    <value>Ready</value>
+  </data>
+  <data name="Home_ManageProfiles" xml:space="preserve">
+    <value>Manage profiles</value>
+  </data>
+  <data name="Home_NoAccount" xml:space="preserve">
+    <value>Select an account</value>
+  </data>
+  <data name="Startup_Loading" xml:space="preserve">
+    <value>Starting…</value>
+  </data>
+  <data name="Home_GoDownload" xml:space="preserve">
+    <value>Go to Download to get a game</value>
+  </data>
+  <data name="Home_InitFailed" xml:space="preserve">
+    <value>Init failed: {0}</value>
+  </data>
+  <data name="Home_Preparing" xml:space="preserve">
+    <value>Preparing {0}…</value>
+  </data>
+  <data name="Home_PreparingOfflineSkin" xml:space="preserve">
+    <value>Starting Ardel skin relay…</value>
+  </data>
+  <data name="Home_Starting" xml:space="preserve">
+    <value>Starting {0}…</value>
+  </data>
+  <data name="Home_ResolvingJava" xml:space="preserve">
+    <value>Checking Java…</value>
+  </data>
+  <data name="Home_DownloadingJava" xml:space="preserve">
+    <value>Downloading Java {0}…</value>
+  </data>
+  <data name="Home_LaunchingGame" xml:space="preserve">
+    <value>Launching game…</value>
+  </data>
+  <data name="Home_WaitingForWindow" xml:space="preserve">
+    <value>Waiting for the game window…</value>
+  </data>
+  <data name="Home_GameRunning" xml:space="preserve">
+    <value>Game is running</value>
+  </data>
+  <data name="Home_GameExited" xml:space="preserve">
+    <value>Game exited</value>
+  </data>
+  <data name="Home_LaunchFailed" xml:space="preserve">
+    <value>Launch failed: {0}</value>
+  </data>
+  <data name="Home_Cancelled" xml:space="preserve">
+    <value>Cancelled</value>
+  </data>
+  <data name="Home_Cancelling" xml:space="preserve">
+    <value>Cancelling…</value>
+  </data>
+  <data name="Home_DownloadingBytes" xml:space="preserve">
+    <value>Downloading {0} / {1}</value>
+  </data>
+  <data name="Instances_Title" xml:space="preserve">
+    <value>Profiles</value>
+  </data>
+  <data name="Instances_Subtitle" xml:space="preserve">
+    <value>Installed game versions on this PC</value>
+  </data>
+  <data name="Instances_Empty" xml:space="preserve">
+    <value>No instances yet — download one first</value>
+  </data>
+  <data name="Instances_GoDownload" xml:space="preserve">
+    <value>Go to Download</value>
+  </data>
+  <data name="Instances_Loading" xml:space="preserve">
+    <value>Looking for installed profiles…</value>
+  </data>
+  <data name="Instances_Count" xml:space="preserve">
+    <value>{0} profiles</value>
+  </data>
+  <data name="Instances_LoadFailed" xml:space="preserve">
+    <value>Could not load profiles: {0}</value>
+  </data>
+  <data name="Instances_OpenSettings" xml:space="preserve">
+    <value>Instance settings</value>
+  </data>
+  <data name="Instances_OpenedFolder" xml:space="preserve">
+    <value>Opened {0}</value>
+  </data>
+  <data name="Instances_DeleteTitle" xml:space="preserve">
+    <value>Delete profile</value>
+  </data>
+  <data name="Instances_DeleteConfirm" xml:space="preserve">
+    <value>Delete "{0}"? This removes the version folder and cannot be undone.</value>
+  </data>
+  <data name="Instances_Deleting" xml:space="preserve">
+    <value>Deleting {0}…</value>
+  </data>
+  <data name="Instances_Deleted" xml:space="preserve">
+    <value>Deleted {0}</value>
+  </data>
+  <data name="Instances_DeleteFailed" xml:space="preserve">
+    <value>Could not delete {0}: {1}</value>
+  </data>
+  <data name="Instances_DeleteNoUi" xml:space="preserve">
+    <value>Cannot show delete dialog — reopen the Profiles page and try again.</value>
+  </data>
+  <data name="Instances_StopAll" xml:space="preserve">
+    <value>Stop all games</value>
+  </data>
+  <data name="Instances_GamesStopped" xml:space="preserve">
+    <value>All game processes stopped</value>
+  </data>
+  <data name="Instances_GamesRunning" xml:space="preserve">
+    <value>{0} games running</value>
+  </data>
+  <data name="InstanceSettings_Title" xml:space="preserve">
+    <value>Settings — {0}</value>
+  </data>
+  <data name="InstanceSettings_Isolation" xml:space="preserve">
+    <value>Isolated folder</value>
+  </data>
+  <data name="InstanceSettings_IsolationHint" xml:space="preserve">
+    <value>Version isolation is always on for this profile.</value>
+  </data>
+  <data name="InstanceSettings_OpenFolder" xml:space="preserve">
+    <value>Open instance folder</value>
+  </data>
+  <data name="InstanceSettings_OpenSubfolder" xml:space="preserve">
+    <value>Open…</value>
+  </data>
+  <data name="InstanceSettings_DeleteHint" xml:space="preserve">
+    <value>Permanently removes this profile folder and unused dependency versions.</value>
+  </data>
+  <data name="InstanceSettings_FollowGlobal" xml:space="preserve">
+    <value>Use launcher</value>
+  </data>
+  <data name="InstanceSettings_Custom" xml:space="preserve">
+    <value>Custom</value>
+  </data>
+  <data name="InstanceSettings_GlobalMemoryHint" xml:space="preserve">
+    <value>Using launcher default:</value>
+  </data>
+  <data name="InstanceSettings_JvmArgs" xml:space="preserve">
+    <value>Extra JVM arguments</value>
+  </data>
+  <data name="InstanceSettings_JvmArgsPlaceholder" xml:space="preserve">
+    <value>e.g. -XX:+UseG1GC</value>
+  </data>
+  <data name="InstanceSettings_GameArgs" xml:space="preserve">
+    <value>Extra game arguments</value>
+  </data>
+  <data name="InstanceSettings_GameArgsPlaceholder" xml:space="preserve">
+    <value>Optional Minecraft args</value>
+  </data>
+  <data name="InstanceSettings_Window" xml:space="preserve">
+    <value>Window</value>
+  </data>
+  <data name="InstanceSettings_Width" xml:space="preserve">
+    <value>Width</value>
+  </data>
+  <data name="InstanceSettings_Height" xml:space="preserve">
+    <value>Height</value>
+  </data>
+  <data name="InstanceSettings_ResolutionDefault" xml:space="preserve">
+    <value>Default</value>
+  </data>
+  <data name="InstanceSettings_FullScreen" xml:space="preserve">
+    <value>Fullscreen</value>
+  </data>
+  <data name="InstanceSettings_Server" xml:space="preserve">
+    <value>Join server</value>
+  </data>
+  <data name="InstanceSettings_ServerHint" xml:space="preserve">
+    <value>Optional. Connects to this address when the game starts.</value>
+  </data>
+  <data name="InstanceSettings_ServerIp" xml:space="preserve">
+    <value>Address</value>
+  </data>
+  <data name="InstanceSettings_ServerIpPlaceholder" xml:space="preserve">
+    <value>play.example.com</value>
+  </data>
+  <data name="InstanceSettings_ServerPort" xml:space="preserve">
+    <value>Port</value>
+  </data>
+  <data name="InstanceSettings_Saved" xml:space="preserve">
+    <value>Saved</value>
+  </data>
+  <data name="InstanceSettings_JavaFollowGlobal" xml:space="preserve">
+    <value>Using the Java path from launcher Settings.</value>
+  </data>
+  <data name="InstanceSettings_JavaMissing" xml:space="preserve">
+    <value>Selected Java path does not exist.</value>
+  </data>
+  <data name="InstanceSettings_InvalidResolution" xml:space="preserve">
+    <value>Width and height must be positive numbers (or empty for default).</value>
+  </data>
+  <data name="InstanceSettings_InvalidPort" xml:space="preserve">
+    <value>Port must be between 1 and 65535 (or empty).</value>
+  </data>
+  <data name="InstanceSettings_NavOverview" xml:space="preserve">
+    <value>Overview</value>
+  </data>
+  <data name="InstanceSettings_NavRuntime" xml:space="preserve">
+    <value>Runtime</value>
+  </data>
+  <data name="InstanceSettings_NavWindow" xml:space="preserve">
+    <value>Window &amp; server</value>
+  </data>
+  <data name="InstanceSettings_NavAdvanced" xml:space="preserve">
+    <value>Advanced</value>
+  </data>
+  <data name="InstanceSettings_NavSettings" xml:space="preserve">
+    <value>Settings</value>
+  </data>
+  <data name="InstanceSettings_NavManage" xml:space="preserve">
+    <value>Manage</value>
+  </data>
+  <data name="InstanceSettings_NavMods" xml:space="preserve">
+    <value>Mods</value>
+  </data>
+  <data name="InstanceSettings_NavResourcepacks" xml:space="preserve">
+    <value>Resource Packs</value>
+  </data>
+  <data name="InstanceSettings_NavShaderpacks" xml:space="preserve">
+    <value>Shader Packs</value>
+  </data>
+  <data name="InstanceSettings_NavSaves" xml:space="preserve">
+    <value>Saves</value>
+  </data>
+  <data name="InstanceSettings_NavStatistics" xml:space="preserve">
+    <value>Statistics</value>
+  </data>
+  <data name="InstanceSettings_StatsTotalPlayTime" xml:space="preserve">
+    <value>Total play time</value>
+  </data>
+  <data name="InstanceSettings_StatsLaunchCount" xml:space="preserve">
+    <value>Launches</value>
+  </data>
+  <data name="InstanceSettings_StatsLastPlayed" xml:space="preserve">
+    <value>Last played</value>
+  </data>
+  <data name="InstanceSettings_StatsAvgSession" xml:space="preserve">
+    <value>Avg. session</value>
+  </data>
+  <data name="InstanceSettings_StatsPlayTrend" xml:space="preserve">
+    <value>Play time (last 14 days)</value>
+  </data>
+  <data name="InstanceSettings_StatsScreenshots" xml:space="preserve">
+    <value>Screenshots</value>
+  </data>
+  <data name="InstanceSettings_StatsNoData" xml:space="preserve">
+    <value>No play data yet. Launch this instance to start tracking.</value>
+  </data>
+  <data name="InstanceSettings_StatsOpenScreenshots" xml:space="preserve">
+    <value>Open screenshots folder</value>
+  </data>
+  <data name="InstanceSettings_StatsDayTooltip" xml:space="preserve">
+    <value>{0} · {1}</value>
+  </data>
+  <data name="InstanceSettings_Name" xml:space="preserve">
+    <value>Instance name</value>
+  </data>
+  <data name="InstanceSettings_Rename" xml:space="preserve">
+    <value>Rename</value>
+  </data>
+  <data name="InstanceSettings_Renamed" xml:space="preserve">
+    <value>Renamed to {0}</value>
+  </data>
+  <data name="InstanceSettings_RenameFailed" xml:space="preserve">
+    <value>Could not rename: {0}</value>
+  </data>
+  <data name="InstanceSettings_InfoType" xml:space="preserve">
+    <value>Type</value>
+  </data>
+  <data name="InstanceSettings_InfoBase" xml:space="preserve">
+    <value>Base game</value>
+  </data>
+  <data name="InstanceSettings_InfoJava" xml:space="preserve">
+    <value>Suggested Java</value>
+  </data>
+  <data name="InstanceSettings_InfoJavaUnknown" xml:space="preserve">
+    <value>Not detected</value>
+  </data>
+  <data name="InstanceSettings_Folders" xml:space="preserve">
+    <value>Folders</value>
+  </data>
+  <data name="InstanceSettings_FolderMods" xml:space="preserve">
+    <value>mods</value>
+  </data>
+  <data name="InstanceSettings_FolderSaves" xml:space="preserve">
+    <value>saves</value>
+  </data>
+  <data name="InstanceSettings_FolderConfig" xml:space="preserve">
+    <value>config</value>
+  </data>
+  <data name="InstanceSettings_FolderResourcepacks" xml:space="preserve">
+    <value>resourcepacks</value>
+  </data>
+  <data name="InstanceSettings_FolderShaderpacks" xml:space="preserve">
+    <value>shaderpacks</value>
+  </data>
+  <data name="InstanceSettings_FolderDatapacks" xml:space="preserve">
+    <value>datapacks</value>
+  </data>
+  <data name="InstanceSettings_FolderScreenshots" xml:space="preserve">
+    <value>screenshots</value>
+  </data>
+  <data name="InstanceSettings_FolderLogs" xml:space="preserve">
+    <value>logs</value>
+  </data>
+  <data name="InstanceSettings_ManageTitle" xml:space="preserve">
+    <value>Manage</value>
+  </data>
+  <data name="InstanceSettings_RuntimeTitle" xml:space="preserve">
+    <value>Runtime</value>
+  </data>
+  <data name="InstanceSettings_WindowTitle" xml:space="preserve">
+    <value>Window &amp; server</value>
+  </data>
+  <data name="InstanceSettings_AdvancedTitle" xml:space="preserve">
+    <value>Advanced</value>
+  </data>
+  <data name="InstanceSettings_OverviewTitle" xml:space="preserve">
+    <value>Overview</value>
+  </data>
+  <data name="InstanceSettings_Notes" xml:space="preserve">
+    <value>Notes</value>
+  </data>
+  <data name="InstanceSettings_NotesPlaceholder" xml:space="preserve">
+    <value>Shown under this profile on the list</value>
+  </data>
+  <data name="InstanceSettings_PinQuickLaunch" xml:space="preserve">
+    <value>Pin to quick launch</value>
+  </data>
+  <data name="InstanceSettings_PinQuickLaunchHint" xml:space="preserve">
+    <value>Only one instance can be pinned. It appears on Home for one-click launch.</value>
+  </data>
+  <data name="InstanceSettings_CopyPath" xml:space="preserve">
+    <value>Copy path</value>
+  </data>
+  <data name="InstanceSettings_PathCopied" xml:space="preserve">
+    <value>Path copied</value>
+  </data>
+  <data name="InstanceSettings_MaxMemory" xml:space="preserve">
+    <value>Maximum</value>
+  </data>
+  <data name="InstanceSettings_MinMemory" xml:space="preserve">
+    <value>Minimum</value>
+  </data>
+  <data name="InstanceSettings_MinMemoryHint" xml:space="preserve">
+    <value>Minimum heap size (-Xms). Keep it at or below maximum.</value>
+  </data>
+  <data name="InstanceSettings_MemoryUsed" xml:space="preserve">
+    <value>In use</value>
+  </data>
+  <data name="InstanceSettings_MemoryGame" xml:space="preserve">
+    <value>Game allocation</value>
+  </data>
+  <data name="InstanceSettings_MemoryMap" xml:space="preserve">
+    <value>Allocation overview</value>
+  </data>
+  <data name="InstanceSettings_MemoryTotal" xml:space="preserve">
+    <value>total</value>
+  </data>
+  <data name="InstanceSettings_MemoryFree" xml:space="preserve">
+    <value>Available</value>
+  </data>
+  <data name="InstanceSettings_GameWindowTitle" xml:space="preserve">
+    <value>Game window title</value>
+  </data>
+  <data name="InstanceSettings_GameWindowTitlePlaceholder" xml:space="preserve">
+    <value>Leave empty for default</value>
+  </data>
+  <data name="InstanceSettings_GameWindowTitleHint" xml:space="preserve">
+    <value>Placeholders: {version} {user}. Applied after the game window opens.</value>
+  </data>
+  <data name="InstanceSettings_ResolutionPreset" xml:space="preserve">
+    <value>Resolution preset</value>
+  </data>
+  <data name="InstanceSettings_ResolutionCustom" xml:space="preserve">
+    <value>Custom</value>
+  </data>
+  <data name="InstanceSettings_ResetTitle" xml:space="preserve">
+    <value>Reset settings</value>
+  </data>
+  <data name="InstanceSettings_ResetHint" xml:space="preserve">
+    <value>Clear Java, memory, window, server, and argument overrides for this profile.</value>
+  </data>
+  <data name="InstanceSettings_Reset" xml:space="preserve">
+    <value>Reset</value>
+  </data>
+  <data name="InstanceSettings_ResetConfirm" xml:space="preserve">
+    <value>Reset all launch overrides for this profile?</value>
+  </data>
+  <data name="InstanceSettings_ResetDone" xml:space="preserve">
+    <value>Instance settings reset</value>
+  </data>
+  <data name="InstanceSettings_IconPresetLib" xml:space="preserve">
+    <value>Preset Icon Library</value>
+  </data>
+  <data name="InstanceSettings_JvmPresetTitle" xml:space="preserve">
+    <value>Optimization Presets</value>
+  </data>
+  <data name="InstanceSettings_JvmPresetClean" xml:space="preserve">
+    <value>Clear All Arguments</value>
+  </data>
+  <data name="InstanceSettings_JvmPresetG1Gc" xml:space="preserve">
+    <value>G1GC (Standard)</value>
+  </data>
+  <data name="InstanceSettings_JvmPresetShenandoah" xml:space="preserve">
+    <value>ShenandoahGC (Java 11+)</value>
+  </data>
+  <data name="InstanceSettings_JvmPresetZgc" xml:space="preserve">
+    <value>ZGC (Java 15+)</value>
+  </data>
+  <data name="InstanceSettings_JvmPresetGenZgc" xml:space="preserve">
+    <value>Generational ZGC (Java 21+)</value>
+  </data>
+  <data name="InstanceSettings_JvmPresetGraalVm" xml:space="preserve">
+    <value>GraalVM</value>
+  </data>
+  <data name="InstanceSettings_JvmPresetLowLatency" xml:space="preserve">
+    <value>Low Latency G1GC</value>
+  </data>
+  <data name="InstanceSettings_JvmPresetLowMemory" xml:space="preserve">
+    <value>Low Memory SerialGC</value>
+  </data>
+  <data name="InstanceSettings_JvmPresetAikar" xml:space="preserve">
+    <value>Aikar's Flags</value>
+  </data>
+  <data name="InstanceSettings_Icon" xml:space="preserve">
+    <value>Icon</value>
+  </data>
+  <data name="InstanceSettings_IconChange" xml:space="preserve">
+    <value>Change icon</value>
+  </data>
+  <data name="InstanceSettings_IconClear" xml:space="preserve">
+    <value>Remove icon</value>
+  </data>
+  <data name="InstanceSettings_IconUpdated" xml:space="preserve">
+    <value>Icon updated</value>
+  </data>
+  <data name="InstanceSettings_IconCleared" xml:space="preserve">
+    <value>Icon removed</value>
+  </data>
+  <data name="InstanceSettings_IconFailed" xml:space="preserve">
+    <value>Could not set icon: {0}</value>
+  </data>
+  <data name="InstanceSettings_DuplicateTitle" xml:space="preserve">
+    <value>Duplicate</value>
+  </data>
+  <data name="InstanceSettings_DuplicateHint" xml:space="preserve">
+    <value>Creates a full copy of this profile (mods, saves, settings) under a new name.</value>
+  </data>
+  <data name="InstanceSettings_Duplicate" xml:space="preserve">
+    <value>Duplicate profile</value>
+  </data>
+  <data name="InstanceSettings_Duplicated" xml:space="preserve">
+    <value>Duplicated as {0}</value>
+  </data>
+  <data name="InstanceSettings_DuplicateFailed" xml:space="preserve">
+    <value>Could not duplicate: {0}</value>
+  </data>
+  <data name="InstanceSettings_ExportTitle" xml:space="preserve">
+    <value>Export</value>
+  </data>
+  <data name="InstanceSettings_ExportHint" xml:space="preserve">
+    <value>Export this instance as a Modrinth modpack (.mrpack) you can share or reinstall.</value>
+  </data>
+  <data name="InstanceSettings_Export" xml:space="preserve">
+    <value>Export as .mrpack</value>
+  </data>
+  <data name="InstanceSettings_Exporting" xml:space="preserve">
+    <value>Exporting…</value>
+  </data>
+  <data name="InstanceSettings_Exported" xml:space="preserve">
+    <value>Exported to {0}</value>
+  </data>
+  <data name="InstanceSettings_ExportFailed" xml:space="preserve">
+    <value>Could not export: {0}</value>
+  </data>
+  <data name="InstanceSettings_ModPage" xml:space="preserve">
+    <value>Web Page</value>
+  </data>
+  <data name="InstanceSettings_ModFolder" xml:space="preserve">
+    <value>Folder</value>
+  </data>
+  <data name="InstanceSettings_ModDelete" xml:space="preserve">
+    <value>Delete</value>
+  </data>
+  <data name="InstanceSettings_ModInfoTitle" xml:space="preserve">
+    <value>Mod Information</value>
+  </data>
+  <data name="InstanceSettings_OverrideJava" xml:space="preserve">
+    <value>Enable custom Java path</value>
+  </data>
+  <data name="InstanceSettings_OverrideMemory" xml:space="preserve">
+    <value>Enable custom memory allocation</value>
+  </data>
+  <data name="InstanceSettings_ToggleDisable" xml:space="preserve">
+    <value>Disable</value>
+  </data>
+  <data name="InstanceSettings_ToggleEnable" xml:space="preserve">
+    <value>Enable</value>
+  </data>
+  <data name="InstanceSettings_ModFilterAll" xml:space="preserve">
+    <value>All</value>
+  </data>
+  <data name="InstanceSettings_ModFilterEnabled" xml:space="preserve">
+    <value>Enabled</value>
+  </data>
+  <data name="InstanceSettings_ModFilterDisabled" xml:space="preserve">
+    <value>Disabled</value>
+  </data>
+  <data name="InstanceSettings_ModFilterUpdatable" xml:space="preserve">
+    <value>Updates</value>
+  </data>
+  <data name="InstanceSettings_ModFilterUpdatableCount" xml:space="preserve">
+    <value>Updates ({0})</value>
+  </data>
+  <data name="InstanceSettings_ModUpdateChecking" xml:space="preserve">
+    <value>Checking for mod updates…</value>
+  </data>
+  <data name="InstanceSettings_RefreshingResources" xml:space="preserve">
+    <value>Refreshing…</value>
+  </data>
+  <data name="InstanceSettings_ModUpdateAvailable" xml:space="preserve">
+    <value>{0} mod(s) have updates for this instance.</value>
+  </data>
+  <data name="InstanceSettings_ModUpdateVersionChange" xml:space="preserve">
+    <value>{0} → {1}</value>
+  </data>
+  <data name="InstanceSettings_ModUpdateAction" xml:space="preserve">
+    <value>Update</value>
+  </data>
+  <data name="InstanceSettings_ModUpdateSelectAll" xml:space="preserve">
+    <value>Select all</value>
+  </data>
+  <data name="InstanceSettings_ModUpdateSelectNone" xml:space="preserve">
+    <value>Select none</value>
+  </data>
+  <data name="InstanceSettings_ModUpdateProgress" xml:space="preserve">
+    <value>Updating {0}/{1}: {2}</value>
+  </data>
+  <data name="InstanceSettings_ModUpdateDone" xml:space="preserve">
+    <value>Updated {0} mod(s).</value>
+  </data>
+  <data name="InstanceSettings_ModUpdateDoneWithErrors" xml:space="preserve">
+    <value>Updated {0} mod(s), {1} failed.</value>
+  </data>
+  <data name="InstanceSettings_PackFolder" xml:space="preserve">
+    <value>Folder</value>
+  </data>
+  <data name="InstanceSettings_PackInfoTitle" xml:space="preserve">
+    <value>Pack Information</value>
+  </data>
+  <data name="InstanceSettings_PackUpdateChecking" xml:space="preserve">
+    <value>Checking for pack updates…</value>
+  </data>
+  <data name="InstanceSettings_PackUpdateAvailable" xml:space="preserve">
+    <value>{0} pack(s) have updates for this instance.</value>
+  </data>
+  <data name="InstanceSettings_PackUpdateDone" xml:space="preserve">
+    <value>Updated {0} pack(s).</value>
+  </data>
+  <data name="InstanceSettings_PackUpdateDoneWithErrors" xml:space="preserve">
+    <value>Updated {0} pack(s), {1} failed.</value>
+  </data>
+  <data name="InstanceSettings_FileSize" xml:space="preserve">
+    <value>Size</value>
+  </data>
+  <data name="InstanceSettings_Modified" xml:space="preserve">
+    <value>Modified</value>
+  </data>
+  <data name="InstanceSettings_NoOnlineMatch" xml:space="preserve">
+    <value>No online catalog match.</value>
+  </data>
+  <data name="InstanceSettings_EmptyMods" xml:space="preserve">
+    <value>No mods in this profile yet.</value>
+  </data>
+  <data name="InstanceSettings_EmptyModsVanilla" xml:space="preserve">
+    <value>This profile has no mod loader. Install Fabric, Forge, or NeoForge to use mods.</value>
+  </data>
+  <data name="InstanceSettings_EmptyResourcePacks" xml:space="preserve">
+    <value>No resource packs in this profile yet.</value>
+  </data>
+  <data name="InstanceSettings_EmptyDatapacks" xml:space="preserve">
+    <value>No datapacks in this profile folder yet.</value>
+  </data>
+  <data name="InstanceSettings_EmptyShaderPacks" xml:space="preserve">
+    <value>No shader packs in this profile yet.</value>
+  </data>
+  <data name="InstanceSettings_EmptySaves" xml:space="preserve">
+    <value>No worlds in this profile yet.</value>
+  </data>
+  <data name="InstanceSettings_EmptyDropHint" xml:space="preserve">
+    <value>You can also drop files here.</value>
+  </data>
+  <data name="InstanceSettings_DeleteConfirm" xml:space="preserve">
+    <value>Move “{0}” to the Recycle Bin?</value>
+  </data>
+  <data name="InstanceSettings_DeleteConfirmMany" xml:space="preserve">
+    <value>Move {0} items to the Recycle Bin?</value>
+  </data>
+  <data name="InstanceSettings_OverwriteConfirm" xml:space="preserve">
+    <value>“{0}” already exists. Replace it?</value>
+  </data>
+  <data name="InstanceSettings_DropAdded" xml:space="preserve">
+    <value>Added {0}.</value>
+  </data>
+  <data name="InstanceSettings_DropFailed" xml:space="preserve">
+    <value>Could not add {0}: {1}</value>
+  </data>
+  <data name="InstanceSettings_DropRejected" xml:space="preserve">
+    <value>This file type cannot be added here.</value>
+  </data>
+  <data name="InstanceSettings_SelectedCount" xml:space="preserve">
+    <value>{0} selected</value>
+  </data>
+  <data name="InstanceSettings_OpenWeb" xml:space="preserve">
+    <value>Web page</value>
+  </data>
+  <data name="InstanceSettings_OpenItemFolder" xml:space="preserve">
+    <value>Show in folder</value>
+  </data>
+  <data name="InstanceSettings_DeleteItem" xml:space="preserve">
+    <value>Delete</value>
+  </data>
+  <data name="InstanceSettings_SaveAdvancedTitle" xml:space="preserve">
+    <value>Save Properties</value>
+  </data>
+  <data name="InstanceSettings_SaveAdvancedButton" xml:space="preserve">
+    <value>Advanced properties</value>
+  </data>
+  <data name="InstanceSettings_SaveSectionWorld" xml:space="preserve">
+    <value>World</value>
+  </data>
+  <data name="InstanceSettings_SaveSectionStorage" xml:space="preserve">
+    <value>Storage</value>
+  </data>
+  <data name="InstanceSettings_SaveGameMode" xml:space="preserve">
+    <value>Game mode</value>
+  </data>
+  <data name="InstanceSettings_SaveDifficulty" xml:space="preserve">
+    <value>Difficulty</value>
+  </data>
+  <data name="InstanceSettings_SaveSeed" xml:space="preserve">
+    <value>Seed</value>
+  </data>
+  <data name="InstanceSettings_SaveSpawn" xml:space="preserve">
+    <value>Spawn</value>
+  </data>
+  <data name="InstanceSettings_SaveDay" xml:space="preserve">
+    <value>Day</value>
+  </data>
+  <data name="InstanceSettings_SaveTime" xml:space="preserve">
+    <value>Time</value>
+  </data>
+  <data name="InstanceSettings_SaveHardcore" xml:space="preserve">
+    <value>Hardcore</value>
+  </data>
+  <data name="InstanceSettings_SaveAllowCommands" xml:space="preserve">
+    <value>Allow commands</value>
+  </data>
+  <data name="InstanceSettings_SaveLastPlayed" xml:space="preserve">
+    <value>Last played</value>
+  </data>
+  <data name="InstanceSettings_SaveVersion" xml:space="preserve">
+    <value>Created in version</value>
+  </data>
+  <data name="InstanceSettings_SaveDataVersion" xml:space="preserve">
+    <value>Data version</value>
+  </data>
+  <data name="InstanceSettings_SaveLastModified" xml:space="preserve">
+    <value>Last modified</value>
+  </data>
+  <data name="InstanceSettings_SaveNoLevelDat" xml:space="preserve">
+    <value>Could not read level.dat from this world.</value>
+  </data>
+  <data name="InstanceSettings_SaveUnknown" xml:space="preserve">
+    <value>Unknown</value>
+  </data>
+  <data name="InstanceSettings_SaveValueYes" xml:space="preserve">
+    <value>Yes</value>
+  </data>
+  <data name="InstanceSettings_SaveValueNo" xml:space="preserve">
+    <value>No</value>
+  </data>
+  <data name="InstanceSettings_SaveGameModeSurvival" xml:space="preserve">
+    <value>Survival</value>
+  </data>
+  <data name="InstanceSettings_SaveGameModeCreative" xml:space="preserve">
+    <value>Creative</value>
+  </data>
+  <data name="InstanceSettings_SaveGameModeAdventure" xml:space="preserve">
+    <value>Adventure</value>
+  </data>
+  <data name="InstanceSettings_SaveGameModeSpectator" xml:space="preserve">
+    <value>Spectator</value>
+  </data>
+  <data name="InstanceSettings_SaveDifficultyPeaceful" xml:space="preserve">
+    <value>Peaceful</value>
+  </data>
+  <data name="InstanceSettings_SaveDifficultyEasy" xml:space="preserve">
+    <value>Easy</value>
+  </data>
+  <data name="InstanceSettings_SaveDifficultyNormal" xml:space="preserve">
+    <value>Normal</value>
+  </data>
+  <data name="InstanceSettings_SaveDifficultyHard" xml:space="preserve">
+    <value>Hard</value>
+  </data>
+  <data name="InstanceSettings_SaveWorldName" xml:space="preserve">
+    <value>World name</value>
+  </data>
+  <data name="InstanceSettings_SaveSectionInfo" xml:space="preserve">
+    <value>Info</value>
+  </data>
+  <data name="InstanceSettings_SaveSaveFailed" xml:space="preserve">
+    <value>Could not save level.dat: {0}</value>
+  </data>
+  <data name="InstanceSettings_SaveInvalidWorldName" xml:space="preserve">
+    <value>Enter a world name.</value>
+  </data>
+  <data name="InstanceSettings_SaveInvalidSeed" xml:space="preserve">
+    <value>Enter a valid seed number.</value>
+  </data>
+  <data name="InstanceSettings_SaveInvalidDay" xml:space="preserve">
+    <value>Day must be at least 1.</value>
+  </data>
+  <data name="InstanceSettings_SaveLoading" xml:space="preserve">
+    <value>Reading world data…</value>
+  </data>
+  <data name="InstanceSettings_SaveRestoreBackup" xml:space="preserve">
+    <value>Restore from backup</value>
+  </data>
+  <data name="InstanceSettings_SaveRestored" xml:space="preserve">
+    <value>Restored level.dat from backup.</value>
+  </data>
+  <data name="InstanceSettings_SaveCover" xml:space="preserve">
+    <value>World cover</value>
+  </data>
+  <data name="Home_ProcessError" xml:space="preserve">
+    <value>Process error: {0}</value>
+  </data>
+  <data name="Account_Title" xml:space="preserve">
+    <value>Account</value>
+  </data>
+  <data name="Account_Subtitle" xml:space="preserve">
+    <value>Tap a card to sign in.</value>
+  </data>
+  <data name="Account_PlayerName" xml:space="preserve">
+    <value>Player name</value>
+  </data>
+  <data name="Account_PlayerNameHint" xml:space="preserve">
+    <value>Steve_01</value>
+  </data>
+  <data name="Account_Saved" xml:space="preserve">
+    <value>Player name saved</value>
+  </data>
+  <data name="Account_Add" xml:space="preserve">
+    <value>Add account</value>
+  </data>
+  <data name="Account_AddTitle" xml:space="preserve">
+    <value>Add account</value>
+  </data>
+  <data name="Account_EditTitle" xml:space="preserve">
+    <value>Edit account</value>
+  </data>
+  <data name="Account_Edit" xml:space="preserve">
+    <value>Edit</value>
+  </data>
+  <data name="Account_Skin" xml:space="preserve">
+    <value>Skin</value>
+  </data>
+  <data name="Account_SkinNone" xml:space="preserve">
+    <value>No skin selected</value>
+  </data>
+  <data name="Account_PickSkinTitle" xml:space="preserve">
+    <value>Choose skin</value>
+  </data>
+  <data name="Account_Empty" xml:space="preserve">
+    <value>No accounts yet — add one to get started</value>
+  </data>
+  <data name="Account_EmptyHint" xml:space="preserve">
+    <value>Use Add in the top right.</value>
+  </data>
+  <data name="Account_Reorder" xml:space="preserve">
+    <value>Drag to reorder</value>
+  </data>
+  <data name="Account_ActiveBadge" xml:space="preserve">
+    <value>Active</value>
+  </data>
+  <data name="Account_KindOffline" xml:space="preserve">
+    <value>Offline</value>
+  </data>
+  <data name="Account_KindMicrosoft" xml:space="preserve">
+    <value>Microsoft</value>
+  </data>
+  <data name="Account_Type" xml:space="preserve">
+    <value>Account type</value>
+  </data>
+  <data name="Account_SkinCustom" xml:space="preserve">
+    <value>Custom</value>
+  </data>
+  <data name="Account_SkinCustom1" xml:space="preserve">
+    <value>Custom 1</value>
+  </data>
+  <data name="Account_SkinCustom2" xml:space="preserve">
+    <value>Custom 2</value>
+  </data>
+  <data name="Account_SkinSlotEmpty" xml:space="preserve">
+    <value>Not set — import a PNG</value>
+  </data>
+  <data name="Account_SkinReplace" xml:space="preserve">
+    <value>Replace…</value>
+  </data>
+  <data name="Account_UuidLabel" xml:space="preserve">
+    <value>UUID: {0}</value>
+  </data>
+  <data name="Account_MicrosoftPlaceholder" xml:space="preserve">
+    <value>Sign in with the Microsoft account that owns Minecraft: Java Edition. A browser window will open.</value>
+  </data>
+  <data name="Account_MicrosoftComingSoon" xml:space="preserve">
+    <value>This action is not available for Microsoft accounts.</value>
+  </data>
+  <data name="Account_MicrosoftSignIn" xml:space="preserve">
+    <value>Sign in with Microsoft</value>
+  </data>
+  <data name="Account_MicrosoftSigningIn" xml:space="preserve">
+    <value>Signing in…</value>
+  </data>
+  <data name="Account_MicrosoftSignInFailed" xml:space="preserve">
+    <value>Microsoft sign-in failed: {0}</value>
+  </data>
+  <data name="Account_MicrosoftAppNotAllowlisted" xml:space="preserve">
+    <value>Microsoft signed in, but Minecraft Services rejected this app (Client ID not allowlisted yet). Wait for Mojang approval, then try again.</value>
+  </data>
+  <data name="Account_MicrosoftNeedOwn" xml:space="preserve">
+    <value>This Microsoft account does not own Minecraft: Java Edition.</value>
+  </data>
+  <data name="Account_MicrosoftRefreshFailed" xml:space="preserve">
+    <value>Could not refresh the Microsoft session. Sign in again.</value>
+  </data>
+  <data name="Account_MicrosoftRefresh" xml:space="preserve">
+    <value>Refresh Microsoft profile &amp; skin</value>
+  </data>
+  <data name="Account_MicrosoftRefreshing" xml:space="preserve">
+    <value>Syncing Microsoft profile &amp; skin…</value>
+  </data>
+  <data name="Account_MicrosoftRefreshed" xml:space="preserve">
+    <value>Microsoft profile and skin synced successfully</value>
+  </data>
+  <data name="Account_LoggingIn" xml:space="preserve">
+    <value>Signing in as {0}…</value>
+  </data>
+  <data name="Account_LoginOffline" xml:space="preserve">
+    <value>Switching offline profile…</value>
+  </data>
+  <data name="Account_LoggedIn" xml:space="preserve">
+    <value>Signed in as {0}</value>
+  </data>
+  <data name="Account_LoggedOut" xml:space="preserve">
+    <value>Signed out ({0})</value>
+  </data>
+  <data name="Account_LoginFailed" xml:space="preserve">
+    <value>Sign-in failed: {0}</value>
+  </data>
+  <data name="Account_DeleteTitle" xml:space="preserve">
+    <value>Delete account</value>
+  </data>
+  <data name="Account_DeleteConfirm" xml:space="preserve">
+    <value>Delete "{0}"? This cannot be undone.</value>
+  </data>
+  <data name="Account_NeedLogin" xml:space="preserve">
+    <value>Sign in on the Account page (tap a card) before launching.</value>
+  </data>
+  <data name="Account_NeedSkin" xml:space="preserve">
+    <value>Choose a skin for this account first.</value>
+  </data>
+  <data name="Account_OpenSkinLibrary" xml:space="preserve">
+    <value>Open skin library</value>
+  </data>
+  <data name="Account_SetActive" xml:space="preserve">
+    <value>Set as Active</value>
+  </data>
+  <data name="Account_Deactivate" xml:space="preserve">
+    <value>Sign Out</value>
+  </data>
+  <data name="Account_SkinDescMicrosoft" xml:space="preserve">
+    <value>Official Microsoft skin synced with Mojang cloud servers.</value>
+  </data>
+  <data name="Account_SkinDescOffline" xml:space="preserve">
+    <value>Offline skin saved in your local skin library.</value>
+  </data>
+  <data name="Account_CapeSubtitle" xml:space="preserve">
+    <value>Official capes owned by this account. Click to equip or unequip.</value>
+  </data>
+  <data name="Account_SkinPick" xml:space="preserve">
+    <value>Select from Library</value>
+  </data>
+  <data name="Account_ConfirmUploadSkin" xml:space="preserve">
+    <value>Upload to Mojang</value>
+  </data>
+  <data name="Account_OfflineRequiresLicensedAccount" xml:space="preserve">
+    <value>Please bind at least one licensed Microsoft account before adding offline accounts.</value>
+  </data>
+  <data name="Account_OfflineLockedHint" xml:space="preserve">
+    <value>Offline mode is locked. Sign in to a licensed Microsoft account first to unlock offline mode.</value>
+  </data>
+  <data name="Account_OfflineLockedBadge" xml:space="preserve">
+    <value>Locked</value>
+  </data>
+  <data name="Account_OfflineSegmentDisabledHint" xml:space="preserve">
+    <value>Sign in with a licensed Microsoft account first to unlock offline mode.</value>
+  </data>
+  <data name="Account_OfflineLockedTitle" xml:space="preserve">
+    <value>Licensed Account Required</value>
+  </data>
+  <data name="Account_OfflineLockedDetail" xml:space="preserve">
+    <value>Under the Terms of Service and licensing policy, you must bind at least one valid licensed Microsoft account before using offline mode.</value>
+  </data>
+  <data name="Account_OfflineLockedGoSignIn" xml:space="preserve">
+    <value>Sign in with Microsoft</value>
+  </data>
+  <data name="Account_OfflineLockedBuyLink" xml:space="preserve">
+    <value>Buy Minecraft</value>
+  </data>
+  <data name="Download_SectionSkins" xml:space="preserve">
+    <value>Skins</value>
+  </data>
+  <data name="Skin_LibraryTitle" xml:space="preserve">
+    <value>Skin library</value>
+  </data>
+  <data name="Skin_LibrarySubtitle" xml:space="preserve">
+    <value>Import and preview skins for offline or Microsoft profiles</value>
+  </data>
+  <data name="Skin_Add" xml:space="preserve">
+    <value>Add skin</value>
+  </data>
+  <data name="Skin_AddTitle" xml:space="preserve">
+    <value>Add skin</value>
+  </data>
+  <data name="Skin_Name" xml:space="preserve">
+    <value>Skin name</value>
+  </data>
+  <data name="Skin_NamePlaceholder" xml:space="preserve">
+    <value>Display name in the library</value>
+  </data>
+  <data name="Skin_NameRequired" xml:space="preserve">
+    <value>Enter a skin name.</value>
+  </data>
+  <data name="Skin_ArmModel" xml:space="preserve">
+    <value>Arm model</value>
+  </data>
+  <data name="Skin_ModelSteve" xml:space="preserve">
+    <value>Steve (classic)</value>
+  </data>
+  <data name="Skin_ModelAlex" xml:space="preserve">
+    <value>Alex (slim)</value>
+  </data>
+  <data name="Skin_Import" xml:space="preserve">
+    <value>Import PNG…</value>
+  </data>
+  <data name="Skin_ImportRequired" xml:space="preserve">
+    <value>Choose a skin PNG to import.</value>
+  </data>
+  <data name="Skin_ImportFailed" xml:space="preserve">
+    <value>Could not import skin: {0}</value>
+  </data>
+  <data name="Skin_Empty" xml:space="preserve">
+    <value>No skins yet — Steve and Alex are seeded automatically</value>
+  </data>
+  <data name="Skin_Count" xml:space="preserve">
+    <value>{0} skins</value>
+  </data>
+  <data name="Skin_CannotDeleteBuiltIn" xml:space="preserve">
+    <value>Built-in Steve/Alex skins cannot be deleted.</value>
+  </data>
+  <data name="Skin_Official" xml:space="preserve">
+    <value>Skin</value>
+  </data>
+  <data name="Skin_OfficialSubtitle" xml:space="preserve">
+    <value>Skin synced from cloud</value>
+  </data>
+  <data name="Account_ManageAppearance" xml:space="preserve">
+    <value>Appearance &amp; Personalization</value>
+  </data>
+  <data name="Account_TabSkin" xml:space="preserve">
+    <value>Skin</value>
+  </data>
+  <data name="Account_TabCape" xml:space="preserve">
+    <value>Cape</value>
+  </data>
+  <data name="Account_TabName" xml:space="preserve">
+    <value>Change Name</value>
+  </data>
+  <data name="Account_ChangeSkinSubtitle" xml:space="preserve">
+    <value>Select a PNG skin file and arm model to sync with your account</value>
+  </data>
+  <data name="Account_SelectSkinPng" xml:space="preserve">
+    <value>Select Skin File…</value>
+  </data>
+  <data name="Account_ArmModel_Classic" xml:space="preserve">
+    <value>Classic (4px)</value>
+  </data>
+  <data name="Account_ArmModel_Slim" xml:space="preserve">
+    <value>Slim (3px)</value>
+  </data>
+  <data name="Account_ArmModelLabel" xml:space="preserve">
+    <value>Arm Model</value>
+  </data>
+  <data name="Account_SkinSave" xml:space="preserve">
+    <value>Save &amp; Apply Skin</value>
+  </data>
+  <data name="Account_SkinSuccess" xml:space="preserve">
+    <value>Skin updated successfully</value>
+  </data>
+  <data name="Account_SkinFailed" xml:space="preserve">
+    <value>Failed to update skin: {0}</value>
+  </data>
+  <data name="Account_CapeNone" xml:space="preserve">
+    <value>None (Unequipped)</value>
+  </data>
+  <data name="Account_CapeEmpty" xml:space="preserve">
+    <value>No capes available for this account</value>
+  </data>
+  <data name="Account_CapeSave" xml:space="preserve">
+    <value>Save Cape</value>
+  </data>
+  <data name="Account_CapeSuccess" xml:space="preserve">
+    <value>Cape updated successfully</value>
+  </data>
+  <data name="Account_CapeFailed" xml:space="preserve">
+    <value>Failed to update cape: {0}</value>
+  </data>
+  <data name="Account_CapeActive" xml:space="preserve">
+    <value>Equipped</value>
+  </data>
+  <data name="Account_MojangRateLimit" xml:space="preserve">
+    <value>Operation too frequent. Mojang servers rate limit cape changes; please wait a moment.</value>
+  </data>
+  <data name="Account_MojangRateLimitWait" xml:space="preserve">
+    <value>Mojang rate limit cooldown. Please wait {0} seconds before trying again.</value>
+  </data>
+  <data name="Account_NameCurrent" xml:space="preserve">
+    <value>Current Name</value>
+  </data>
+  <data name="Account_NameNew" xml:space="preserve">
+    <value>New Name</value>
+  </data>
+  <data name="Account_NameCheck" xml:space="preserve">
+    <value>Check Availability</value>
+  </data>
+  <data name="Account_NameCooldown" xml:space="preserve">
+    <value>Minecraft names can only be changed once every 30 days. Currently in cooldown.</value>
+  </data>
+  <data name="Account_NameAvailable" xml:space="preserve">
+    <value>This username is available</value>
+  </data>
+  <data name="Account_NameUnavailable" xml:space="preserve">
+    <value>This username is unavailable or already taken</value>
+  </data>
+  <data name="Account_NameSave" xml:space="preserve">
+    <value>Confirm Name Change</value>
+  </data>
+  <data name="Account_NameSuccess" xml:space="preserve">
+    <value>Player name changed to: {0}</value>
+  </data>
+  <data name="Account_NameFailed" xml:space="preserve">
+    <value>Failed to change name: {0}</value>
+  </data>
+  <data name="Account_Saving" xml:space="preserve">
+    <value>Saving…</value>
+  </data>
+  <data name="Download_Type" xml:space="preserve">
+    <value>Type</value>
+  </data>
+  <data name="Download_SectionMinecraft" xml:space="preserve">
+    <value>Minecraft</value>
+  </data>
+  <data name="Download_SectionMod" xml:space="preserve">
+    <value>Mod</value>
+  </data>
+  <data name="Download_SectionResourcePack" xml:space="preserve">
+    <value>Resource Pack</value>
+  </data>
+  <data name="Download_SectionDatapack" xml:space="preserve">
+    <value>Data Pack</value>
+  </data>
+  <data name="Download_SectionShaderPack" xml:space="preserve">
+    <value>Shader Pack</value>
+  </data>
+  <data name="Download_SectionModpack" xml:space="preserve">
+    <value>Modpack</value>
+  </data>
+  <data name="Catalog_DetailTitle" xml:space="preserve">
+    <value>Details</value>
+  </data>
+  <data name="Download_Search" xml:space="preserve">
+    <value>Search</value>
+  </data>
+  <data name="Download_SearchPlaceholder" xml:space="preserve">
+    <value>e.g. 1.21</value>
+  </data>
+  <data name="Download_Installed" xml:space="preserve">
+    <value>Installed</value>
+  </data>
+  <data name="Download_JavaTag" xml:space="preserve">
+    <value>Java {0}</value>
+  </data>
+  <data name="Download_JavaTagPending" xml:space="preserve">
+    <value>Java …</value>
+  </data>
+  <data name="Download_SelectHint" xml:space="preserve">
+    <value>Click a version to choose name and loader</value>
+  </data>
+  <data name="Download_SelectRelease" xml:space="preserve">
+    <value>Click a release to install</value>
+  </data>
+  <data name="Download_SelectSnapshot" xml:space="preserve">
+    <value>Snapshots may be unstable — click one to install</value>
+  </data>
+  <data name="Download_SelectAprilFools" xml:space="preserve">
+    <value>April Fools / joke clients — click one to install</value>
+  </data>
+  <data name="Download_NoResults" xml:space="preserve">
+    <value>No versions match these filters.</value>
+  </data>
+  <data name="Catalog_KindMod" xml:space="preserve">
+    <value>mods</value>
+  </data>
+  <data name="Catalog_KindResourcePack" xml:space="preserve">
+    <value>resource packs</value>
+  </data>
+  <data name="Catalog_KindDatapack" xml:space="preserve">
+    <value>datapacks</value>
+  </data>
+  <data name="Catalog_KindShaderPack" xml:space="preserve">
+    <value>shader packs</value>
+  </data>
+  <data name="Catalog_KindModpack" xml:space="preserve">
+    <value>modpacks</value>
+  </data>
+  <data name="Catalog_SearchHint" xml:space="preserve">
+    <value>Set filters, then search to list {0}.</value>
+  </data>
+  <data name="Catalog_SearchEmpty" xml:space="preserve">
+    <value>No matching {0}.</value>
+  </data>
+  <data name="Catalog_InstallDialogTitle" xml:space="preserve">
+    <value>Install {0}</value>
+  </data>
+  <data name="Catalog_InstallNoCompatiblePack" xml:space="preserve">
+    <value>No compatible profiles. Need a matching game version.</value>
+  </data>
+  <data name="Catalog_UpdatedJustNow" xml:space="preserve">
+    <value>Updated just now</value>
+  </data>
+  <data name="Catalog_UpdatedMinutes" xml:space="preserve">
+    <value>Updated {0}m ago</value>
+  </data>
+  <data name="Catalog_UpdatedHours" xml:space="preserve">
+    <value>Updated {0}h ago</value>
+  </data>
+  <data name="Catalog_UpdatedDays" xml:space="preserve">
+    <value>Updated {0}d ago</value>
+  </data>
+  <data name="Catalog_DatapackTargetHeader" xml:space="preserve">
+    <value>Install target</value>
+  </data>
+  <data name="Catalog_DatapackTargetInstance" xml:space="preserve">
+    <value>Instance datapacks</value>
+  </data>
+  <data name="Catalog_DatapackTargetWorld" xml:space="preserve">
+    <value>Specific world</value>
+  </data>
+  <data name="Catalog_DatapackTargetInstanceHint" xml:space="preserve">
+    <value>Applies to all worlds in this instance (instance/datapacks).</value>
+  </data>
+  <data name="Catalog_DatapackTargetWorldHint" xml:space="preserve">
+    <value>Installs into one save's datapacks folder (saves/&lt;world&gt;/datapacks).</value>
+  </data>
+  <data name="Catalog_DatapackNoWorlds" xml:space="preserve">
+    <value>No saves found. Create a world in this instance first.</value>
+  </data>
+  <data name="Catalog_DatapackPickWorld" xml:space="preserve">
+    <value>Pick a world in {0}</value>
+  </data>
+  <data name="Catalog_DatapackInstallJobName" xml:space="preserve">
+    <value>{0} → {1} / {2}</value>
+  </data>
+  <data name="Catalog_DetailEmptyRetry" xml:space="preserve">
+    <value>No files for these filters. Change the version filter or retry.</value>
+  </data>
+  <data name="Download_Fetching" xml:space="preserve">
+    <value>Fetching version list…</value>
+  </data>
+  <data name="Download_Available" xml:space="preserve">
+    <value>{0} versions available</value>
+  </data>
+  <data name="Download_AvailableBusy" xml:space="preserve">
+    <value>{0} tasks · {1} versions available</value>
+  </data>
+  <data name="Download_LoadFailed" xml:space="preserve">
+    <value>Load failed: {0}</value>
+  </data>
+  <data name="Download_Started" xml:space="preserve">
+    <value>Started {0} · {1} active</value>
+  </data>
+  <data name="Download_Waiting" xml:space="preserve">
+    <value>Waiting…</value>
+  </data>
+  <data name="Download_WaitingGate" xml:space="preserve">
+    <value>Waiting for another task…</value>
+  </data>
+  <data name="Download_InitLauncher" xml:space="preserve">
+    <value>Starting installer…</value>
+  </data>
+  <data name="Download_PreparingFiles" xml:space="preserve">
+    <value>Preparing…</value>
+  </data>
+  <data name="Download_ResolvingFiles" xml:space="preserve">
+    <value>Resolving version files…</value>
+  </data>
+  <data name="Download_ResolvingElapsed" xml:space="preserve">
+    <value>Resolving version files… ({0}s)</value>
+  </data>
+  <data name="Download_CheckingFiles" xml:space="preserve">
+    <value>Checking files {0}/{1}</value>
+  </data>
+  <data name="Download_DownloadingCount" xml:space="preserve">
+    <value>Downloading {0}/{1}</value>
+  </data>
+  <data name="Download_Queued" xml:space="preserve">
+    <value>Queued…</value>
+  </data>
+  <data name="Download_Cancelling" xml:space="preserve">
+    <value>Cancelling…</value>
+  </data>
+  <data name="Download_Cancelled" xml:space="preserve">
+    <value>Cancelled</value>
+  </data>
+  <data name="Download_CancelledNamed" xml:space="preserve">
+    <value>Cancelled {0}</value>
+  </data>
+  <data name="Download_Downloaded" xml:space="preserve">
+    <value>Downloaded</value>
+  </data>
+  <data name="Download_DownloadedNamed" xml:space="preserve">
+    <value>Downloaded {0}</value>
+  </data>
+  <data name="Download_CompleteToast" xml:space="preserve">
+    <value>Download complete · {0}</value>
+  </data>
+  <data name="Download_Failed" xml:space="preserve">
+    <value>Failed {0}: {1}</value>
+  </data>
+  <data name="Download_CannotOpenFolder" xml:space="preserve">
+    <value>Cannot open folder: {0}</value>
+  </data>
+  <data name="Download_FlyoutHeader" xml:space="preserve">
+    <value>Tasks</value>
+  </data>
+  <data name="Download_FlyoutHeaderCount" xml:space="preserve">
+    <value>Tasks ({0})</value>
+  </data>
+  <data name="Download_ClearFinished" xml:space="preserve">
+    <value>Clear finished</value>
+  </data>
+  <data name="Download_Retry" xml:space="preserve">
+    <value>Retry</value>
+  </data>
+  <data name="Download_Dismiss" xml:space="preserve">
+    <value>Remove from list</value>
+  </data>
+  <data name="Category_Release" xml:space="preserve">
+    <value>Release</value>
+  </data>
+  <data name="Category_Snapshot" xml:space="preserve">
+    <value>Snapshot</value>
+  </data>
+  <data name="Category_AprilFools" xml:space="preserve">
+    <value>April Fools</value>
+  </data>
+  <data name="Mod_Keyword" xml:space="preserve">
+    <value>Keyword</value>
+  </data>
+  <data name="Mod_KeywordPlaceholder" xml:space="preserve">
+    <value>Name or slug</value>
+  </data>
+  <data name="Mod_Source" xml:space="preserve">
+    <value>Source</value>
+  </data>
+  <data name="Mod_Version" xml:space="preserve">
+    <value>Game version</value>
+  </data>
+  <data name="Mod_Category" xml:space="preserve">
+    <value>Category</value>
+  </data>
+  <data name="Mod_Loader" xml:space="preserve">
+    <value>Loader</value>
+  </data>
+  <data name="Mod_SourceAll" xml:space="preserve">
+    <value>All sources</value>
+  </data>
+  <data name="Mod_SourceCurseForge" xml:space="preserve">
+    <value>CurseForge</value>
+  </data>
+  <data name="Mod_SourceModrinth" xml:space="preserve">
+    <value>Modrinth</value>
+  </data>
+  <data name="Mod_VersionAll" xml:space="preserve">
+    <value>Any version</value>
+  </data>
+  <data name="Mod_LoaderAny" xml:space="preserve">
+    <value>Any loader</value>
+  </data>
+  <data name="Mod_LoaderForge" xml:space="preserve">
+    <value>Forge</value>
+  </data>
+  <data name="Mod_LoaderNeoForge" xml:space="preserve">
+    <value>NeoForge</value>
+  </data>
+  <data name="Mod_LoaderFabric" xml:space="preserve">
+    <value>Fabric</value>
+  </data>
+  <data name="Mod_LoaderQuilt" xml:space="preserve">
+    <value>Quilt</value>
+  </data>
+  <data name="Mod_LoaderLiteLoader" xml:space="preserve">
+    <value>LiteLoader</value>
+  </data>
+  <data name="Mod_CategoryAll" xml:space="preserve">
+    <value>All categories</value>
+  </data>
+  <data name="Mod_CategoryWorldGen" xml:space="preserve">
+    <value>World generation</value>
+  </data>
+  <data name="Mod_CategoryBiomes" xml:space="preserve">
+    <value>Biomes</value>
+  </data>
+  <data name="Mod_CategoryDimensions" xml:space="preserve">
+    <value>Dimensions</value>
+  </data>
+  <data name="Mod_CategoryOres" xml:space="preserve">
+    <value>Ores and resources</value>
+  </data>
+  <data name="Mod_CategoryStructures" xml:space="preserve">
+    <value>Structures</value>
+  </data>
+  <data name="Mod_CategoryTechnology" xml:space="preserve">
+    <value>Technology</value>
+  </data>
+  <data name="Mod_CategoryLogistics" xml:space="preserve">
+    <value>Logistics</value>
+  </data>
+  <data name="Mod_CategoryAutomation" xml:space="preserve">
+    <value>Automation</value>
+  </data>
+  <data name="Mod_CategoryEnergy" xml:space="preserve">
+    <value>Energy</value>
+  </data>
+  <data name="Mod_CategoryRedstone" xml:space="preserve">
+    <value>Redstone</value>
+  </data>
+  <data name="Mod_CategoryFood" xml:space="preserve">
+    <value>Food and cooking</value>
+  </data>
+  <data name="Mod_CategoryFarming" xml:space="preserve">
+    <value>Farming</value>
+  </data>
+  <data name="Mod_CategoryGameMechanics" xml:space="preserve">
+    <value>Game mechanics</value>
+  </data>
+  <data name="Mod_CategoryTransport" xml:space="preserve">
+    <value>Transportation</value>
+  </data>
+  <data name="Mod_CategoryStorage" xml:space="preserve">
+    <value>Storage</value>
+  </data>
+  <data name="Mod_CategoryMagic" xml:space="preserve">
+    <value>Magic</value>
+  </data>
+  <data name="Mod_CategoryAdventure" xml:space="preserve">
+    <value>Adventure</value>
+  </data>
+  <data name="Mod_CategoryDecoration" xml:space="preserve">
+    <value>Decoration</value>
+  </data>
+  <data name="Mod_CategoryMobs" xml:space="preserve">
+    <value>Mobs</value>
+  </data>
+  <data name="Mod_CategoryUtility" xml:space="preserve">
+    <value>Utility</value>
+  </data>
+  <data name="Mod_CategoryEquipment" xml:space="preserve">
+    <value>Equipment and tools</value>
+  </data>
+  <data name="Mod_CategoryCreative" xml:space="preserve">
+    <value>Creative</value>
+  </data>
+  <data name="Mod_CategoryOptimization" xml:space="preserve">
+    <value>Optimization</value>
+  </data>
+  <data name="Mod_CategoryInfo" xml:space="preserve">
+    <value>Information</value>
+  </data>
+  <data name="Mod_CategorySocial" xml:space="preserve">
+    <value>Multiplayer</value>
+  </data>
+  <data name="Mod_CategoryLibrary" xml:space="preserve">
+    <value>Libraries</value>
+  </data>
+  <data name="Mod_SearchHint" xml:space="preserve">
+    <value>Set filters, then search to list Mods.</value>
+  </data>
+  <data name="Mod_Searching" xml:space="preserve">
+    <value>Searching…</value>
+  </data>
+  <data name="Mod_SearchEmpty" xml:space="preserve">
+    <value>No Mods matched these filters.</value>
+  </data>
+  <data name="Mod_SearchCount" xml:space="preserve">
+    <value>{0} Mods</value>
+  </data>
+  <data name="Mod_SearchCountWithWarning" xml:space="preserve">
+    <value>{0} Mods — {1}</value>
+  </data>
+  <data name="Mod_SearchCountFiltered" xml:space="preserve">
+    <value>{0} Mods · {1}</value>
+  </data>
+  <data name="Mod_SearchCountFilteredEmpty" xml:space="preserve">
+    <value>No Mods for {0}</value>
+  </data>
+  <data name="Mod_SearchCountFilteredWithWarning" xml:space="preserve">
+    <value>{0} Mods · {1} — {2}</value>
+  </data>
+  <data name="Mod_SearchFailed" xml:space="preserve">
+    <value>Search failed: {0}</value>
+  </data>
+  <data name="Mod_SearchBothFailed" xml:space="preserve">
+    <value>Search failed. Modrinth: {0}; CurseForge: {1}</value>
+  </data>
+  <data name="Mod_SearchPartialModrinth" xml:space="preserve">
+    <value>Modrinth unavailable ({0}); showing CurseForge only.</value>
+  </data>
+  <data name="Mod_SearchPartialCurseForge" xml:space="preserve">
+    <value>CurseForge unavailable ({0}); showing Modrinth only.</value>
+  </data>
+  <data name="Mod_DownloadsExact" xml:space="preserve">
+    <value>{0} downloads</value>
+  </data>
+  <data name="Mod_DownloadsThousands" xml:space="preserve">
+    <value>{0}K downloads</value>
+  </data>
+  <data name="Mod_DownloadsMillions" xml:space="preserve">
+    <value>{0}M downloads</value>
+  </data>
+  <data name="Mod_PagePrevious" xml:space="preserve">
+    <value>Previous</value>
+  </data>
+  <data name="Mod_PageNext" xml:space="preserve">
+    <value>Next</value>
+  </data>
+  <data name="Mod_PageLabel" xml:space="preserve">
+    <value>Page {0}</value>
+  </data>
+  <data name="Mod_VersionsEllipsis" xml:space="preserve">
+    <value>{0}…</value>
+  </data>
+  <data name="Mod_LoaderLiteLoaderUnsupported" xml:space="preserve">
+    <value>LiteLoader (unsupported)</value>
+  </data>
+  <data name="Mod_LiteLoaderUnsupportedHint" xml:space="preserve">
+    <value>LiteLoader only supports Minecraft 1.5.2–1.12.2. It is not available for {0}.</value>
+  </data>
+  <data name="Mod_LiteLoaderUnsupportedStatus" xml:space="preserve">
+    <value>LiteLoader does not support Minecraft {0}.</value>
+  </data>
+  <data name="Mod_DetailBack" xml:space="preserve">
+    <value>Back</value>
+  </data>
+  <data name="Mod_DetailTitle" xml:space="preserve">
+    <value>Mod</value>
+  </data>
+  <data name="Mod_DetailLoading" xml:space="preserve">
+    <value>Loading Mod details…</value>
+  </data>
+  <data name="Mod_DetailLoadFailed" xml:space="preserve">
+    <value>Could not load Mod details.</value>
+  </data>
+  <data name="Mod_DetailLoadFailedNamed" xml:space="preserve">
+    <value>Could not load Mod details: {0}</value>
+  </data>
+  <data name="Mod_DetailUnknownSource" xml:space="preserve">
+    <value>Unknown Mod source: {0}</value>
+  </data>
+  <data name="Mod_DetailInvalidId" xml:space="preserve">
+    <value>Invalid Mod id: {0}</value>
+  </data>
+  <data name="Mod_DetailNoFiles" xml:space="preserve">
+    <value>No downloadable files found.</value>
+  </data>
+  <data name="Mod_DetailFileCount" xml:space="preserve">
+    <value>{0} files</value>
+  </data>
+  <data name="Mod_DetailVersionsHeader" xml:space="preserve">
+    <value>Versions</value>
+  </data>
+  <data name="Mod_DetailOpenModrinth" xml:space="preserve">
+    <value>Open on Modrinth</value>
+  </data>
+  <data name="Mod_DetailOpenCurseForge" xml:space="preserve">
+    <value>Open on CurseForge</value>
+  </data>
+  <data name="Mod_DetailCopyName" xml:space="preserve">
+    <value>Copy name</value>
+  </data>
+  <data name="Mod_DetailCopiedName" xml:space="preserve">
+    <value>Name copied</value>
+  </data>
+  <data name="Mod_DetailChannelRelease" xml:space="preserve">
+    <value>Release</value>
+  </data>
+  <data name="Mod_DetailChannelBeta" xml:space="preserve">
+    <value>Beta</value>
+  </data>
+  <data name="Mod_DetailChannelAlpha" xml:space="preserve">
+    <value>Alpha</value>
+  </data>
+  <data name="Mod_DetailFilterVersion" xml:space="preserve">
+    <value>Match game version</value>
+  </data>
+  <data name="Mod_DetailFilterLoader" xml:space="preserve">
+    <value>Match loader</value>
+  </data>
+  <data name="Mod_DetailFilterAllVersions" xml:space="preserve">
+    <value>All versions</value>
+  </data>
+  <data name="Mod_DetailFilterAllLoaders" xml:space="preserve">
+    <value>All loaders</value>
+  </data>
+  <data name="Mod_DetailDependenciesHeader" xml:space="preserve">
+    <value>Dependencies</value>
+  </data>
+  <data name="Mod_DependencyRequired" xml:space="preserve">
+    <value>Required</value>
+  </data>
+  <data name="Mod_DependencyOptional" xml:space="preserve">
+    <value>Optional</value>
+  </data>
+  <data name="Mod_InstallDialogTitle" xml:space="preserve">
+    <value>Install Mod</value>
+  </data>
+  <data name="Mod_InstallTitle" xml:space="preserve">
+    <value>Install {0}</value>
+  </data>
+  <data name="Mod_InstallSubtitle" xml:space="preserve">
+    <value>{0}</value>
+  </data>
+  <data name="Mod_InstallPickInstance" xml:space="preserve">
+    <value>Choose a compatible instance (grouped by loader + version)</value>
+  </data>
+  <data name="Mod_InstallNoInstances" xml:space="preserve">
+    <value>No instances installed yet — download a game version first.</value>
+  </data>
+  <data name="Mod_InstallNoCompatible" xml:space="preserve">
+    <value>No compatible instances. Need a matching game version and loader — vanilla cannot install Mods.</value>
+  </data>
+  <data name="Mod_DetailRetry" xml:space="preserve">
+    <value>Retry</value>
+  </data>
+  <data name="Mod_InstallPreferred" xml:space="preserve">
+    <value>Matched</value>
+  </data>
+  <data name="Mod_InstallFileName" xml:space="preserve">
+    <value>File name</value>
+  </data>
+  <data name="Mod_InstallJobName" xml:space="preserve">
+    <value>{0} → {1}</value>
+  </data>
+  <data name="Mod_InstallDependencyJobName" xml:space="preserve">
+    <value>{0} (dependency) → {1}</value>
+  </data>
+  <data name="Mod_InstallMissingDepsTitle" xml:space="preserve">
+    <value>Missing dependencies</value>
+  </data>
+  <data name="Mod_InstallMissingDepsBody" xml:space="preserve">
+    <value>This mod requires {1} dependencies that are not installed on this instance:
+
+{0}
+
+Install them together, or install only this mod?</value>
+  </data>
+  <data name="Mod_InstallModOnly" xml:space="preserve">
+    <value>Install mod only</value>
+  </data>
+  <data name="Mod_InstallWithDependencies" xml:space="preserve">
+    <value>Install all ({0})</value>
+  </data>
+  <data name="Mod_InstallCheckingDeps" xml:space="preserve">
+    <value>Checking dependencies…</value>
+  </data>
+  <data name="Mod_InstallDownloading" xml:space="preserve">
+    <value>Downloading resource…</value>
+  </data>
+  <data name="Mod_InstallProgress" xml:space="preserve">
+    <value>Downloading {0}</value>
+  </data>
+  <data name="Mod_InstallComplete" xml:space="preserve">
+    <value>Installed {0} into {1}</value>
+  </data>
+  <data name="Mod_InstallModpackUnavailable" xml:space="preserve">
+    <value>Modpack install is not available yet.</value>
+  </data>
+  <data name="Modpack_DialogTitle" xml:space="preserve">
+    <value>Install modpack</value>
+  </data>
+  <data name="Modpack_InstallTitle" xml:space="preserve">
+    <value>Install {0}</value>
+  </data>
+  <data name="Modpack_InstallSubtitle" xml:space="preserve">
+    <value>{0}</value>
+  </data>
+  <data name="Modpack_InstanceName" xml:space="preserve">
+    <value>Instance name</value>
+  </data>
+  <data name="Modpack_InstanceNamePlaceholder" xml:space="preserve">
+    <value>Folder name under versions/</value>
+  </data>
+  <data name="Modpack_InstallHint" xml:space="preserve">
+    <value>Creates a new isolated instance, installs the required loader, then downloads pack files.</value>
+  </data>
+  <data name="Modpack_JobName" xml:space="preserve">
+    <value>{0} → {1}</value>
+  </data>
+  <data name="Modpack_Installing" xml:space="preserve">
+    <value>Installing modpack…</value>
+  </data>
+  <data name="Modpack_DownloadingPack" xml:space="preserve">
+    <value>Downloading modpack archive…</value>
+  </data>
+  <data name="Modpack_Parsing" xml:space="preserve">
+    <value>Reading modpack manifest…</value>
+  </data>
+  <data name="Modpack_InstallingLoader" xml:space="preserve">
+    <value>Installing Minecraft {0} + loader…</value>
+  </data>
+  <data name="Modpack_ApplyingOverrides" xml:space="preserve">
+    <value>Applying overrides…</value>
+  </data>
+  <data name="Modpack_InstallComplete" xml:space="preserve">
+    <value>Modpack installed as {0}</value>
+  </data>
+  <data name="Modpack_InvalidManifest" xml:space="preserve">
+    <value>Invalid modpack manifest.</value>
+  </data>
+  <data name="Modpack_MissingManifest" xml:space="preserve">
+    <value>No CurseForge manifest.json found in the archive.</value>
+  </data>
+  <data name="Modpack_MissingMrpackIndex" xml:space="preserve">
+    <value>No modrinth.index.json found in the archive.</value>
+  </data>
+  <data name="Modpack_MissingMinecraft" xml:space="preserve">
+    <value>Modpack does not specify a Minecraft version.</value>
+  </data>
+  <data name="Modpack_UnsupportedLoader" xml:space="preserve">
+    <value>This modpack uses an unsupported loader.</value>
+  </data>
+  <data name="Modpack_UnsafePath" xml:space="preserve">
+    <value>Unsafe pack path rejected: {0}</value>
+  </data>
+  <data name="Modpack_HashMismatch" xml:space="preserve">
+    <value>Downloaded file failed hash verification.</value>
+  </data>
+  <data name="Modpack_UnresolvedFiles" xml:space="preserve">
+    <value>{0} pack files could not be resolved from CurseForge. First: {1}</value>
+  </data>
+  <data name="Modpack_FileDownloadFailed" xml:space="preserve">
+    <value>{0} pack files failed. First error: {1}</value>
+  </data>
+  <data name="Modpack_FileDownloadFailedGeneric" xml:space="preserve">
+    <value>Could not download a pack file.</value>
+  </data>
+  <data name="Modpack_ResolvingFiles" xml:space="preserve">
+    <value>Resolving pack files…</value>
+  </data>
+  <data name="Modpack_MissingFile" xml:space="preserve">
+    <value>Missing pack file: {0}</value>
+  </data>
+  <data name="Modpack_ViewMods" xml:space="preserve">
+    <value>Mods</value>
+  </data>
+  <data name="Modpack_Install" xml:space="preserve">
+    <value>Install</value>
+  </data>
+  <data name="Modpack_ContentsTitle" xml:space="preserve">
+    <value>Included mods</value>
+  </data>
+  <data name="Modpack_ContentsSubtitle" xml:space="preserve">
+    <value>{0} · {1} mods</value>
+  </data>
+  <data name="Modpack_ContentsLoading" xml:space="preserve">
+    <value>Loading pack contents…</value>
+  </data>
+  <data name="Modpack_ContentsEmpty" xml:space="preserve">
+    <value>No included mods were listed for this version.</value>
+  </data>
+  <data name="Modpack_ContentsCount" xml:space="preserve">
+    <value>{0} mods</value>
+  </data>
+  <data name="Modpack_OpenInLauncher" xml:space="preserve">
+    <value>Open in Ardel</value>
+  </data>
+  <data name="Modpack_ImportTitle" xml:space="preserve">
+    <value>Import modpack</value>
+  </data>
+  <data name="Modpack_ImportSectionHint" xml:space="preserve">
+    <value>Install a local Modrinth (.mrpack) or CurseForge modpack as a new instance.</value>
+  </data>
+  <data name="Modpack_ImportBrowse" xml:space="preserve">
+    <value>Import from file…</value>
+  </data>
+  <data name="Modpack_ImportDropHint" xml:space="preserve">
+    <value>You can also drag a .mrpack or CurseForge zip onto the window.</value>
+  </data>
+  <data name="Modpack_ExportDialogTitle" xml:space="preserve">
+    <value>Export modpack</value>
+  </data>
+  <data name="Modpack_ExportDialogSubtitle" xml:space="preserve">
+    <value>Choose what to include. Thin packs download known mods from Modrinth instead of embedding jars.</value>
+  </data>
+  <data name="Modpack_ExportIncludeHeading" xml:space="preserve">
+    <value>Include</value>
+  </data>
+  <data name="Modpack_ExportIncludeMods" xml:space="preserve">
+    <value>Mods</value>
+  </data>
+  <data name="Modpack_ExportIncludeConfig" xml:space="preserve">
+    <value>Config</value>
+  </data>
+  <data name="Modpack_ExportIncludeResourcePacks" xml:space="preserve">
+    <value>Resource packs</value>
+  </data>
+  <data name="Modpack_ExportIncludeShaderPacks" xml:space="preserve">
+    <value>Shader packs</value>
+  </data>
+  <data name="Modpack_ExportIncludeDatapacks" xml:space="preserve">
+    <value>Datapacks</value>
+  </data>
+  <data name="Modpack_ExportIncludeOptions" xml:space="preserve">
+    <value>Options / servers</value>
+  </data>
+  <data name="Modpack_ExportIncludeSaves" xml:space="preserve">
+    <value>Worlds (saves)</value>
+  </data>
+  <data name="Modpack_ExportIncludeScreenshots" xml:space="preserve">
+    <value>Screenshots</value>
+  </data>
+  <data name="Modpack_ExportThinPack" xml:space="preserve">
+    <value>Prefer thin pack (Modrinth downloads)</value>
+  </data>
+  <data name="Modpack_ExportThinPackHint" xml:space="preserve">
+    <value>Jars found on Modrinth go into files[] with URLs; others stay in overrides/.</value>
+  </data>
+  <data name="Modpack_ExportUnsupportedLoader" xml:space="preserve">
+    <value>This instance’s loader cannot be exported as an .mrpack.</value>
+  </data>
+  <data name="Modpack_ExportResolvingThin" xml:space="preserve">
+    <value>Resolving mods on Modrinth…</value>
+  </data>
+  <data name="Modpack_ExportThinProgress" xml:space="preserve">
+    <value>Resolved {0}/{1} mods…</value>
+  </data>
+  <data name="Mod_InstallFile" xml:space="preserve">
+    <value>Install</value>
+  </data>
+  <data name="Settings_Title" xml:space="preserve">
+    <value>Settings</value>
+  </data>
+  <data name="Settings_Java" xml:space="preserve">
+    <value>Java</value>
+  </data>
+  <data name="Settings_JavaPlaceholder" xml:space="preserve">
+    <value>Auto / not selected</value>
+  </data>
+  <data name="Settings_MaxMemory" xml:space="preserve">
+    <value>Max memory</value>
+  </data>
+  <data name="Settings_MemoryUnitMb" xml:space="preserve">
+    <value> MB</value>
+  </data>
+  <data name="Memory_Custom" xml:space="preserve">
+    <value>Custom</value>
+  </data>
+  <data name="Memory_FollowDefault" xml:space="preserve">
+    <value>Follow launcher defaults</value>
+  </data>
+  <data name="Memory_FollowDefaultCustom" xml:space="preserve">
+    <value>Uses the launcher default maximum: {0} MB.</value>
+  </data>
+  <data name="Memory_FollowDefaultDynamic" xml:space="preserve">
+    <value>Uses the launcher default: dynamic allocation at launch.</value>
+  </data>
+  <data name="Memory_Dynamic" xml:space="preserve">
+    <value>Dynamic allocation</value>
+  </data>
+  <data name="Memory_DynamicHint" xml:space="preserve">
+    <value>At launch, scales heap targets with the mods folder size and claims free system RAM in tiers, keeping an OS reserve.</value>
+  </data>
+  <data name="Memory_Beta" xml:space="preserve">
+    <value>Beta</value>
+  </data>
+  <data name="Settings_BmclTitle" xml:space="preserve">
+    <value>BMCLAPI mirror</value>
+  </data>
+  <data name="Settings_BmclHint" xml:space="preserve">
+    <value>Community mirror that usually speeds up Minecraft assets, libraries, and loader downloads in Asia (and other regions where Mojang CDNs are slow)</value>
+  </data>
+  <data name="Settings_ArdoTitle" xml:space="preserve">
+    <value>Ardo download engine</value>
+  </data>
+  <data name="Settings_ArdoHint" xml:space="preserve">
+    <value>Controls parallel downloads, speed limits, and integrity checks for game files.</value>
+  </data>
+  <data name="Settings_ArdoThreads" xml:space="preserve">
+    <value>Download threads</value>
+  </data>
+  <data name="Settings_ArdoSpeedLimit" xml:space="preserve">
+    <value>Speed limit (KB/s)</value>
+  </data>
+  <data name="Settings_ArdoSpeedLimitHint" xml:space="preserve">
+    <value>0 = unlimited</value>
+  </data>
+  <data name="Settings_ArdoChunkSize" xml:space="preserve">
+    <value>Chunk size (MiB)</value>
+  </data>
+  <data name="Settings_ArdoVerifySha1" xml:space="preserve">
+    <value>Verify SHA1 after download</value>
+  </data>
+  <data name="Settings_ArdoMaxRetries" xml:space="preserve">
+    <value>Retries per file</value>
+  </data>
+  <data name="Settings_ArdoSummary" xml:space="preserve">
+    <value>Ardo · {0} threads · {1}</value>
+  </data>
+  <data name="Settings_ArdoUnlimited" xml:space="preserve">
+    <value>no limit</value>
+  </data>
+  <data name="Settings_BehaviorTitle" xml:space="preserve">
+    <value>After game launch</value>
+  </data>
+  <data name="Settings_BehaviorHint" xml:space="preserve">
+    <value>What to do with Ardel’s window, mirrors, and logs once the game has started.</value>
+  </data>
+  <data name="Settings_PostLaunchAction" xml:space="preserve">
+    <value>Window action</value>
+  </data>
+  <data name="Settings_PostLaunchNone" xml:space="preserve">
+    <value>Do nothing</value>
+  </data>
+  <data name="Settings_PostLaunchMinimize" xml:space="preserve">
+    <value>Minimize Ardel</value>
+  </data>
+  <data name="Settings_PostLaunchMinimizeUntilExit" xml:space="preserve">
+    <value>Minimize until game exits</value>
+  </data>
+  <data name="Settings_PostLaunchExit" xml:space="preserve">
+    <value>Exit Ardel</value>
+  </data>
+  <data name="Settings_BmclUsageMode" xml:space="preserve">
+    <value>Mirror usage</value>
+  </data>
+  <data name="Settings_BmclUsageAlways" xml:space="preserve">
+    <value>Always use BMCLAPI</value>
+  </data>
+  <data name="Settings_BmclUsageFallback" xml:space="preserve">
+    <value>Fallback when official is slow</value>
+  </data>
+  <data name="Settings_BmclUsageDisabledHint" xml:space="preserve">
+    <value>Enable the BMCLAPI mirror above to configure usage.</value>
+  </data>
+  <data name="Settings_GameLogViewer" xml:space="preserve">
+    <value>Game log viewer</value>
+  </data>
+  <data name="Settings_GameLogViewerHint" xml:space="preserve">
+    <value>Open a separate window that tails latest.log when the game starts (does not close Ardel when the game exits).</value>
+  </data>
+  <data name="Settings_ResourceRepairTitle" xml:space="preserve">
+    <value>Resource repair</value>
+  </data>
+  <data name="Settings_ResourceRepairHint" xml:space="preserve">
+    <value>Scan and repair game files before launch.</value>
+  </data>
+  <data name="Settings_ResourceRepairEnabled" xml:space="preserve">
+    <value>Enable resource repair</value>
+  </data>
+  <data name="Settings_ResourceRepairConcurrency" xml:space="preserve">
+    <value>Max parallel checks</value>
+  </data>
+  <data name="Settings_ResourceVerifyMode" xml:space="preserve">
+    <value>Verify mode before launch</value>
+  </data>
+  <data name="Settings_ResourceVerifyTrustReady" xml:space="preserve">
+    <value>Trust .ardel-ready marker</value>
+  </data>
+  <data name="Settings_ResourceVerifyQuick" xml:space="preserve">
+    <value>Quick existence check</value>
+  </data>
+  <data name="Settings_ResourceVerifyFull" xml:space="preserve">
+    <value>Full SHA1 verify</value>
+  </data>
+  <data name="Settings_ResourceRepairAutoDownload" xml:space="preserve">
+    <value>Auto-download missing files</value>
+  </data>
+  <data name="Settings_ResourceRepairWriteReady" xml:space="preserve">
+    <value>Write .ardel-ready when complete</value>
+  </data>
+  <data name="Settings_ResourceRepairBlockLaunch" xml:space="preserve">
+    <value>Block launch on repair failure</value>
+  </data>
+  <data name="Settings_CrashAnalysisTitle" xml:space="preserve">
+    <value>Crash analysis</value>
+  </data>
+  <data name="Settings_CrashAnalysisHint" xml:space="preserve">
+    <value>Only opens when a crash-report or hs_err from this session exists (or a native abort exit). Speaks only for matched log patterns — prefer miss over a wrong diagnosis. Soft guesses are disabled.</value>
+  </data>
+  <data name="Settings_CrashAnalysisEnabled" xml:space="preserve">
+    <value>Enable crash analysis</value>
+  </data>
+  <data name="Settings_CrashAnalysisOnForceKill" xml:space="preserve">
+    <value>Show on force stop</value>
+  </data>
+  <data name="Settings_CrashAnalysisAutoOpenLogs" xml:space="preserve">
+    <value>Open logs folder automatically</value>
+  </data>
+  <data name="Settings_CrashAnalysisKeepRecent" xml:space="preserve">
+    <value>Keep recent reports</value>
+  </data>
+  <data name="Settings_CrashAnalysisPreIndex" xml:space="preserve">
+    <value>Pre-index log paths at launch</value>
+  </data>
+  <data name="Settings_CrashAnalysisVerbose" xml:space="preserve">
+    <value>Verbose debug info</value>
+  </data>
+  <data name="Settings_CrashAnalysisShowConfidence" xml:space="preserve">
+    <value>Show confidence percentage</value>
+  </data>
+  <data name="Settings_DialogDebugTitle" xml:space="preserve">
+    <value>Crash dialog layout (dev)</value>
+  </data>
+  <data name="Settings_DialogDebugDevLabel" xml:space="preserve">
+    <value>DEV ONLY</value>
+  </data>
+  <data name="Settings_DialogDebugEntry" xml:space="preserve">
+    <value>Open crash-dialog layout check…</value>
+  </data>
+  <data name="Settings_DialogDebugHint" xml:space="preserve">
+    <value>Layout check only (Loc title/explain/solution). Does not invent crash-reports or log excerpts. Real analysis only quotes files on disk.</value>
+  </data>
+  <data name="Settings_DialogDebugCrashSection" xml:space="preserve">
+    <value>Crash dialog layouts</value>
+  </data>
+  <data name="Settings_DialogDebugCrashKnown" xml:space="preserve">
+    <value>Known layout</value>
+  </data>
+  <data name="Settings_DialogDebugCrashSuspected" xml:space="preserve">
+    <value>Suspected layout</value>
+  </data>
+  <data name="Settings_DialogDebugCrashUnknown" xml:space="preserve">
+    <value>Unknown layout</value>
+  </data>
+  <data name="Settings_DialogDebugPickRule" xml:space="preserve">
+    <value>Rule Loc to preview</value>
+  </data>
+  <data name="Settings_DialogDebugPreviewSelected" xml:space="preserve">
+    <value>Show</value>
+  </data>
+  <data name="GameLog_Title" xml:space="preserve">
+    <value>Game log</value>
+  </data>
+  <data name="GameLog_Waiting" xml:space="preserve">
+    <value>Waiting for latest.log…</value>
+  </data>
+  <data name="Settings_Off" xml:space="preserve">
+    <value>Off</value>
+  </data>
+  <data name="Settings_On" xml:space="preserve">
+    <value>On</value>
+  </data>
+  <data name="Settings_GameDirectory" xml:space="preserve">
+    <value>Game directory</value>
+  </data>
+  <data name="Settings_GameDirectoryHint" xml:space="preserve">
+    <value>Fixed to .minecraft next to the exe (portable). Version isolation is forced: each version has its own mods / saves / config.</value>
+  </data>
+  <data name="Settings_SourceBmcl" xml:space="preserve">
+    <value>Download source: BMCLAPI</value>
+  </data>
+  <data name="Settings_SourceOfficial" xml:space="preserve">
+    <value>Download source: Official</value>
+  </data>
+  <data name="Settings_FoundJava" xml:space="preserve">
+    <value>Found {0} Java install(s)</value>
+  </data>
+  <data name="Settings_ScanFailed" xml:space="preserve">
+    <value>Scan failed: {0}</value>
+  </data>
+  <data name="Settings_SelectJavaExe" xml:space="preserve">
+    <value>Please select java.exe</value>
+  </data>
+  <data name="Settings_JavaUpdated" xml:space="preserve">
+    <value>Java path updated</value>
+  </data>
+  <data name="Settings_BrowseFailed" xml:space="preserve">
+    <value>Browse failed: {0}</value>
+  </data>
+  <data name="Settings_CannotOpenFolder" xml:space="preserve">
+    <value>Cannot open folder: {0}</value>
+  </data>
+  <data name="Settings_Saved" xml:space="preserve">
+    <value>Saved</value>
+  </data>
+  <data name="Settings_SaveFailed" xml:space="preserve">
+    <value>Save failed: {0}</value>
+  </data>
+  <data name="Settings_JavaAuto" xml:space="preserve">
+    <value>Java will be chosen automatically</value>
+  </data>
+  <data name="Settings_JavaNone" xml:space="preserve">
+    <value>No Java found. Scan again or browse to java.exe.</value>
+  </data>
+  <data name="Settings_JavaSelected" xml:space="preserve">
+    <value>Using Java {0}</value>
+  </data>
+  <data name="Settings_Language" xml:space="preserve">
+    <value>Language</value>
+  </data>
+  <data name="Settings_LanguageSystem" xml:space="preserve">
+    <value>System default</value>
+  </data>
+  <data name="Settings_LanguageEnglish" xml:space="preserve">
+    <value>English (US)</value>
+  </data>
+  <data name="Settings_LanguageChinese" xml:space="preserve">
+    <value>简体中文</value>
+  </data>
+  <data name="Settings_LanguageJapanese" xml:space="preserve">
+    <value>日本語</value>
+  </data>
+  <data name="Settings_LanguageEnglishUS" xml:space="preserve">
+    <value>English (US)</value>
+  </data>
+  <data name="Settings_LanguageEnglishUK" xml:space="preserve">
+    <value>English (UK)</value>
+  </data>
+  <data name="Settings_LanguageChineseTraditional" xml:space="preserve">
+    <value>Traditional Chinese</value>
+  </data>
+  <data name="Settings_LanguageFrench" xml:space="preserve">
+    <value>Français</value>
+  </data>
+  <data name="Settings_LanguageSpanish" xml:space="preserve">
+    <value>Español</value>
+  </data>
+  <data name="Settings_LanguageKorean" xml:space="preserve">
+    <value>한국어</value>
+  </data>
+  <data name="Settings_LanguageGerman" xml:space="preserve">
+    <value>Deutsch</value>
+  </data>
+  <data name="Settings_LanguagePortuguese" xml:space="preserve">
+    <value>Português (Brasil)</value>
+  </data>
+  <data name="Settings_LanguageItalian" xml:space="preserve">
+    <value>Italiano</value>
+  </data>
+  <data name="Settings_LanguageRussian" xml:space="preserve">
+    <value>Русский</value>
+  </data>
+  <data name="Settings_LanguageRestartHint" xml:space="preserve">
+    <value>Applies immediately across the launcher.</value>
+  </data>
+  <data name="Settings_RestartNow" xml:space="preserve">
+    <value>Apply</value>
+  </data>
+  <data name="Settings_LanguageApplied" xml:space="preserve">
+    <value>Language: {0} · nav sample: {1}</value>
+  </data>
+  <data name="Settings_ScanningJava" xml:space="preserve">
+    <value>Scanning Java…</value>
+  </data>
+  <data name="Settings_Theme" xml:space="preserve">
+    <value>Theme</value>
+  </data>
+  <data name="Settings_ThemeDefault" xml:space="preserve">
+    <value>Follow system</value>
+  </data>
+  <data name="Settings_ThemeLight" xml:space="preserve">
+    <value>Light</value>
+  </data>
+  <data name="Settings_ThemeDark" xml:space="preserve">
+    <value>Dark</value>
+  </data>
+  <data name="Settings_ThemeSakura" xml:space="preserve">
+    <value>Sakura Pink</value>
+  </data>
+  <data name="Settings_ThemeSamoyed" xml:space="preserve">
+    <value>Samoyed</value>
+  </data>
+  <data name="Settings_ThemeSweden" xml:space="preserve">
+    <value>Sweden</value>
+  </data>
+  <data name="Settings_ThemeArctic" xml:space="preserve">
+    <value>Arctic</value>
+  </data>
+  <data name="Settings_ThemeAurora" xml:space="preserve">
+    <value>Aurora</value>
+  </data>
+  <data name="Settings_ThemeCedar" xml:space="preserve">
+    <value>Cedar</value>
+  </data>
+  <data name="Settings_ThemeCinder" xml:space="preserve">
+    <value>Cinder</value>
+  </data>
+  <data name="Settings_ThemeHoney" xml:space="preserve">
+    <value>Honey</value>
+  </data>
+  <data name="Settings_ThemeMoss" xml:space="preserve">
+    <value>Moss</value>
+  </data>
+  <data name="Settings_ThemeObsidian" xml:space="preserve">
+    <value>Obsidian</value>
+  </data>
+  <data name="Settings_ThemePeach" xml:space="preserve">
+    <value>Peach</value>
+  </data>
+  <data name="Settings_ThemeTwilight" xml:space="preserve">
+    <value>Twilight</value>
+  </data>
+  <data name="Settings_ThemeDescDefault" xml:space="preserve">
+    <value>Follows Windows light/dark mode with the same palette as Light and Dark, and Mica.</value>
+  </data>
+  <data name="Settings_ThemeDescLight" xml:space="preserve">
+    <value>A bright, clean interface with a classic blue accent.</value>
+  </data>
+  <data name="Settings_ThemeDescDark" xml:space="preserve">
+    <value>A sleek dark interface with a soft gray accent.</value>
+  </data>
+  <data name="Settings_ThemeDescSakura" xml:space="preserve">
+    <value>A soft pastel pink theme with strawberry accents.</value>
+  </data>
+  <data name="Settings_ThemeDescSamoyed" xml:space="preserve">
+    <value>A cozy white fluffy Samoyed fur texture background with cool blue-gray accents. — Dedicated to the memory of my beloved Samoyed.</value>
+  </data>
+  <data name="Settings_ThemeDescSweden" xml:space="preserve">
+    <value>A Scandinavian light shell with Swedish blue and gold accents.</value>
+  </data>
+  <data name="Settings_ThemeDescArctic" xml:space="preserve">
+    <value>A cold near-white shell with ice-blue accents.</value>
+  </data>
+  <data name="Settings_ThemeDescAurora" xml:space="preserve">
+    <value>A night-blue canvas with aurora green accents.</value>
+  </data>
+  <data name="Settings_ThemeDescCedar" xml:space="preserve">
+    <value>Warm wood tones with cedar-brown accents.</value>
+  </data>
+  <data name="Settings_ThemeDescCinder" xml:space="preserve">
+    <value>Charcoal night with ember-orange accents.</value>
+  </data>
+  <data name="Settings_ThemeDescHoney" xml:space="preserve">
+    <value>Cream canvas with honey-gold accents.</value>
+  </data>
+  <data name="Settings_ThemeDescMoss" xml:space="preserve">
+    <value>Quiet forest dark with moss-green accents.</value>
+  </data>
+  <data name="Settings_ThemeDescObsidian" xml:space="preserve">
+    <value>Near-black, sharp corners, pale graphite accents.</value>
+  </data>
+  <data name="Settings_ThemeDescPeach" xml:space="preserve">
+    <value>Soft peach shell with ripe coral accents.</value>
+  </data>
+  <data name="Settings_ThemeDescTwilight" xml:space="preserve">
+    <value>Dusk-blue night with muted violet-blue accents.</value>
+  </data>
+  <data name="Settings_StartupSplash" xml:space="preserve">
+    <value>Startup splash</value>
+  </data>
+  <data name="Settings_StartupSplashDesc" xml:space="preserve">
+    <value>Customize the Ardel badge screen shown while the launcher starts.</value>
+  </data>
+  <data name="Settings_StartupSplashEnabled" xml:space="preserve">
+    <value>Show startup splash</value>
+  </data>
+  <data name="Settings_StartupSplashProgress" xml:space="preserve">
+    <value>Show progress bar</value>
+  </data>
+  <data name="Settings_StartupSplashDuration" xml:space="preserve">
+    <value>Minimum display time</value>
+  </data>
+  <data name="Settings_StartupSplashDurationUnit" xml:space="preserve">
+    <value> ms</value>
+  </data>
+  <data name="Settings_StartupSplashDurationHint" xml:space="preserve">
+    <value>How long the splash stays visible at minimum (1000–12000 ms).</value>
+  </data>
+  <data name="Settings_StartupSplashBrand" xml:space="preserve">
+    <value>Show Ardel badge</value>
+  </data>
+  <data name="Settings_StartupSplashPreview" xml:space="preserve">
+    <value>Preview splash</value>
+  </data>
+  <data name="Settings_StartupSplashPreviewDone" xml:space="preserve">
+    <value>Splash preview finished.</value>
+  </data>
+  <data name="Settings_StartupSplashPreviewDisabled" xml:space="preserve">
+    <value>Enable the startup splash to preview it.</value>
+  </data>
+  <data name="Settings_QuickLaunch" xml:space="preserve">
+    <value>Quick launch</value>
+  </data>
+  <data name="Settings_QuickLaunchDesc" xml:space="preserve">
+    <value>Control the Home quick-launch button for your pinned instance.</value>
+  </data>
+  <data name="Settings_QuickLaunchShowOnHome" xml:space="preserve">
+    <value>Show quick launch button on Home</value>
+  </data>
+  <data name="Settings_HomeWidgets" xml:space="preserve">
+    <value>Home widgets</value>
+  </data>
+  <data name="Settings_HomeWidgetsDesc" xml:space="preserve">
+    <value>Show weather and date at the top of the Home page. Set a region to enable weather.</value>
+  </data>
+  <data name="Settings_HomeWidgetsShowWeather" xml:space="preserve">
+    <value>Show weather</value>
+  </data>
+  <data name="Settings_HomeWidgetsShowCalendar" xml:space="preserve">
+    <value>Show date</value>
+  </data>
+  <data name="Settings_HomeWidgetsUse12HourClock" xml:space="preserve">
+    <value>Use 12-hour clock (AM/PM)</value>
+  </data>
+  <data name="Settings_HomeWidgetsRegion" xml:space="preserve">
+    <value>Weather region</value>
+  </data>
+  <data name="Settings_HomeWidgetsRegionHint" xml:space="preserve">
+    <value>Open the region dialog to search, or use current location.</value>
+  </data>
+  <data name="Settings_HomeWidgetsRegionEnglishTip" xml:space="preserve">
+    <value>Search by city name in your language, or use current location.</value>
+  </data>
+  <data name="Settings_HomeWidgetsRegionPlaceholder" xml:space="preserve">
+    <value>City name</value>
+  </data>
+  <data name="Settings_HomeWidgetsRegionDialogTitle" xml:space="preserve">
+    <value>Choose weather region</value>
+  </data>
+  <data name="Settings_HomeWidgetsChooseRegion" xml:space="preserve">
+    <value>Choose region…</value>
+  </data>
+  <data name="Settings_HomeWidgetsRegionNone" xml:space="preserve">
+    <value>No region set</value>
+  </data>
+  <data name="Settings_HomeWidgetsSearching" xml:space="preserve">
+    <value>Searching…</value>
+  </data>
+  <data name="Settings_HomeWidgetsNoResults" xml:space="preserve">
+    <value>No places found. Try another spelling.</value>
+  </data>
+  <data name="Settings_HomeWidgetsSearchFailed" xml:space="preserve">
+    <value>Search failed: {0}</value>
+  </data>
+  <data name="Settings_HomeWidgetsClearRegion" xml:space="preserve">
+    <value>Clear region</value>
+  </data>
+  <data name="Settings_HomeWidgetsUseCurrentLocation" xml:space="preserve">
+    <value>Use current location</value>
+  </data>
+  <data name="Settings_HomeWidgetsLocating" xml:space="preserve">
+    <value>Getting location…</value>
+  </data>
+  <data name="Settings_HomeWidgetsLocationDenied" xml:space="preserve">
+    <value>Location access was denied.</value>
+  </data>
+  <data name="Settings_HomeWidgetsLocationFailed" xml:space="preserve">
+    <value>Could not get location: {0}</value>
+  </data>
+  <data name="Settings_HomeWidgetsCurrentLocationLabel" xml:space="preserve">
+    <value>Current location</value>
+  </data>
+  <data name="Settings_HomeWidgetsUseFahrenheit" xml:space="preserve">
+    <value>Use Fahrenheit (°F)</value>
+  </data>
+  <data name="Settings_HomeWidgetsRegionSet" xml:space="preserve">
+    <value>Region set to {0}</value>
+  </data>
+  <data name="Home_WeatherNeedRegion" xml:space="preserve">
+    <value>Set a region in Personalization → Home widgets</value>
+  </data>
+  <data name="Home_WeatherLoading" xml:space="preserve">
+    <value>Loading weather…</value>
+  </data>
+  <data name="Home_WeatherFailed" xml:space="preserve">
+    <value>Weather unavailable</value>
+  </data>
+  <data name="Home_WeatherTodayRange" xml:space="preserve">
+    <value>{0} – {1}</value>
+  </data>
+  <data name="Home_WeatherConditionTodayRange" xml:space="preserve">
+    <value>{0} Today {1}</value>
+  </data>
+  <data name="Weather_Clear" xml:space="preserve">
+    <value>Clear</value>
+  </data>
+  <data name="Weather_ClearNight" xml:space="preserve">
+    <value>Clear night</value>
+  </data>
+  <data name="Weather_MainlyClear" xml:space="preserve">
+    <value>Mostly clear</value>
+  </data>
+  <data name="Weather_PartlyCloudy" xml:space="preserve">
+    <value>Partly cloudy</value>
+  </data>
+  <data name="Weather_Overcast" xml:space="preserve">
+    <value>Overcast</value>
+  </data>
+  <data name="Weather_Fog" xml:space="preserve">
+    <value>Fog</value>
+  </data>
+  <data name="Weather_Drizzle" xml:space="preserve">
+    <value>Drizzle</value>
+  </data>
+  <data name="Weather_FreezingDrizzle" xml:space="preserve">
+    <value>Freezing drizzle</value>
+  </data>
+  <data name="Weather_Rain" xml:space="preserve">
+    <value>Rain</value>
+  </data>
+  <data name="Weather_FreezingRain" xml:space="preserve">
+    <value>Freezing rain</value>
+  </data>
+  <data name="Weather_Snow" xml:space="preserve">
+    <value>Snow</value>
+  </data>
+  <data name="Weather_RainShowers" xml:space="preserve">
+    <value>Showers</value>
+  </data>
+  <data name="Weather_SnowShowers" xml:space="preserve">
+    <value>Snow showers</value>
+  </data>
+  <data name="Weather_Thunderstorm" xml:space="preserve">
+    <value>Thunderstorm</value>
+  </data>
+  <data name="Weather_ThunderstormHail" xml:space="preserve">
+    <value>Thunderstorm with hail</value>
+  </data>
+  <data name="Weather_Unknown" xml:space="preserve">
+    <value>Weather</value>
+  </data>
+  <data name="About_Credit_OpenMeteo" xml:space="preserve">
+    <value>Open-Meteo weather and geocoding APIs for the Home weather widget. No API key required.</value>
+  </data>
+  <data name="About_Credit_Nominatim" xml:space="preserve">
+    <value>OpenStreetMap Nominatim search API for location lookup.</value>
+  </data>
+  <data name="Settings_Subtitle" xml:space="preserve">
+    <value>Personalization and launcher defaults — instances inherit these unless overridden.</value>
+  </data>
+  <data name="Settings_SectionAppearance" xml:space="preserve">
+    <value>Personalization</value>
+  </data>
+  <data name="Settings_SectionAppearanceDesc" xml:space="preserve">
+    <value>Choose the interface language and accent theme applied across Ardel.</value>
+  </data>
+  <data name="Settings_SectionDefaults" xml:space="preserve">
+    <value>Defaults</value>
+  </data>
+  <data name="Settings_SectionDefaultsDesc" xml:space="preserve">
+    <value>Java, memory, download mirror, and Minecraft folder used when an instance has no override.</value>
+  </data>
+  <data name="Settings_SectionAbout" xml:space="preserve">
+    <value>About</value>
+  </data>
+  <data name="Settings_SectionAboutDesc" xml:space="preserve">
+    <value>Version, license, open-source credits, and terms of service.</value>
+  </data>
+  <data name="Skin_NameSteve" xml:space="preserve">
+    <value>Steve</value>
+  </data>
+  <data name="Skin_NameAlex" xml:space="preserve">
+    <value>Alex</value>
+  </data>
+  <data name="About_Title" xml:space="preserve">
+    <value>About</value>
+  </data>
+  <data name="About_Subtitle" xml:space="preserve">
+    <value>A portable Minecraft launcher for Windows — local instances, offline play, and curated downloads.</value>
+  </data>
+  <data name="About_Version" xml:space="preserve">
+    <value>v{0}</value>
+  </data>
+  <data name="About_License" xml:space="preserve">
+    <value>Ardel is distributed under OSL-3.0. You may use, modify, and redistribute it under the terms of that license.</value>
+  </data>
+  <data name="About_LicenseHeading" xml:space="preserve">
+    <value>License</value>
+  </data>
+  <data name="About_LicenseName" xml:space="preserve">
+    <value>Open Software License</value>
+  </data>
+  <data name="About_LicenseId" xml:space="preserve">
+    <value>OSL-3.0</value>
+  </data>
+  <data name="About_LegalHeading" xml:space="preserve">
+    <value>Terms of Service</value>
+  </data>
+  <data name="About_LegalUpdated" xml:space="preserve">
+    <value>Version {0} · Effective date: {1}</value>
+  </data>
+  <data name="About_LegalIntro" xml:space="preserve">
+    <value>The following terms apply to all users of Ardel. Read each section carefully; choosing a display language does not change your legal obligations.</value>
+  </data>
+  <data name="About_LegalFeedback" xml:space="preserve">
+    <value>Report a legal or compliance issue</value>
+  </data>
+  <data name="About_CopyrightNoticeHeading" xml:space="preserve">
+    <value>Copyright Notice</value>
+  </data>
+  <data name="About_CopyrightNoticeBody" xml:space="preserve">
+    <value>Copyright © 2026 FlameGemini. All rights reserved.
+
+Ardel is distributed under the Open Software License version 3.0 (OSL-3.0). Any modification, derivative work, or redistribution of this software must strictly comply with OSL-3.0 terms, including the mandatory availability of complete source code.
+
+Closed-source bundling, unauthorized commercial reselling, removal of copyright notices or author attribution, and intellectual property infringement are strictly prohibited. This project is not affiliated with, endorsed by, or sponsored by Mojang Studios or Microsoft Corporation. The author reserves all legal rights to enforce compliance and seek damages and legal costs via statutory DMCA procedures and applicable laws.</value>
+  </data>
+  <data name="About_OpenNoticeFile" xml:space="preserve">
+    <value>View NOTICE.txt</value>
+  </data>
+  <data name="About_SourceLink" xml:space="preserve">
+    <value>View source</value>
+  </data>
+  <data name="About_RerunSetup" xml:space="preserve">
+    <value>Run setup wizard again</value>
+  </data>
+  <data name="About_OpenLink" xml:space="preserve">
+    <value>Open</value>
+  </data>
+  <data name="About_CopyVersion" xml:space="preserve">
+    <value>Copy version</value>
+  </data>
+  <data name="About_CreditsHeading" xml:space="preserve">
+    <value>Acknowledgments</value>
+  </data>
+  <data name="About_CreditsIntro" xml:space="preserve">
+    <value>Third-party software and services that power Ardel. Tap a row to open its home page.</value>
+  </data>
+  <data name="About_LibrariesHeading" xml:space="preserve">
+    <value>Libraries</value>
+  </data>
+  <data name="About_ServicesHeading" xml:space="preserve">
+    <value>Services &amp; APIs</value>
+  </data>
+  <data name="About_FontsHeading" xml:space="preserve">
+    <value>Fonts</value>
+  </data>
+  <data name="About_Credit_CmlLib" xml:space="preserve">
+    <value>Minecraft launch and install core by CmlLib / AlphaBs.</value>
+  </data>
+  <data name="About_Credit_CmlLibForge" xml:space="preserve">
+    <value>Forge and NeoForge installer modules by CmlLib contributors.</value>
+  </data>
+  <data name="About_Credit_OptifineInstaller" xml:space="preserve">
+    <value>Community helper for OptiFine installation workflows.</value>
+  </data>
+  <data name="About_Credit_CommunityToolkit" xml:space="preserve">
+    <value>.NET Community Toolkit MVVM helpers for observable UI state.</value>
+  </data>
+  <data name="About_Credit_AuthlibInjector" xml:space="preserve">
+    <value>Offline skin relay agent by yushijinhun.</value>
+  </data>
+  <data name="About_Credit_MinecraftSkinRender" xml:space="preserve">
+    <value>Minecraft skin rendering component and 3D head generator by Coloryr.</value>
+  </data>
+  <data name="About_Credit_SkiaSharp" xml:space="preserve">
+    <value>Cross-platform 2D graphics API based on Google's Skia, used for skin rendering.</value>
+  </data>
+  <data name="About_Credit_XboxAuthNet" xml:space="preserve">
+    <value>Xbox Live authentication and MSAL token integration by CmlLib.</value>
+  </data>
+  <data name="About_Credit_BmclApi" xml:space="preserve">
+    <value>Optional Asia-friendly download mirror for Minecraft files, operated by bangbang93.</value>
+  </data>
+  <data name="About_Credit_Adoptium" xml:space="preserve">
+    <value>Eclipse Adoptium API for automated Temurin OpenJDK runtime downloads.</value>
+  </data>
+  <data name="About_Credit_MsDi" xml:space="preserve">
+    <value>Microsoft.Extensions dependency injection used for launcher services.</value>
+  </data>
+  <data name="About_Credit_Wasdk" xml:space="preserve">
+    <value>Windows App SDK and WinUI 3 shell framework by Microsoft.</value>
+  </data>
+  <data name="About_Credit_DotNet" xml:space="preserve">
+    <value>.NET runtime and base class libraries used by the launcher.</value>
+  </data>
+  <data name="About_Credit_Modrinth" xml:space="preserve">
+    <value>Mod / modpack catalog and downloads via the Modrinth API.</value>
+  </data>
+  <data name="About_Credit_CurseForge" xml:space="preserve">
+    <value>CurseForge catalog access through the community curse.tools proxy.</value>
+  </data>
+  <data name="About_Credit_JetBrainsMono" xml:space="preserve">
+    <value>Packaged monospace (SIL OFL 1.1). Home greeting and clock in every language.</value>
+  </data>
+  <data name="About_Credit_Consolas" xml:space="preserve">
+    <value>English UI body and display default; also used in the game log panel. System font — not redistributed.</value>
+  </data>
+  <data name="About_Credit_SegoeUiVariable" xml:space="preserve">
+    <value>Non-English shell UI. System font — not redistributed.</value>
+  </data>
+  <data name="About_Credit_YaHeiUi" xml:space="preserve">
+    <value>Simplified Chinese UI. System font — not redistributed.</value>
+  </data>
+  <data name="About_Credit_JhengHeiUi" xml:space="preserve">
+    <value>Traditional Chinese UI. System font — not redistributed.</value>
+  </data>
+  <data name="About_Credit_YuGothicUi" xml:space="preserve">
+    <value>Japanese UI. System font — not redistributed.</value>
+  </data>
+  <data name="About_Credit_MeiryoUi" xml:space="preserve">
+    <value>Japanese UI fallback. System font — not redistributed.</value>
+  </data>
+  <data name="About_Credit_MalgunGothic" xml:space="preserve">
+    <value>Korean UI. System font — not redistributed.</value>
+  </data>
+  <data name="About_Credit_SegoeUi" xml:space="preserve">
+    <value>General UI fallback across locales. System font — not redistributed.</value>
+  </data>
+  <data name="About_Credit_SegoeFluentIcons" xml:space="preserve">
+    <value>Icon glyphs in the game log panel. System font — not redistributed.</value>
+  </data>
+  <data name="About_OfficialPurchaseEncourage" xml:space="preserve">
+    <value>We encourage purchasing and activating genuine Minecraft: Java Edition through official channels such as the Microsoft Store or minecraft.net.</value>
+  </data>
+  <data name="About_Disclaimer" xml:space="preserve">
+    <value>(Legal notice text)</value>
+  </data>
+  <data name="Oobe_Previous" xml:space="preserve">
+    <value>Previous</value>
+  </data>
+  <data name="Oobe_Next" xml:space="preserve">
+    <value>Next</value>
+  </data>
+  <data name="Oobe_Finish" xml:space="preserve">
+    <value>Get started</value>
+  </data>
+  <data name="Oobe_StepLanguage_Title" xml:space="preserve">
+    <value>Choose your language</value>
+  </data>
+  <data name="Oobe_StepLanguage_Subtitle" xml:space="preserve">
+    <value>You can change this later in Settings.</value>
+  </data>
+  <data name="Oobe_StepWelcome_Title" xml:space="preserve">
+    <value>Welcome to Ardel Launcher</value>
+  </data>
+  <data name="Oobe_StepWelcome_Subtitle" xml:space="preserve">
+    <value>We're glad you chose our product.</value>
+  </data>
+  <data name="Oobe_StepLicense_Title" xml:space="preserve">
+    <value>Terms of use</value>
+  </data>
+  <data name="Oobe_StepLicense_Agree" xml:space="preserve">
+    <value>I have read and agree to the terms</value>
+  </data>
+  <data name="Oobe_StepTheme_Title" xml:space="preserve">
+    <value>Pick a theme</value>
+  </data>
+  <data name="Oobe_StepTheme_Subtitle" xml:space="preserve">
+    <value>Preview applies to the launcher and this setup.</value>
+  </data>
+  <data name="Oobe_StepTutorial_Title" xml:space="preserve">
+    <value>Quick start</value>
+  </data>
+  <data name="Oobe_StepTutorial_Subtitle" xml:space="preserve">
+    <value>Follow these five steps in order to play for the first time.</value>
+  </data>
+  <data name="Oobe_StepTutorial_Step1_Title" xml:space="preserve">
+    <value>Open Download</value>
+  </data>
+  <data name="Oobe_StepTutorial_Step1_Detail" xml:space="preserve">
+    <value>In the sidebar, open Download to browse available Minecraft versions.</value>
+  </data>
+  <data name="Oobe_StepTutorial_Step2_Title" xml:space="preserve">
+    <value>Install a version</value>
+  </data>
+  <data name="Oobe_StepTutorial_Step2_Detail" xml:space="preserve">
+    <value>Pick a release and start the install. A game profile is created automatically.</value>
+  </data>
+  <data name="Oobe_StepTutorial_Step3_Title" xml:space="preserve">
+    <value>Wait for the download</value>
+  </data>
+  <data name="Oobe_StepTutorial_Step3_Detail" xml:space="preserve">
+    <value>Let the download task finish. Track progress from the sidebar indicator.</value>
+  </data>
+  <data name="Oobe_StepTutorial_Step4_Title" xml:space="preserve">
+    <value>Sign in to an account</value>
+  </data>
+  <data name="Oobe_StepTutorial_Step4_Detail" xml:space="preserve">
+    <value>Open Account, add your Minecraft account, and tap the card to sign in.</value>
+  </data>
+  <data name="Oobe_StepTutorial_Step5_Title" xml:space="preserve">
+    <value>Launch the game</value>
+  </data>
+  <data name="Oobe_StepTutorial_Step5_Detail" xml:space="preserve">
+    <value>Open Profiles and tap Launch on your install. Minecraft opens in a new window once launch starts.</value>
+  </data>
+  <data name="Oobe_StepBreak_Title" xml:space="preserve">
+    <value>Water bar</value>
+  </data>
+  <data name="Oobe_StepBreak_Body" xml:space="preserve">
+    <value></value>
+  </data>
+  <data name="Oobe_StepAccount_Title" xml:space="preserve">
+    <value>Add an offline account</value>
+  </data>
+  <data name="Oobe_StepAccount_Subtitle" xml:space="preserve">
+    <value>Optional — you can add more accounts later.</value>
+  </data>
+  <data name="Oobe_StepHydrate_Title" xml:space="preserve">
+    <value>Water</value>
+  </data>
+  <data name="Oobe_StepHydrate_Body" xml:space="preserve">
+    <value></value>
+  </data>
+  <data name="Oobe_StepComplete_Title" xml:space="preserve">
+    <value>You're all set</value>
+  </data>
+  <data name="Oobe_StepComplete_Subtitle" xml:space="preserve">
+    <value>Tap Finish to enter Ardel, then download a version, sign in, and launch when you're ready.</value>
+  </data>
+  <data name="Version_Fabric" xml:space="preserve">
+    <value>Fabric {0}</value>
+  </data>
+  <data name="Version_Quilt" xml:space="preserve">
+    <value>Quilt {0}</value>
+  </data>
+  <data name="Version_Forge" xml:space="preserve">
+    <value>Forge {0}</value>
+  </data>
+  <data name="Version_NeoForge" xml:space="preserve">
+    <value>NeoForge {0}</value>
+  </data>
+  <data name="Version_OptiFine" xml:space="preserve">
+    <value>OptiFine {0}</value>
+  </data>
+  <data name="Version_Vanilla" xml:space="preserve">
+    <value>Vanilla</value>
+  </data>
+  <data name="Version_Custom" xml:space="preserve">
+    <value>Custom</value>
+  </data>
+  <data name="Java_NamedWithSource" xml:space="preserve">
+    <value>Java {0} ({1})</value>
+  </data>
+  <data name="Java_NamedWithPath" xml:space="preserve">
+    <value>Java {0} — {1}</value>
+  </data>
+  <data name="Java_SourceJavaHome" xml:space="preserve">
+    <value>JAVA_HOME</value>
+  </data>
+  <data name="Java_SourcePath" xml:space="preserve">
+    <value>PATH</value>
+  </data>
+  <data name="Java_SourceCommon" xml:space="preserve">
+    <value>Common</value>
+  </data>
+  <data name="Java_SourceRegistry" xml:space="preserve">
+    <value>Registry</value>
+  </data>
+  <data name="Java_SourceRegistryNamed" xml:space="preserve">
+    <value>Registry ({0})</value>
+  </data>
+  <data name="Progress_FileFallback" xml:space="preserve">
+    <value>file</value>
+  </data>
+  <data name="Unit_Byte" xml:space="preserve">
+    <value>B</value>
+  </data>
+  <data name="Unit_Kilobyte" xml:space="preserve">
+    <value>KB</value>
+  </data>
+  <data name="Unit_Megabyte" xml:space="preserve">
+    <value>MB</value>
+  </data>
+  <data name="Unit_Gigabyte" xml:space="preserve">
+    <value>GB</value>
+  </data>
+  <data name="Install_Title" xml:space="preserve">
+    <value>Install {0}</value>
+  </data>
+  <data name="Install_VersionName" xml:space="preserve">
+    <value>Version name</value>
+  </data>
+  <data name="Install_VersionNamePlaceholder" xml:space="preserve">
+    <value>Folder name under versions/</value>
+  </data>
+  <data name="Install_Loader" xml:space="preserve">
+    <value>Also install</value>
+  </data>
+  <data name="Install_LoaderNone" xml:space="preserve">
+    <value>Vanilla only</value>
+  </data>
+  <data name="Install_LoaderFabric" xml:space="preserve">
+    <value>Fabric</value>
+  </data>
+  <data name="Install_LoaderQuilt" xml:space="preserve">
+    <value>Quilt</value>
+  </data>
+  <data name="Install_LoaderForge" xml:space="preserve">
+    <value>Forge</value>
+  </data>
+  <data name="Install_LoaderNeoForge" xml:space="preserve">
+    <value>NeoForge</value>
+  </data>
+  <data name="Install_LoaderOptiFine" xml:space="preserve">
+    <value>OptiFine</value>
+  </data>
+  <data name="Install_LoaderExclusiveHint" xml:space="preserve">
+    <value>Forge, Fabric, NeoForge, and OptiFine cannot be combined — pick at most one.</value>
+  </data>
+  <data name="Install_LoaderVersion" xml:space="preserve">
+    <value>Loader version</value>
+  </data>
+  <data name="Install_OptiFineVersion" xml:space="preserve">
+    <value>OptiFine version</value>
+  </data>
+  <data name="Install_LoadingLoaders" xml:space="preserve">
+    <value>Loading loader versions…</value>
+  </data>
+  <data name="Install_LoadingOptiFine" xml:space="preserve">
+    <value>Loading OptiFine versions…</value>
+  </data>
+  <data name="Install_NoLoaders" xml:space="preserve">
+    <value>No loader builds found for this Minecraft version.</value>
+  </data>
+  <data name="Install_NoOptiFine" xml:space="preserve">
+    <value>No OptiFine builds found for this Minecraft version.</value>
+  </data>
+  <data name="Install_LoaderCount" xml:space="preserve">
+    <value>{0} builds available</value>
+  </data>
+  <data name="Install_OptiFineCount" xml:space="preserve">
+    <value>{0} OptiFine builds available</value>
+  </data>
+  <data name="Install_LoaderLoadFailed" xml:space="preserve">
+    <value>Could not load loader versions: {0}</value>
+  </data>
+  <data name="Install_OptiFineLoadFailed" xml:space="preserve">
+    <value>Could not load OptiFine versions: {0}</value>
+  </data>
+  <data name="Install_SelectLoaderVersion" xml:space="preserve">
+    <value>Select a loader version.</value>
+  </data>
+  <data name="Install_SelectOptiFineVersion" xml:space="preserve">
+    <value>Select an OptiFine version.</value>
+  </data>
+  <data name="Install_FabricApi" xml:space="preserve">
+    <value>Also install Fabric API</value>
+  </data>
+  <data name="Install_FabricApiHint" xml:space="preserve">
+    <value>Downloads Fabric API into this version's mods folder (Modrinth, then CurseForge).</value>
+  </data>
+  <data name="Download_AlreadyRunning" xml:space="preserve">
+    <value>{0} is already in the task list</value>
+  </data>
+  <data name="Conflict_WithAddon" xml:space="preserve">
+    <value>{0} is incompatible with {1}.</value>
+  </data>
+  <data name="Conflict_Incompatible" xml:space="preserve">
+    <value>These addons cannot be combined.</value>
+  </data>
+  <data name="LoaderTag_Stable" xml:space="preserve">
+    <value>stable</value>
+  </data>
+  <data name="LoaderTag_Unstable" xml:space="preserve">
+    <value>unstable</value>
+  </data>
+  <data name="LoaderTag_Recommended" xml:space="preserve">
+    <value>recommended</value>
+  </data>
+  <data name="LoaderTag_Latest" xml:space="preserve">
+    <value>latest</value>
+  </data>
+  <data name="LoaderTag_Named" xml:space="preserve">
+    <value>{0} ({1})</value>
+  </data>
+  <data name="Progress_FileCount" xml:space="preserve">
+    <value>{0}  {1}/{2}</value>
+  </data>
+  <data name="FabricApi_Resolving" xml:space="preserve">
+    <value>Finding Fabric API…</value>
+  </data>
+  <data name="FabricApi_Downloading" xml:space="preserve">
+    <value>Downloading Fabric API ({1}): {0}</value>
+  </data>
+  <data name="FabricApi_Installed" xml:space="preserve">
+    <value>Fabric API ready ({1}): {0}</value>
+  </data>
+  <data name="FabricApi_NotFound" xml:space="preserve">
+    <value>No Fabric API build found for Minecraft {0}.</value>
+  </data>
+  <data name="FabricApi_ResolveFailed" xml:space="preserve">
+    <value>Could not resolve Fabric API for {0}: {1}</value>
+  </data>
+  <data name="FabricApi_BothFailed" xml:space="preserve">
+    <value>Modrinth: {0}; CurseForge: {1}</value>
+  </data>
+  <data name="FabricApi_SourceModrinth" xml:space="preserve">
+    <value>Modrinth</value>
+  </data>
+  <data name="FabricApi_SourceCurseForge" xml:space="preserve">
+    <value>CurseForge</value>
+  </data>
+  <data name="Error_BmclSetupFailed" xml:space="preserve">
+    <value>Failed to configure BMCLAPI mirrors.</value>
+  </data>
+  <data name="Error_LoaderEmptyId" xml:space="preserve">
+    <value>Mod loader install returned an empty version id.</value>
+  </data>
+  <data name="Error_FabricProfileInvalid" xml:space="preserve">
+    <value>Fabric profile was not created correctly. Pick a version name different from the Minecraft id and try again.</value>
+  </data>
+  <data name="Error_QuiltProfileInvalid" xml:space="preserve">
+    <value>Quilt profile was not created correctly. Pick a version name different from the Minecraft id and try again.</value>
+  </data>
+  <data name="Error_JavaNotFound" xml:space="preserve">
+    <value>Configured Java path was not found.</value>
+  </data>
+  <data name="Error_JavaTooOld" xml:space="preserve">
+    <value>Minecraft {0} requires Java {1}+, but selected Java is {2}.</value>
+  </data>
+  <data name="Error_JavaExeNotFound" xml:space="preserve">
+    <value>java.exe not found.</value>
+  </data>
+  <data name="Error_JavaProcessStart" xml:space="preserve">
+    <value>Failed to start process: {0}</value>
+  </data>
+  <data name="Error_JavaVersionParse" xml:space="preserve">
+    <value>Unable to parse Java version from output:{0}{1}</value>
+  </data>
+  <data name="Error_ProcessStartFailed" xml:space="preserve">
+    <value>Failed to start the Minecraft process.</value>
+  </data>
+  <data name="Error_VersionFolderNotFound" xml:space="preserve">
+    <value>Version folder not found: {0}</value>
+  </data>
+  <data name="Error_VersionAlreadyExists" xml:space="preserve">
+    <value>Version already exists: {0}</value>
+  </data>
+  <data name="Error_VersionDeleteLocked" xml:space="preserve">
+    <value>Could not delete "{0}" — close the game and any open folders, then try again.</value>
+  </data>
+  <data name="Error_JavaDownloadFailed" xml:space="preserve">
+    <value>Failed to download Java {0}: {1}</value>
+  </data>
+  <data name="Error_AlreadyInstalling" xml:space="preserve">
+    <value>Install already in progress.</value>
+  </data>
+  <data name="Error_FileDownloadFailed" xml:space="preserve">
+    <value>Failed to download {0}</value>
+  </data>
+  <data name="Error_HttpStatus" xml:space="preserve">
+    <value>HTTP {0}</value>
+  </data>
+  <data name="Error_TimedOut" xml:space="preserve">
+    <value>Timed out</value>
+  </data>
+  <data name="Error_Unknown" xml:space="preserve">
+    <value>unknown</value>
+  </data>
+  <data name="Validate_VersionEmpty" xml:space="preserve">
+    <value>Version name cannot be empty.</value>
+  </data>
+  <data name="Validate_NameLeadingSpace" xml:space="preserve">
+    <value>Name cannot start with a space.</value>
+  </data>
+  <data name="Validate_NameTrailingSpace" xml:space="preserve">
+    <value>Name cannot end with a space.</value>
+  </data>
+  <data name="Validate_NameTrailingDot" xml:space="preserve">
+    <value>Name cannot end with a period.</value>
+  </data>
+  <data name="Validate_NameTooLong" xml:space="preserve">
+    <value>Name can be at most {0} characters.</value>
+  </data>
+  <data name="Validate_NameInvalidChar" xml:space="preserve">
+    <value>Name cannot contain: {0}</value>
+  </data>
+  <data name="Validate_NameReserved" xml:space="preserve">
+    <value>Name cannot be {0}.</value>
+  </data>
+  <data name="Validate_NameNtfs83" xml:space="preserve">
+    <value>Name cannot use this special format.</value>
+  </data>
+  <data name="Validate_VersionExists" xml:space="preserve">
+    <value>A version folder with this name already exists.</value>
+  </data>
+  <data name="Validate_LoaderNameEqualsMc" xml:space="preserve">
+    <value>Loader profiles cannot use the same name as the Minecraft version (that overwrites vanilla). Try a name like 1.21.1-fabric.</value>
+  </data>
+  <data name="Validate_PlayerEmpty" xml:space="preserve">
+    <value>Player name cannot be empty.</value>
+  </data>
+  <data name="Validate_PlayerQuote" xml:space="preserve">
+    <value>Player name cannot contain quotes (").</value>
+  </data>
+  <data name="Validate_PlayerTooLong" xml:space="preserve">
+    <value>Player name must be 16 characters or fewer.</value>
+  </data>
+  <data name="Validate_PlayerLength" xml:space="preserve">
+    <value>Player name must be 3–16 characters.</value>
+  </data>
+  <data name="Validate_PlayerCharset" xml:space="preserve">
+    <value>Invalid characters in player name.</value>
+  </data>
+  <data name="Validate_SkinNameInvalid" xml:space="preserve">
+    <value>Skin name cannot contain path characters.</value>
+  </data>
+  <data name="Default_PlayerName" xml:space="preserve">
+    <value>Player</value>
+  </data>
+</root>

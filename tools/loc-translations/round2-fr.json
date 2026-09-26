@@ -1,0 +1,8 @@
+{
+  "update": {
+    "Settings_ArdoSummary": "Ardo · {0} fils · {1}",
+    "Modpack_ContentsCount": "{0} modifications",
+    "Modpack_ContentsSubtitle": "{0} · {1} modifications"
+  },
+  "add": {}
+}

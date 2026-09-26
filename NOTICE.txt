@@ -1,0 +1,159 @@
+================================================================================
+ARDEL DESKTOP / ARDEL LAUNCHER
+NOTICE AND INTELLECTUAL PROPERTY STATEMENTS
+================================================================================
+
+Copyright (c) 2026 FlameGemini. All rights reserved.
+
+Project Repository: https://github.com/FlameGemini/Ardel
+Project Website:    https://ardel.ice-tea.top
+
+--------------------------------------------------------------------------------
+1. PRIMARY LICENSE & SOURCE CODE AVAILABILITY REQUIREMENT
+--------------------------------------------------------------------------------
+
+Ardel is open-source software licensed under the Open Software License,
+Version 3.0 (OSL-3.0). You may obtain a copy of the License at:
+    https://opensource.org/licenses/OSL-3.0
+    or in the LICENSE file included with this distribution.
+
+NOTICE TO RE-DISTRIBUTORS AND DOWNSTREAM DEVELOPERS:
+Pursuant to Section 1(c) of the OSL-3.0 license:
+"Licensor grants You a worldwide, royalty-free, non-exclusive, sublicensable
+license to distribute or communicate copies of the Original Work and Modified
+Works to the public, UNDER THE CONDITION that You also make available the
+Source Code of the Modified Work to anyone to whom You distribute or communicate
+an Executable version under the same terms as the Open Software License."
+
+Any individual or organization distributing binary or modified distributions of
+Ardel MUST make available the full, corresponding human-readable Source Code.
+Distributing Ardel or derivative works in a closed-source, obfuscated, or
+proprietary format without providing full source code is an immediate and
+automatic termination of all rights granted under the OSL-3.0 license and
+constitutes willful copyright infringement.
+
+--------------------------------------------------------------------------------
+2. ANTI-INFRINGEMENT, DMCA ENFORCEMENT, AND LEGAL REMEDIES
+--------------------------------------------------------------------------------
+
+The author and copyright holders of Ardel actively monitor, enforce, and defend
+their statutory copyright and intellectual property rights under international
+copyright treaties, including the Berne Convention, the WIPO Copyright Treaty,
+and Title 17 of the United States Code (including 17 U.S.C. Section 512, the
+Digital Millennium Copyright Act / DMCA), as well as applicable national and
+regional laws.
+
+THE FOLLOWING ACTIONS ARE STRICTLY PROHIBITED AND WILL TRIGGER IMMEDIATE LEGAL ACTION:
+  a. Removal, alteration, or concealment of copyright notices, authorship credits,
+     license statements, or this NOTICE file from the source or binary builds.
+  b. Re-branding, repackaging, or re-selling Ardel (or substantial components thereof)
+     as a closed-source or commercial product without explicit written authorization.
+  c. Distributing modified or unmodified builds bundled with adware, malware, spyware,
+     cryptocurrency miners, or unauthorized paywalls.
+  d. Passing off, impersonation, or misrepresenting derivative works as official
+     releases of the Ardel project or FlameGemini.
+
+ENFORCEMENT POLICY:
+Upon detection of non-compliant distributions, unauthorized forks, or closed-source
+re-bundling:
+  - Formal DMCA Takedown Notices and cease-and-desist notifications will be served
+    immediately to web hosting providers, cloud infrastructure services, source code
+    repositories (such as GitHub, GitLab, Gitee), file hosts, CDN networks, domain
+    registrars, and app stores.
+  - Payment processors and financial intermediaries facilitating unauthorized sales
+    will be notified of copyright infringement and unauthorized commercialization.
+  - Pursuant to Section 10 of the OSL-3.0 License, the prevailing party in any
+    litigation arising out of or relating to this license or the subject matter
+    thereof shall be entitled to recover its reasonable attorneys' fees and costs.
+    The copyright holder will seek maximum statutory damages, actual damages, profits
+    attributable to the infringement, and full recovery of legal costs.
+
+--------------------------------------------------------------------------------
+3. MOJANG STUDIOS AND MICROSOFT TRADEMARK DISCLAIMER
+--------------------------------------------------------------------------------
+
+Ardel is an independent third-party client management and launcher utility.
+This software is NOT an official Minecraft product. It is NOT approved by,
+sponsored by, affiliated with, or associated with Mojang Studios,
+Microsoft Corporation, or any of their affiliates or subsidiaries.
+
+"Minecraft" is a registered trademark of Mojang Synergies AB.
+"Microsoft", "Xbox", and "Windows" are registered trademarks of Microsoft Corporation.
+All other trademarks, service marks, and trade names referenced herein are the
+property of their respective owners.
+
+Descriptive references to "Minecraft", "Java Edition", or related terms within
+this application and its documentation are made strictly under the doctrine of
+nominative fair use for identification and compatibility purposes.
+
+Ardel DOES NOT distribute or reproduce copyrighted Minecraft game binaries, assets,
+textures, sounds, or proprietary game code. Ardel interacts only with official,
+publicly accessible Mojang and community endpoints, and requires users to hold a
+valid, legally acquired license from Microsoft/Mojang to play online.
+
+--------------------------------------------------------------------------------
+4. THIRD-PARTY OPEN SOURCE ACKNOWLEDGMENTS
+--------------------------------------------------------------------------------
+
+Ardel incorporates, links to, or interacts with the following open-source libraries
+and community resources, whose contributions are gratefully acknowledged:
+
+* CmlLib.Core, CmlLib.Core.Auth.Microsoft
+  Copyright (c) 2019-2024 CmlLib
+  License: MIT (https://github.com/CmlLib/CmlLib.Core)
+
+* CmlLib.Core.Installer.Forge, CmlLib.Core.Installer.NeoForge
+  Copyright (c) CmlLib
+  License: MIT (https://github.com/CmlLib/CmlLib.Core.Installer.Forge)
+
+* Optifine.Installer
+  Copyright (c) 2024 mzggr0914
+  License: MIT (https://github.com/mzggr0914/Optifine.Installer)
+
+* CommunityToolkit.Mvvm
+  Copyright (c) .NET Foundation and Contributors
+  License: MIT (https://github.com/CommunityToolkit/dotnet)
+
+* Microsoft.WindowsAppSDK / WinUI 3
+  Copyright (c) Microsoft Corporation
+  License: MIT (https://github.com/microsoft/WindowsAppSDK)
+
+* Microsoft.Extensions.DependencyInjection
+  Copyright (c) .NET Foundation and Contributors
+  License: MIT (https://github.com/dotnet/runtime)
+
+* .NET Runtime (.NET 8)
+  Copyright (c) .NET Foundation and Contributors
+  License: MIT (https://github.com/dotnet/runtime)
+
+* XboxAuthNet, XboxAuthNet.Game.Msal
+  Copyright (c) 2021-2024 CmlLib
+  License: MIT (https://github.com/CmlLib/XboxAuthNet)
+
+* SkiaSharp
+  Copyright (c) 2015-2024 Xamarin Inc. / Microsoft Corporation / .NET Foundation
+  License: MIT (https://github.com/mono/SkiaSharp)
+
+* authlib-injector
+  Copyright (c) yushijinhun
+  License: LGPL-3.0 / MIT (https://github.com/yushijinhun/authlib-injector)
+
+* MinecraftSkinRender
+  Copyright (c) 2024-2026 Coloryr
+  License: MIT (https://github.com/Coloryr/MinecraftSkinRender)
+
+* JetBrains Mono Font
+  Copyright (c) 2020 JetBrains s.r.o.
+  License: SIL Open Font License 1.1 (https://www.jetbrains.com/lp/mono/)
+
+* Community APIs & Services:
+  - BMCLAPI (https://bmclapidoc.bangbang93.com)
+  - Modrinth API (https://modrinth.com)
+  - CurseForge API via curse.tools (https://api.curse.tools)
+  - Adoptium API (https://adoptium.net)
+  - Open-Meteo Weather API (https://open-meteo.com)
+  - OpenStreetMap Nominatim (https://nominatim.org)
+
+================================================================================
+END OF NOTICE
+================================================================================

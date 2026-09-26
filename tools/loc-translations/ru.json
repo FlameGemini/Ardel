@@ -1,0 +1,16 @@
+{
+  "update": {
+    "Java_NamedWithSource": "Java {0} ({1})",
+    "LoaderTag_Named": "{0} ({1})"
+  },
+  "add": {
+    "Oobe_StepBreak_Title": "Водная станция",
+    "Oobe_StepBreak_Body": "",
+    "Oobe_StepAccount_Title": "Добавить офлайн-аккаунт",
+    "Oobe_StepAccount_Subtitle": "Необязательно — вы сможете добавить другие аккаунты позже.",
+    "Oobe_StepHydrate_Title": "Вода",
+    "Oobe_StepHydrate_Body": "",
+    "Modpack_ResolvingFiles": "Разрешение файлов модпака…",
+    "Modpack_MissingFile": "Отсутствует файл модпака: {0}"
+  }
+}

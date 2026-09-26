@@ -1,0 +1,27 @@
+{
+  "update": {
+    "Download_JavaTag": "Java {0}",
+    "InstanceSettings_JvmPresetShenandoah": "ShenandoahGC (Java 11 o posterior)",
+    "InstanceSettings_JvmPresetZgc": "ZGC (Java 15 o posterior)",
+    "InstanceSettings_MemoryTotal": "en total",
+    "InstanceSettings_SaveDifficultyNormal": "Normal",
+    "InstanceSettings_SaveValueNo": "No",
+    "Java_NamedWithPath": "Java {0} — {1}",
+    "Java_NamedWithSource": "Java {0} ({1})",
+    "LoaderTag_Named": "{0} ({1})",
+    "Mod_DetailChannelBeta": "Beta",
+    "Nav_Skins": "Aspectos",
+    "Settings_Java": "Java",
+    "Settings_ThemeAurora": "Aurora boreal"
+  },
+  "add": {
+    "Oobe_StepBreak_Title": "Bar de agua",
+    "Oobe_StepBreak_Body": "",
+    "Oobe_StepAccount_Title": "Añadir cuenta sin conexión",
+    "Oobe_StepAccount_Subtitle": "Opcional — puede añadir más cuentas más tarde.",
+    "Oobe_StepHydrate_Title": "Agua",
+    "Oobe_StepHydrate_Body": "",
+    "Modpack_ResolvingFiles": "Resolviendo archivos del modpack…",
+    "Modpack_MissingFile": "Falta un archivo del modpack: {0}"
+  }
+}
