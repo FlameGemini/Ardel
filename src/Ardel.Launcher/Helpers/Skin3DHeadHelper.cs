@@ -71,15 +71,15 @@ public static class Skin3DHeadHelper
     /// Load PNG bytes into <see cref="BitmapImage"/> without disposing the backing
     /// <see cref="InMemoryRandomAccessStream"/> before <see cref="BitmapImage.SetSourceAsync"/>.
     /// </summary>
-    internal static async Task<BitmapImage> BitmapImageFromPngAsync(
+    internal static async Task<BitmapImage?> BitmapImageFromPngAsync(
         byte[] pngBytes,
         CancellationToken cancellationToken = default)
     {
         var dq = App.MainWindowInstance?.DispatcherQueue ?? Microsoft.UI.Dispatching.DispatcherQueue.GetForCurrentThread();
         if (dq is not null && !dq.HasThreadAccess)
         {
-            var tcs = new TaskCompletionSource<BitmapImage>();
-            dq.TryEnqueue(async () =>
+            var tcs = new TaskCompletionSource<BitmapImage?>(TaskCreationOptions.RunContinuationsAsynchronously);
+            var ok = dq.TryEnqueue(async () =>
             {
                 try
                 {
@@ -88,9 +88,11 @@ public static class Skin3DHeadHelper
                 }
                 catch (Exception ex)
                 {
-                    tcs.TrySetException(ex);
+                    tcs.TrySetResult(null);
                 }
             });
+            if (!ok)
+                return null;
             return await tcs.Task.ConfigureAwait(false);
         }
 

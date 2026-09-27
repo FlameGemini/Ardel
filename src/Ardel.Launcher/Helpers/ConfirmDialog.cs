@@ -20,7 +20,7 @@ internal static class ConfirmDialog
             CloseButtonText = Loc.Get(LocKeys.Action_Cancel),
             DefaultButton = ContentDialogButton.Close
         };
-        return await dialog.ShowAsync() == ContentDialogResult.Primary;
+        return await dialog.SafeShowAsync() == ContentDialogResult.Primary;
     }
 
     public static Task<bool> ConfirmDeleteAsync(IReadOnlyList<string> names)

@@ -63,10 +63,18 @@ internal sealed class ResolveJavaStage(GameLaunchHost host) : IGameLaunchStage
         string? javaPath = session.Settings.JavaPath;
         if (!string.IsNullOrWhiteSpace(javaPath) && File.Exists(javaPath))
         {
-            var actual = JavaLocator.GetJavaVersion(javaPath);
-            session.Timings.Tick($"JavaLocator.GetJavaVersion (actual={actual})");
-            if (!JavaLocator.IsCompatible(actual, required))
+            try
+            {
+                var actual = JavaLocator.GetJavaVersion(javaPath);
+                session.Timings.Tick($"JavaLocator.GetJavaVersion (actual={actual})");
+                if (!JavaLocator.IsCompatible(actual, required))
+                    javaPath = null;
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine($"[LaunchStages] Configured Java validation failed: {ex.Message}");
                 javaPath = null;
+            }
         }
         else
         {
@@ -271,34 +279,15 @@ internal sealed class MaterializeProcessStage(GameLaunchHost host) : IGameLaunch
         var javaPath = session.JavaPath ?? throw new InvalidOperationException(Loc.Get(LocKeys.Error_ProcessStartFailed));
 
         Process process;
-        // ProcessStartInfo cache is a bare argv snapshot — unsafe when this launch adds
-        // --server / extra JVM/game args / window flags (auto-join would silently no-op,
-        // and a forced BuildProcessAsync races WarmVersion on version_manifest_v2.json).
-        var canReusePsi = session.OnlineSession is null &&
-                          session.OfflineSkin is null &&
-                          CanReuseCachedProcessInfo(option);
-        if (canReusePsi &&
-            host.ProcessInfoCache.TryGetValue(versionId, out var cachedPsi))
+        if (host.VersionCache.TryGetValue(versionId, out var cachedVersion))
         {
-            var psi = GameLaunchHost.CloneProcessStartInfo(cachedPsi);
-            psi.FileName = javaPath;
-            process = new Process { StartInfo = psi };
-            session.UsedCachedProcessInfo = true;
-            session.Timings.Tick("Process (cached ProcessStartInfo)");
-        }
-        else if (host.VersionCache.TryGetValue(versionId, out var cachedVersion))
-        {
-            // In-memory BuildProcess applies ServerIp from option — no manifest file I/O.
+            // In-memory BuildProcess applies full Session, RAM, server & JVM flags — no manifest file I/O (~2ms).
             process = launcher.BuildProcess(cachedVersion, option);
             session.Timings.Tick("BuildProcess (cached IVersion)");
-            if (canReusePsi)
-                host.ProcessInfoCache[versionId] = process.StartInfo;
-            else
-                host.ProcessInfoCache.TryRemove(versionId, out _);
         }
         else
         {
-            // BuildProcessAsync/GetVersionAsync also touch version_manifest_v2.json —
+            // BuildProcessAsync/GetVersionAsync touch version_manifest_v2.json —
             // must not race WarmVersionAsync / InstallAsync.
             process = await host.RunUnderCmlGateAsync(
                     async () =>
@@ -310,10 +299,6 @@ internal sealed class MaterializeProcessStage(GameLaunchHost host) : IGameLaunch
                         {
                             var v = await launcher.GetVersionAsync(versionId).ConfigureAwait(false);
                             host.VersionCache[versionId] = v;
-                            if (canReusePsi)
-                                host.ProcessInfoCache[versionId] = built.StartInfo;
-                            else
-                                host.ProcessInfoCache.TryRemove(versionId, out _);
                         }
                         catch
                         {
@@ -329,32 +314,12 @@ internal sealed class MaterializeProcessStage(GameLaunchHost host) : IGameLaunch
 
         process.StartInfo.UseShellExecute = false;
         process.StartInfo.CreateNoWindow = true;
+        if (!string.IsNullOrWhiteSpace(session.GameDirectory))
+            process.StartInfo.WorkingDirectory = session.GameDirectory;
         if (!string.IsNullOrWhiteSpace(process.StartInfo.FileName))
             process.StartInfo.FileName = JavaRuntimeInstaller.PreferJavaw(process.StartInfo.FileName);
 
         session.Process = process;
-    }
-
-    /// <summary>
-    /// Cached ProcessStartInfo omits per-launch option differences. Only reuse when argv is plain.
-    /// </summary>
-    private static bool CanReuseCachedProcessInfo(MLaunchOption option)
-    {
-        if (!string.IsNullOrWhiteSpace(option.ServerIp))
-            return false;
-        if (option.ServerPort is > 0)
-            return false;
-        if (option.ScreenWidth is > 0 || option.ScreenHeight is > 0)
-            return false;
-        if (option.FullScreen == true)
-            return false;
-        if (option.ExtraJvmArguments is not null && option.ExtraJvmArguments.Any())
-            return false;
-        if (option.ExtraGameArguments is not null && option.ExtraGameArguments.Any())
-            return false;
-        if (option.MinimumRamMb is > 0)
-            return false;
-        return true;
     }
 }
 

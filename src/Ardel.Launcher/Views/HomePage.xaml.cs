@@ -76,9 +76,9 @@ public sealed partial class HomePage : Page
     private bool ShowWeatherPanelReady() =>
         WeatherPanel.Visibility == Visibility.Visible;
 
-    private Task RunOpacityAsync(UIElement target, double from, double to, int generation)
+    private async Task RunOpacityAsync(UIElement target, double from, double to, int generation)
     {
-        var tcs = new TaskCompletionSource();
+        var tcs = new TaskCompletionSource(TaskCreationOptions.RunContinuationsAsynchronously);
         var ease = new CubicEase { EasingMode = EasingMode.EaseOut };
         var anim = new DoubleAnimation
         {
@@ -102,7 +102,9 @@ public sealed partial class HomePage : Page
         _weatherStoryboard = sb;
         target.Opacity = from;
         sb.Begin();
-        return tcs.Task;
+        await Task.WhenAny(tcs.Task, Task.Delay(400)).ConfigureAwait(true);
+        if (generation == _weatherAnimGeneration)
+            target.Opacity = to;
     }
 
     private void StopWeatherAnimation()

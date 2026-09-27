@@ -335,7 +335,7 @@ public sealed partial class AddAccountDialog : UserControl
             }
         };
 
-        await dialog.ShowAsync();
+        await dialog.SafeShowAsync();
         return saved;
     }
 

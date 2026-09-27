@@ -613,7 +613,7 @@ public partial class InstanceSettingsViewModel : ObservableObject
                     Title = Loc.Get(LocKeys.Nav_Account),
                     Content = Loc.Get(LocKeys.Account_NeedLogin),
                     CloseButtonText = Loc.Get(LocKeys.Action_Close)
-                }.ShowAsync();
+                }.SafeShowAsync();
             }
 
             return;
@@ -906,7 +906,7 @@ public partial class InstanceSettingsViewModel : ObservableObject
             DefaultButton = ContentDialogButton.Close
         };
 
-        if (await confirm.ShowAsync() != ContentDialogResult.Primary)
+        if (await confirm.SafeShowAsync() != ContentDialogResult.Primary)
             return;
 
         Notes = string.Empty;
@@ -954,7 +954,7 @@ public partial class InstanceSettingsViewModel : ObservableObject
             DefaultButton = ContentDialogButton.Close
         };
 
-        if (await confirm.ShowAsync() != ContentDialogResult.Primary)
+        if (await confirm.SafeShowAsync() != ContentDialogResult.Primary)
             return;
 
         CanDelete = false;
@@ -2603,13 +2603,14 @@ public partial class InstanceSettingsViewModel : ObservableObject
 
     private static void EnqueueUi(DispatcherQueue? dispatcher, Action action)
     {
-        if (dispatcher is null || dispatcher.HasThreadAccess)
+        var dq = dispatcher ?? App.MainWindowInstance?.DispatcherQueue ?? DispatcherQueue.GetForCurrentThread();
+        if (dq is not null && !dq.HasThreadAccess)
         {
-            action();
+            dq.TryEnqueue(() => action());
             return;
         }
 
-        dispatcher.TryEnqueue(() => action());
+        action();
     }
 
     private async Task DetectModUpdatesAsync(ModCatalogService catalog, CancellationToken cancellationToken)
@@ -3244,7 +3245,7 @@ public partial class ResourceItem : ObservableObject
                 CloseButtonText = Loc.Get(LocKeys.Action_Close),
                 XamlRoot = App.MainWindowInstance?.Content?.XamlRoot
             };
-            await dialog.ShowAsync();
+            await dialog.SafeShowAsync();
         }
         catch (Exception ex)
         {

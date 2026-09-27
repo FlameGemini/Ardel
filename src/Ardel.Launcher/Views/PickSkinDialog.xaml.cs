@@ -311,7 +311,7 @@ public sealed partial class PickSkinDialog : UserControl
         };
         content.ValidityChanged += (_, _) => dialog.IsPrimaryButtonEnabled = content.IsValid;
 
-        var result = await dialog.ShowAsync();
+        var result = await dialog.SafeShowAsync();
         if (result != ContentDialogResult.Primary)
             return currentSkinId;
 

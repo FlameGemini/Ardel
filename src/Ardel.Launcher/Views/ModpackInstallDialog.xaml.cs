@@ -94,7 +94,7 @@ public sealed partial class ModpackInstallDialog : UserControl
 
         try
         {
-            var result = await dialog.ShowAsync();
+            var result = await dialog.SafeShowAsync();
             if (result != ContentDialogResult.Primary)
                 return;
 

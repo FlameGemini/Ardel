@@ -263,8 +263,14 @@ public sealed class AccountStore
 
     private void WriteUnlocked(AccountsDocument doc)
     {
+        var dir = Path.GetDirectoryName(_path);
+        if (!string.IsNullOrEmpty(dir))
+            Directory.CreateDirectory(dir);
+
+        var tmp = _path + ".tmp";
         var json = JsonSerializer.Serialize(doc, JsonOptions);
-        File.WriteAllText(_path, json);
+        File.WriteAllText(tmp, json);
+        File.Move(tmp, _path, overwrite: true);
     }
 
     private static AccountsDocument CreateDefault() => new()

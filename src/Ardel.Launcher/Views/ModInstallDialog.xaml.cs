@@ -117,7 +117,7 @@ public sealed partial class ModInstallDialog : UserControl
             dialog.Hide();
         };
 
-        await dialog.ShowAsync();
+        await dialog.SafeShowAsync();
     }
 
     private void DatapackTarget_Checked(object sender, RoutedEventArgs e) =>

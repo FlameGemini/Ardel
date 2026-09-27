@@ -119,8 +119,10 @@ public sealed class InstanceSettingsStore
         var dir = GamePaths.GetVersionInstanceDirectory(versionId, minecraftRoot);
         Directory.CreateDirectory(dir);
         var path = Path.Combine(dir, FileName);
+        var tmp = path + ".tmp";
         var json = JsonSerializer.Serialize(settings, JsonOptions);
-        File.WriteAllText(path, json);
+        File.WriteAllText(tmp, json);
+        File.Move(tmp, path, overwrite: true);
     }
 
     public static string GetPath(string versionId, string? minecraftRoot = null)

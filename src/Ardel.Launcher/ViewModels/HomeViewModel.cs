@@ -1093,7 +1093,7 @@ public partial class HomeViewModel : ObservableObject
             Content = Loc.Get(LocKeys.Account_NeedLogin),
             CloseButtonText = Loc.Get(LocKeys.Action_Close)
         };
-        await dialog.ShowAsync();
+        await dialog.SafeShowAsync();
     }
 
     private void OnVersionsChanged(object? sender, NotifyCollectionChangedEventArgs e)

@@ -182,7 +182,7 @@ public sealed partial class WeatherRegionDialog : UserControl
         content.SelectionChanged += (_, _) =>
             dialog.IsPrimaryButtonEnabled = content.SelectedPlace is not null;
 
-        var result = await dialog.ShowAsync();
+        var result = await dialog.SafeShowAsync();
         return result == ContentDialogResult.Primary ? content.SelectedPlace : null;
     }
 }

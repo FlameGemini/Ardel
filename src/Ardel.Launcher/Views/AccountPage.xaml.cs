@@ -201,7 +201,7 @@ public sealed partial class AccountPage : Page
                 DefaultButton = ContentDialogButton.Close
             };
 
-            if (await confirm.ShowAsync() == ContentDialogResult.Primary)
+            if (await confirm.SafeShowAsync() == ContentDialogResult.Primary)
             {
                 ViewModel.DeleteAccount(target.Id);
                 await ViewModel.RefreshAsync();

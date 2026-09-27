@@ -209,6 +209,6 @@ public partial class InstancesViewModel : ObservableObject
             Content = message,
             CloseButtonText = Loc.Get(LocKeys.Action_Close)
         };
-        await dialog.ShowAsync();
+        await dialog.SafeShowAsync();
     }
 }

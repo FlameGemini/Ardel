@@ -69,18 +69,30 @@ public static partial class JavaLocator
         Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ProgramFiles), "Java"),
         Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ProgramFilesX86), "Java"),
         Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ProgramFiles), "Eclipse Adoptium"),
+        Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ProgramFiles), "Eclipse Foundation"),
         Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ProgramFiles), "AdoptOpenJDK"),
-        // Microsoft OpenJDK lives under Program Files\Microsoft\jdk-* (never scan all of Microsoft/).
         Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ProgramFiles), "Zulu"),
         Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ProgramFiles), "BellSoft"),
         Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ProgramFiles), "Amazon Corretto"),
+        Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ProgramFiles), "Semeru"),
+        Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ProgramFiles), "GraalVM"),
+        Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "Programs", "Java"),
         Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "Programs", "Eclipse Adoptium"),
+        Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "Programs", "Eclipse Foundation"),
+        Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "Programs", "BellSoft"),
+        Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "Programs", "Zulu"),
+        Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "Microsoft", "WinGet", "Packages"),
+        Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "PCL", "java"),
         Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.UserProfile), ".jdks"),
         Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.UserProfile), ".gradle", "jdks"),
+        Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.UserProfile), "scoop", "apps"),
+        Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), ".minecraft", "runtime"),
         Path.Combine(GamePaths.GetLauncherDirectory(), "java"),
-        // Legacy auto-download roots
         Path.Combine(GamePaths.GetLauncherDirectory(), "runtime"),
         Path.Combine(GamePaths.GetMinecraftRoot(), "runtime"),
+        @"C:\Java",
+        @"D:\Java",
+        @"E:\Java",
     ];
 
     /// <summary>
@@ -233,10 +245,10 @@ public static partial class JavaLocator
         using var process = Process.Start(psi)
             ?? throw new InvalidOperationException(Loc.Format(LocKeys.Error_JavaProcessStart, javaExePath));
 
-        // Avoid ReadToEnd + WaitForExit deadlock on full pipes; enforce a hard timeout.
+        // Avoid ReadToEnd + WaitForExit deadlock on full pipes; enforce a 5s timeout.
         var stderrTask = process.StandardError.ReadToEndAsync();
         var stdoutTask = process.StandardOutput.ReadToEndAsync();
-        if (!process.WaitForExit(2500))
+        if (!process.WaitForExit(5000))
         {
             try
             {
@@ -337,15 +349,23 @@ public static partial class JavaLocator
 
     internal static int ParseMajorVersion(string versionOutput)
     {
+        if (string.IsNullOrWhiteSpace(versionOutput))
+            return -1;
+
         // Examples:
         // java version "1.8.0_402"
         // openjdk version "17.0.11"
         // openjdk version "21.0.3" 2024-04-16
+        // openjdk 21.0.2 2024-01-16
+        // java version 1.8.0
         var m = JavaVersionRegex().Match(versionOutput);
+        if (!m.Success)
+            m = FallbackJavaVersionRegex().Match(versionOutput);
+
         if (!m.Success)
             return -1;
 
-        var token = m.Groups[1].Value;
+        var token = m.Groups["v"].Value.Trim('"', '\'', ' ');
         if (token.StartsWith("1.", StringComparison.Ordinal))
         {
             // 1.8.0_xxx → 8
@@ -353,7 +373,7 @@ public static partial class JavaLocator
             return legacy.Length >= 2 && int.TryParse(legacy[1], out var legacyMajor) ? legacyMajor : -1;
         }
 
-        var majorPart = token.Split('.', '-', '+')[0];
+        var majorPart = token.Split('.', '-', '+', '_')[0];
         return int.TryParse(majorPart, out var major) ? major : -1;
     }
 
@@ -398,8 +418,11 @@ public static partial class JavaLocator
         }
     }
 
-    [GeneratedRegex(@"version\s+""(?<v>[^""]+)""", RegexOptions.IgnoreCase | RegexOptions.CultureInvariant)]
+    [GeneratedRegex(@"version\s+[""']?(?<v>[0-9]+(?:\.[0-9_a-zA-Z\-]+)*)[""']?", RegexOptions.IgnoreCase | RegexOptions.CultureInvariant)]
     private static partial Regex JavaVersionRegex();
+
+    [GeneratedRegex(@"(?:openjdk|java|jdk|semeru|graalvm|build)\s+(?:version\s+)?[""']?(?<v>[0-9]+(?:\.[0-9_a-zA-Z\-]+)*)[""']?", RegexOptions.IgnoreCase | RegexOptions.CultureInvariant)]
+    private static partial Regex FallbackJavaVersionRegex();
 
     [GeneratedRegex(@"(\d+\.\d+(?:\.\d+)?)", RegexOptions.CultureInvariant)]
     private static partial Regex McVersionRegex();

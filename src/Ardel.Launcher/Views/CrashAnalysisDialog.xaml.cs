@@ -3,6 +3,7 @@ using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Media;
 using Windows.ApplicationModel.DataTransfer;
+using Ardel.Launcher.Helpers;
 using Ardel.Launcher.Localization;
 using Ardel.Launcher.Services.CrashAnalysis;
 
@@ -36,7 +37,7 @@ public sealed partial class CrashAnalysisDialog : UserControl
 
         ConfigureButtons(dialog, model);
 
-        var result = await dialog.ShowAsync();
+        var result = await dialog.SafeShowAsync();
         if (result == ContentDialogResult.Primary)
             await content.HandlePrimaryAsync(model);
         else if (result == ContentDialogResult.Secondary)

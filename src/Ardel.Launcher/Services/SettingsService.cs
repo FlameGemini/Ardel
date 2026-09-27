@@ -207,9 +207,7 @@ public sealed class SettingsService
                 }
                 NormalizePreferenceDefaults(settings);
 
-                Directory.CreateDirectory(Path.GetDirectoryName(_settingsPath)!);
-                var json = JsonSerializer.Serialize(settings, JsonOptions);
-                File.WriteAllText(_settingsPath, json);
+                WriteFileAtomic(_settingsPath, settings);
                 _cache = Clone(settings);
             }
             catch (Exception ex)
@@ -270,14 +268,24 @@ public sealed class SettingsService
     {
         try
         {
-            Directory.CreateDirectory(Path.GetDirectoryName(_settingsPath)!);
-            var jsonOut = JsonSerializer.Serialize(settings, JsonOptions);
-            File.WriteAllText(_settingsPath, jsonOut);
+            WriteFileAtomic(_settingsPath, settings);
         }
         catch (Exception ex)
         {
             Debug.WriteLine($"[SettingsService] Write failed: {ex}");
         }
+    }
+
+    private static void WriteFileAtomic(string path, LauncherSettings settings)
+    {
+        var dir = Path.GetDirectoryName(path);
+        if (!string.IsNullOrEmpty(dir))
+            Directory.CreateDirectory(dir);
+
+        var tmp = path + ".tmp";
+        var jsonOut = JsonSerializer.Serialize(settings, JsonOptions);
+        File.WriteAllText(tmp, jsonOut);
+        File.Move(tmp, path, overwrite: true);
     }
 
     private static LauncherSettings Clone(LauncherSettings s) => new()

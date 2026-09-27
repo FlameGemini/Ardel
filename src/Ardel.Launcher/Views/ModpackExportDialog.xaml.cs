@@ -1,5 +1,6 @@
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
+using Ardel.Launcher.Helpers;
 using Ardel.Launcher.Localization;
 using Ardel.Launcher.Models;
 
@@ -39,7 +40,7 @@ public sealed partial class ModpackExportDialog : UserControl
             Content = content
         };
 
-        var result = await dialog.ShowAsync();
+        var result = await dialog.SafeShowAsync();
         return result == ContentDialogResult.Primary ? content.BuildOptions() : null;
     }
 }

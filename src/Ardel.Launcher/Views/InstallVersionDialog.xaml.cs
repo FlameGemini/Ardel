@@ -134,7 +134,7 @@ public sealed partial class InstallVersionDialog : UserControl
 
         try
         {
-            var result = await dialog.ShowAsync();
+            var result = await dialog.SafeShowAsync();
             return result == ContentDialogResult.Primary ? content.BuildRequest() : null;
         }
         finally

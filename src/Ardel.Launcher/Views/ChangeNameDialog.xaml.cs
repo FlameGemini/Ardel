@@ -2,6 +2,7 @@ using System.Text.RegularExpressions;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Media;
+using Ardel.Launcher.Helpers;
 using Ardel.Launcher.Localization;
 using Ardel.Launcher.ViewModels;
 
@@ -150,7 +151,7 @@ public sealed partial class ChangeNameDialog : UserControl
             }
         };
 
-        var result = await dialog.ShowAsync();
+        var result = await dialog.SafeShowAsync();
         return result == ContentDialogResult.Primary ? resultName : null;
     }
 }
