@@ -104,9 +104,9 @@
                     Padding="0"
                     MinHeight="128"
                     CornerRadius="10"
-                    Background="{x:Bind ThemeChipBackground, Mode=OneWay}"
-                    BorderBrush="{x:Bind ThemeChipBorderBrush, Mode=OneWay}"
-                    BorderThickness="{x:Bind ThemeChipBorderThickness, Mode=OneWay}"
+                    Background="{x:Bind ThemeChipBackground, Mode=OneTime}"
+                    BorderBrush="{x:Bind ThemeChipBorderBrush, Mode=OneTime}"
+                    BorderThickness="{x:Bind ThemeChipBorderThickness, Mode=OneTime}"
                     Tag="{x:Bind Code}">
                     <Grid>
                         <Grid.RowDefinitions>
@@ -124,14 +124,14 @@
                                     <RowDefinition Height="14" />
                                     <RowDefinition Height="*" />
                                 </Grid.RowDefinitions>
-                                <Border Background="{x:Bind PreviewChromeBrush, Mode=OneWay}" />
+                                <Border Background="{x:Bind PreviewChromeBrush, Mode=OneTime}" />
                                 <Grid Grid.Row="1">
                                     <Grid.ColumnDefinitions>
                                         <ColumnDefinition Width="26" />
                                         <ColumnDefinition Width="*" />
                                     </Grid.ColumnDefinitions>
-                                    <Border Background="{x:Bind PreviewRailBrush, Mode=OneWay}" />
-                                    <Border Grid.Column="1" Background="{x:Bind PreviewCanvasBrush, Mode=OneWay}">
+                                    <Border Background="{x:Bind PreviewRailBrush, Mode=OneTime}" />
+                                    <Border Grid.Column="1" Background="{x:Bind PreviewCanvasBrush, Mode=OneTime}">
                                         <Border
                                             Width="40"
                                             Height="9"
@@ -139,8 +139,8 @@
                                             HorizontalAlignment="Left"
                                             VerticalAlignment="Top"
                                             CornerRadius="4"
-                                            Background="{x:Bind PreviewBrush, Mode=OneWay}"
-                                            Visibility="{x:Bind ColorCircleVisibility, Mode=OneWay}" />
+                                            Background="{x:Bind PreviewBrush, Mode=OneTime}"
+                                            Visibility="{x:Bind ColorCircleVisibility, Mode=OneTime}" />
                                     </Border>
                                 </Grid>
                                 <FontIcon
@@ -150,7 +150,7 @@
                                     HorizontalAlignment="Center"
                                     VerticalAlignment="Center"
                                     Foreground="{ThemeResource TextFillColorSecondaryBrush}"
-                                    Visibility="{x:Bind DefaultIconVisibility, Mode=OneWay}" />
+                                    Visibility="{x:Bind DefaultIconVisibility, Mode=OneTime}" />
                             </Grid>
                         </Border>
                         <Grid Grid.Row="1" Margin="12,10,12,12" ColumnSpacing="8">
@@ -162,7 +162,7 @@
                                 Text="{x:Bind Label}"
                                 FontWeight="SemiBold"
                                 FontSize="14"
-                                Foreground="{x:Bind ThemeLabelBrush, Mode=OneWay}"
+                                Foreground="{x:Bind ThemeLabelBrush, Mode=OneTime}"
                                 VerticalAlignment="Center"
                                 TextTrimming="CharacterEllipsis" />
                             <FontIcon
@@ -171,7 +171,7 @@
                                 FontSize="14"
                                 Foreground="{ThemeResource ArdelAccentBrush}"
                                 VerticalAlignment="Center"
-                                Visibility="{x:Bind SelectedBadgeVisibility, Mode=OneWay}" />
+                                Visibility="{x:Bind SelectedBadgeVisibility, Mode=OneTime}" />
                         </Grid>
                     </Grid>
                 </Button>
@@ -194,7 +194,7 @@
                         </Border>
                         <Border
                             Style="{StaticResource OobeTutorialTimelineConnectorStyle}"
-                            Visibility="{x:Bind ShowConnector, Mode=OneWay, Converter={StaticResource BoolToVisibility}}" />
+                            Visibility="{x:Bind ShowConnector, Mode=OneTime, Converter={StaticResource BoolToVisibility}}" />
                     </StackPanel>
                     <StackPanel Grid.Column="1" Margin="0,6,0,20">
                         <StackPanel Orientation="Horizontal" Spacing="8">
@@ -244,9 +244,9 @@
                 x:Name="SplitPanel"
                 Visibility="{x:Bind ViewModel.IsSplitLayout, Mode=OneWay, Converter={StaticResource BoolToVisibility}}">
                 <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="220" />
                     <ColumnDefinition Width="Auto" />
-                    <ColumnDefinition Width="1.15*" />
+                    <ColumnDefinition Width="*" />
                 </Grid.ColumnDefinitions>
 
                 <Grid
@@ -259,14 +259,14 @@
                     <FontIcon
                         x:Name="AnimGlobe"
                         Glyph="&#xE774;"
-                        FontSize="88"
+                        FontSize="72"
                         Foreground="{ThemeResource ArdelAccentBrush}"
                         Opacity="0.92"
                         Visibility="{x:Bind ViewModel.CurrentStep, Mode=OneWay, Converter={StaticResource EqualValueToVisibility}, ConverterParameter=0}" />
                     <Image
                         x:Name="AnimLangLogo"
-                        Width="96"
-                        Height="96"
+                        Width="88"
+                        Height="88"
                         Source="ms-appx:///Assets/ardel-logo.png"
                         Opacity="0"
                         Visibility="{x:Bind ViewModel.ShowLanguageLogoArt, Mode=OneWay, Converter={StaticResource BoolToVisibility}}" />
@@ -274,7 +274,7 @@
                     <FontIcon
                         x:Name="AnimPen"
                         Glyph="&#xE70F;"
-                        FontSize="68"
+                        FontSize="56"
                         Foreground="{ThemeResource ArdelAccentBrush}"
                         Visibility="{x:Bind ViewModel.CurrentStep, Mode=OneWay, Converter={StaticResource EqualValueToVisibility}, ConverterParameter=2}" />
 
@@ -365,17 +365,16 @@
                             Visibility="{x:Bind ViewModel.CurrentStep, Mode=OneWay, Converter={StaticResource EqualValueToVisibility}, ConverterParameter=2}">
                             <TextBlock Text="{x:Bind ViewModel.StepLicenseTitle, Mode=OneWay}" Style="{StaticResource OobeStepTitleStyle}" />
                             <Border
-                                Padding="14"
+                                Padding="16,14"
                                 CornerRadius="10"
-                                MaxHeight="280"
+                                Height="240"
                                 Background="{ThemeResource CardBackgroundFillColorDefaultBrush}"
                                 BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}"
                                 BorderThickness="1">
-                                <ScrollViewer VerticalScrollBarVisibility="Auto">
+                                <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">
                                     <TextBlock
                                         Text="{x:Bind ViewModel.LegalNoticeText, Mode=OneWay}"
                                         FontSize="13"
-                                        LineHeight="22"
                                         TextWrapping="Wrap"
                                         Foreground="{ThemeResource ArdelInkBrush}" />
                                 </ScrollViewer>

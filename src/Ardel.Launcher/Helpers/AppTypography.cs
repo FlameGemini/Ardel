@@ -20,16 +20,8 @@ internal static class AppTypography
 
     public static void Apply(string languageTag)
     {
-        if (IsEnglish(languageTag))
-            return;
-
-        if (App.MainWindowInstance is not MainWindow window)
-            return;
-
-        // Construct only when needed (never as a static field / resource write).
-        var body = new FontFamily(
-            "Segoe UI Variable, Microsoft YaHei UI, Yu Gothic UI, Meiryo UI, Malgun Gothic, Segoe UI");
-        window.ApplyShellFont(body);
+        // DirectWrite and App.xaml modern font stacks provide seamless typography across all languages.
+        // We do not overwrite NavView.FontFamily or ContentFrame.FontFamily, as doing so breaks FontIcon symbol glyph inheritance.
     }
 
     /// <summary>

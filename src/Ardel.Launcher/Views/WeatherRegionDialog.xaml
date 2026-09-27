@@ -16,7 +16,7 @@
             <StackPanel Orientation="Horizontal" Spacing="10">
                 <FontIcon
                     Glyph="&#xE946;"
-                    FontFamily="Segoe Fluent Icons"
+                    FontFamily="Segoe Fluent Icons, Segoe MDL2 Assets"
                     FontSize="16"
                     VerticalAlignment="Top"
                     Margin="0,2,0,0"
@@ -24,7 +24,6 @@
                 <TextBlock
                     Text="{loc:String Key=Settings_HomeWidgetsRegionEnglishTip}"
                     TextWrapping="Wrap"
-                    LineHeight="20"
                     FontWeight="SemiBold" />
             </StackPanel>
         </Border>
@@ -34,7 +33,7 @@
             HorizontalAlignment="Stretch"
             Click="CurrentLocationButton_Click">
             <StackPanel Orientation="Horizontal" Spacing="8">
-                <FontIcon Glyph="&#xE1C4;" FontFamily="Segoe Fluent Icons" FontSize="14" />
+                <FontIcon Glyph="&#xE1C4;" FontFamily="Segoe Fluent Icons, Segoe MDL2 Assets" FontSize="14" />
                 <TextBlock Text="{loc:String Key=Settings_HomeWidgetsUseCurrentLocation}" VerticalAlignment="Center" />
             </StackPanel>
         </Button>

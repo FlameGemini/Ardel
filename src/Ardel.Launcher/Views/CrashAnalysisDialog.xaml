@@ -27,7 +27,7 @@
                     <FontIcon
                         x:Name="BadgeIcon"
                         Glyph="&#xE946;"
-                        FontFamily="Segoe Fluent Icons"
+                        FontFamily="Segoe Fluent Icons, Segoe MDL2 Assets"
                         FontSize="16"
                         VerticalAlignment="Center"
                         Foreground="{ThemeResource ArdelAccentBrush}" />
@@ -71,7 +71,6 @@
                     TextWrapping="Wrap"
                     FontFamily="Consolas"
                     FontSize="12"
-                    LineHeight="18"
                     Opacity="0.9" />
             </Border>
 
@@ -84,8 +83,7 @@
                     FontWeight="SemiBold" />
                 <TextBlock
                     x:Name="ExplainText"
-                    TextWrapping="Wrap"
-                    LineHeight="22" />
+                    TextWrapping="Wrap" />
             </StackPanel>
 
             <!-- Solution -->
@@ -101,8 +99,7 @@
                     Padding="12,10">
                     <TextBlock
                         x:Name="SolutionText"
-                        TextWrapping="Wrap"
-                        LineHeight="22" />
+                        TextWrapping="Wrap" />
                 </Border>
             </StackPanel>
 

@@ -40,18 +40,41 @@ public static class AppThemeController
         {
             window.BackgroundImage.Source = null;
             window.BackgroundImage.Opacity = 0;
-            window.RootGrid.Background = null;
             window.AppTitleBar.Background = null;
-        }
 
-        // Keep a single Mica backdrop; themed fills paint over it where needed.
-        try
-        {
-            window.SystemBackdrop ??= new MicaBackdrop();
-        }
-        catch
-        {
-            // Backdrop unsupported on some hosts — ignore.
+            if (Microsoft.UI.Composition.SystemBackdrops.MicaController.IsSupported())
+            {
+                try
+                {
+                    if (window.SystemBackdrop is not MicaBackdrop)
+                        window.SystemBackdrop = new MicaBackdrop();
+                    window.RootGrid.Background = null;
+                }
+                catch
+                {
+                    window.SystemBackdrop = null;
+                    window.RootGrid.Background = Application.Current.Resources.TryGetValue("ArdelCanvasBrush", out var b) && b is Brush brush ? brush : null;
+                }
+            }
+            else if (Microsoft.UI.Composition.SystemBackdrops.DesktopAcrylicController.IsSupported())
+            {
+                try
+                {
+                    if (window.SystemBackdrop is not DesktopAcrylicBackdrop)
+                        window.SystemBackdrop = new DesktopAcrylicBackdrop();
+                    window.RootGrid.Background = null;
+                }
+                catch
+                {
+                    window.SystemBackdrop = null;
+                    window.RootGrid.Background = Application.Current.Resources.TryGetValue("ArdelCanvasBrush", out var b) && b is Brush brush ? brush : null;
+                }
+            }
+            else
+            {
+                window.SystemBackdrop = null;
+                window.RootGrid.Background = Application.Current.Resources.TryGetValue("ArdelCanvasBrush", out var b) && b is Brush brush ? brush : null;
+            }
         }
 
         void UpdateBrush(string key, Windows.UI.Color color)

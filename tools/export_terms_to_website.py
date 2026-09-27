@@ -184,8 +184,13 @@ def main() -> None:
         raise SystemExit("EN still has crash model-training section")
 
     out = WEB / "assets" / "terms-content.json"
-    out.write_text(json.dumps(payload, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
+    json_str = json.dumps(payload, ensure_ascii=False, indent=2)
+    out.write_text(json_str + "\n", encoding="utf-8")
     log(f"Wrote {out} version={version} date={effective} size={out.stat().st_size}")
+
+    out_js = WEB / "assets" / "terms-content.js"
+    out_js.write_text(f"window.__TERMS_DATA__ = {json_str};\n", encoding="utf-8")
+    log(f"Wrote {out_js} size={out_js.stat().st_size}")
 
 
 if __name__ == "__main__":

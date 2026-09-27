@@ -14,6 +14,7 @@ project.fragment.lock.json
 artifacts/
 
 ## Publish / MSIX
+publish/
 AppPackages/
 BundleArtifacts/
 Package.StoreAssociation.xml
@@ -35,10 +36,11 @@ Desktop.ini
 .codegraph/
 AI_RULES.md
 design.md
+TODO.md
 
 ## Logs & local settings
 *.log
-src/Ardel.Launcher/Assets/*.ico
+!src/Ardel.Launcher/Assets/app.ico
 cache/
 config/launcher_config.json
 config/crash-reports/

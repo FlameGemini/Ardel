@@ -27,6 +27,10 @@ public static class GamePaths
     /// </summary>
     public static string GetLauncherDirectory()
     {
+        var envRoot = Environment.GetEnvironmentVariable("ARDEL_PORTABLE_ROOT");
+        if (!string.IsNullOrWhiteSpace(envRoot) && Directory.Exists(envRoot))
+            return Path.GetFullPath(envRoot);
+
         var baseDir = AppContext.BaseDirectory;
         if (string.IsNullOrWhiteSpace(baseDir))
             baseDir = AppDomain.CurrentDomain.BaseDirectory;

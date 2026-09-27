@@ -46,10 +46,9 @@
             <CornerRadius x:Key="ArdelIconCornerRadius">8</CornerRadius>
             <CornerRadius x:Key="ArdelBtnCornerRadius">6</CornerRadius>
 
-            <!-- English UI default: Consolas. Non-English shell swapped by AppTypography.
-                 Home greeting uses AppTypography.CreateGreetingFont on the control. -->
-            <FontFamily x:Key="ArdelDisplayFont">Consolas</FontFamily>
-            <FontFamily x:Key="ArdelBodyFont">Consolas</FontFamily>
+            <FontFamily x:Key="ArdelDisplayFont">Segoe UI Variable Display, Segoe UI, Microsoft YaHei UI</FontFamily>
+            <FontFamily x:Key="ArdelBodyFont">Segoe UI Variable Text, Segoe UI, Microsoft YaHei UI</FontFamily>
+            <FontFamily x:Key="ArdelMonoFont">Cascadia Code, Consolas</FontFamily>
 
             <converters:BoolToVisibilityConverter x:Key="BoolToVisibility" />
             <converters:BoolToVisibilityConverter x:Key="InverseBoolToVisibility" Invert="True" />

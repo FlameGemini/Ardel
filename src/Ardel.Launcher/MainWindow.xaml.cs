@@ -53,10 +53,6 @@ public sealed partial class MainWindow : Window
     {
         if (AppTitleTextBlock is not null)
             AppTitleTextBlock.FontFamily = font;
-        if (NavView is not null)
-            NavView.FontFamily = font;
-        if (ContentFrame is not null)
-            ContentFrame.FontFamily = font;
     }
 
     private bool _downloadFlyoutBound;
@@ -166,7 +162,6 @@ public sealed partial class MainWindow : Window
         var newFrame = new Frame { CacheSize = 8 };
         if (oldFrame is not null)
         {
-            newFrame.FontFamily = oldFrame.FontFamily;
             oldFrame.Content = null;
             oldFrame.BackStack.Clear();
             oldFrame.ForwardStack.Clear();

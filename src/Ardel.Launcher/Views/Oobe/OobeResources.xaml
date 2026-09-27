@@ -8,7 +8,6 @@
         <Setter Property="FontWeight" Value="SemiBold" />
         <Setter Property="Foreground" Value="{ThemeResource TextFillColorPrimaryBrush}" />
         <Setter Property="TextWrapping" Value="Wrap" />
-        <Setter Property="LineHeight" Value="40" />
     </Style>
 
     <Style x:Key="OobeStepSubtitleStyle" TargetType="TextBlock">
@@ -23,14 +22,12 @@
         <Setter Property="FontWeight" Value="SemiBold" />
         <Setter Property="Foreground" Value="{ThemeResource TextFillColorPrimaryBrush}" />
         <Setter Property="TextWrapping" Value="Wrap" />
-        <Setter Property="LineHeight" Value="22" />
     </Style>
 
     <Style x:Key="OobeTutorialStepDetailStyle" TargetType="TextBlock">
         <Setter Property="FontSize" Value="13" />
         <Setter Property="Foreground" Value="{ThemeResource TextFillColorSecondaryBrush}" />
         <Setter Property="TextWrapping" Value="Wrap" />
-        <Setter Property="LineHeight" Value="20" />
         <Setter Property="Margin" Value="0,4,0,0" />
     </Style>
 
@@ -57,7 +54,6 @@
         <Setter Property="FontSize" Value="15" />
         <Setter Property="Foreground" Value="{ThemeResource TextFillColorPrimaryBrush}" />
         <Setter Property="TextWrapping" Value="Wrap" />
-        <Setter Property="LineHeight" Value="22" />
     </Style>
 
     <Style x:Key="OobeTutorialStepCardStyle" TargetType="Border">
@@ -104,7 +100,6 @@
         <Setter Property="FontSize" Value="13" />
         <Setter Property="Foreground" Value="{ThemeResource TextFillColorSecondaryBrush}" />
         <Setter Property="TextWrapping" Value="Wrap" />
-        <Setter Property="LineHeight" Value="20" />
         <Setter Property="MinHeight" Value="40" />
         <Setter Property="Opacity" Value="0.9" />
     </Style>

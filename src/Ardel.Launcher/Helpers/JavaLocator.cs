@@ -264,10 +264,18 @@ public static partial class JavaLocator
     }
 
     /// <summary>
-    /// Upper bound for Minecraft mod loaders. JDK 22+ breaks Sponge Mixin (LaunchClassLoader probe).
+    /// Upper bound for Minecraft mod loaders.
+    /// Java 8 for <= 1.16.5; Java 17 for 1.17 - 1.20.4; Java 21 for 1.20.5+.
+    /// Higher versions break Forge FML, ASM, and Mixin.
     /// </summary>
     public static int GetMaxJavaMajor(int requiredMajor) =>
-        Math.Max(requiredMajor, 21);
+        requiredMajor switch
+        {
+            <= 8 => 8,
+            <= 16 => 17,
+            <= 17 => 17,
+            _ => Math.Max(requiredMajor, 21)
+        };
 
     public static bool IsCompatible(int actualMajor, int requiredMajor) =>
         actualMajor >= requiredMajor && actualMajor <= GetMaxJavaMajor(requiredMajor);

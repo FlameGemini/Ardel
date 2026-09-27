@@ -111,8 +111,7 @@
                         Text="{loc:String Key=Account_OfflineLockedDetail}"
                         FontSize="12"
                         Opacity="0.75"
-                        TextWrapping="Wrap"
-                        LineHeight="18" />
+                        TextWrapping="Wrap" />
                     <StackPanel Orientation="Horizontal" Spacing="8" Margin="0,4,0,0">
                         <Button
                             Click="GoToMicrosoft_Click"

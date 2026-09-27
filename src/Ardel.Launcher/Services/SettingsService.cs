@@ -24,9 +24,20 @@ public sealed class SettingsService
 
     public SettingsService()
     {
-        var dir = Path.Combine(GamePaths.GetLauncherDirectory(), "config");
-        Directory.CreateDirectory(dir);
-        _settingsPath = Path.Combine(dir, "launcher_config.json");
+        try
+        {
+            var dir = Path.Combine(GamePaths.GetLauncherDirectory(), "config");
+            Directory.CreateDirectory(dir);
+            _settingsPath = Path.Combine(dir, "launcher_config.json");
+        }
+        catch
+        {
+            var fallbackDir = Path.Combine(
+                Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData),
+                "Ardel", "config");
+            try { Directory.CreateDirectory(fallbackDir); } catch { /* ignore */ }
+            _settingsPath = Path.Combine(fallbackDir, "launcher_config.json");
+        }
     }
 
     public string SettingsPath => _settingsPath;

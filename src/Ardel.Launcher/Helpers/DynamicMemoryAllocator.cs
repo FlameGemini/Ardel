@@ -87,11 +87,12 @@ internal static class DynamicMemoryAllocator
 
         foreach (var (delta, ratio) in stages)
         {
-            if (delta <= 0 || remaining < 0.1)
+            if (delta <= 0 || remaining < 0.1 || ratio <= 0)
                 break;
 
-            give += Math.Min(remaining * ratio, delta);
-            remaining -= delta / ratio;
+            var claimed = Math.Min(remaining * ratio, delta);
+            give += claimed;
+            remaining -= claimed / ratio;
             if (remaining < 0.1)
                 break;
         }
