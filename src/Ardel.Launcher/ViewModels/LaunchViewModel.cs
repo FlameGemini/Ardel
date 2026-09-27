@@ -701,12 +701,16 @@ public partial class LaunchViewModel : ObservableObject
         {
             TryKillProcessSafe(thisProcess);
             RefreshGameRunningState();
+            IsIndeterminate = false;
+            ProgressValue = 0;
             StatusText = IsGameRunning
                 ? FormatRunningGamesStatus()
                 : Loc.Get(LocKeys.Home_Cancelled);
         }
         catch (Exception ex)
         {
+            IsIndeterminate = false;
+            ProgressValue = 0;
             StatusText = Loc.Format(LocKeys.Home_LaunchFailed, ex.Message);
             Debug.WriteLine($"[LaunchViewModel] {ex}");
         }
@@ -721,6 +725,7 @@ public partial class LaunchViewModel : ObservableObject
                 _launchingCount = 0;
                 IsLaunching = false;
                 IsIndeterminate = false;
+                ProgressValue = 0;
             }
 
             LaunchGameCommand.NotifyCanExecuteChanged();
@@ -740,8 +745,12 @@ public partial class LaunchViewModel : ObservableObject
             catch { /* ignore */ }
         }
 
+        if (_gameProcess is { HasExited: false } proc)
+        {
+            TryKillProcessSafe(proc);
+        }
+
         StatusText = Loc.Get(LocKeys.Home_Cancelling);
-        // Do not KillAll 鈥?each in-flight launch kills only its own process on cancel.
     }
 
     [RelayCommand(CanExecute = nameof(CanStopAllGames))]

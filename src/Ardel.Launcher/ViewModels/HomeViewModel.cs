@@ -208,9 +208,6 @@ public partial class HomeViewModel : ObservableObject
         HasInstance = value is not null;
         if (value is not null)
         {
-            _quickLaunchVersionId = value.Id;
-            QuickLaunchInstanceLabel = value.Id;
-            HasQuickLaunch = true;
             if (_launch.SelectedVersion != value)
                 _launch.SelectedVersion = value;
             RefreshInstanceStats(value.Id);
@@ -219,8 +216,6 @@ public partial class HomeViewModel : ObservableObject
         }
         else
         {
-            HasQuickLaunch = false;
-            QuickLaunchInstanceLabel = string.Empty;
             InstanceTotalPlayTime = "--";
             InstanceLaunchCount = "0";
             InstanceLastPlayed = "--";
@@ -843,25 +838,8 @@ public partial class HomeViewModel : ObservableObject
                 string.Equals(v.Id, id, StringComparison.OrdinalIgnoreCase));
         }
 
-        // If no pinned instance or not found, fall back to SelectedVersion or first version
-        if (item is null && _launch.Versions.Count > 0)
-        {
-            item = _launch.SelectedVersion ?? _launch.Versions[0];
-        }
-
         if (item is null)
         {
-            if (!_launch.IsLocalReady && !string.IsNullOrEmpty(id))
-            {
-                HasQuickLaunch = false;
-                QuickLaunchInstanceLabel = id;
-                QuickLaunchHint = string.Empty;
-                SelectedInstance = null;
-                HasInstance = false;
-                OnPropertyChanged(nameof(LaunchButtonSubtitle));
-                return;
-            }
-
             HasQuickLaunch = false;
             QuickLaunchInstanceLabel = string.Empty;
             QuickLaunchHint = Loc.Get(LocKeys.Home_QuickLaunchNone);
@@ -1064,7 +1042,7 @@ public partial class HomeViewModel : ObservableObject
     }
 
     private bool CanLaunchQuick() =>
-        (HasInstance || HasQuickLaunch) && !_launch.IsLaunching && _launch.IsLocalReady;
+        !_launch.IsLaunching && _launch.IsLocalReady;
 
     [RelayCommand(CanExecute = nameof(CanLaunchQuick))]
     private async Task LaunchQuickAsync()
@@ -1072,8 +1050,15 @@ public partial class HomeViewModel : ObservableObject
         if (!_homePrefsWarm)
             SyncHomePreferenceCache();
 
-        var id = SelectedInstance?.Id ?? _quickLaunchVersionId;
-        if (string.IsNullOrEmpty(id) || _launch.IsLaunching)
+        var id = _quickLaunchVersionId;
+        if (string.IsNullOrEmpty(id) || SelectedInstance is null)
+        {
+            // If no quick launch instance is pinned, navigate to instances page so the user can choose
+            (App.MainWindowInstance as MainWindow)?.SelectNavTag("instances");
+            return;
+        }
+
+        if (_launch.IsLaunching)
             return;
 
         if (!_launch.HasSignedInAccount)
@@ -1087,6 +1072,7 @@ public partial class HomeViewModel : ObservableObject
         {
             RefreshQuickLaunch();
             LaunchQuickCommand.NotifyCanExecuteChanged();
+            (App.MainWindowInstance as MainWindow)?.SelectNavTag("instances");
             return;
         }
 

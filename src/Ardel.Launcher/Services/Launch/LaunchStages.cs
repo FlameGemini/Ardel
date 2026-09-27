@@ -132,7 +132,8 @@ internal sealed class AcquireGameFilesStage(GameLaunchHost host) : IGameLaunchSt
             session.ReportStatus(Loc.Format(LocKeys.Home_Starting, versionId));
             session.Timings.Tick("EnsureInstalledForLaunchAsync");
         }
-        catch (Exception ex) when (!settings.ResourceRepairBlockLaunchOnFailure &&
+        catch (Exception ex) when (ex is not OperationCanceledException &&
+                                   !settings.ResourceRepairBlockLaunchOnFailure &&
                                    GamePaths.IsVersionFullyInstalled(versionId, gameDir))
         {
             Debug.WriteLine($"[GameLaunchPipeline] Repair failed, continuing: {ex.Message}");
