@@ -5,8 +5,18 @@
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
     <UseWindowsForms>true</UseWindowsForms>
-    <ApplicationIcon />
+    <ApplicationIcon>..\Ardel.Launcher\Assets\app.ico</ApplicationIcon>
     <RootNamespace>Ardel.LogViewer</RootNamespace>
     <AssemblyName>Ardel.LogViewer</AssemblyName>
+    <Product>Ardel Log Viewer</Product>
+    <Title>Ardel Log Viewer</Title>
+    <AssemblyTitle>Ardel Standalone Diagnostic Log Viewer</AssemblyTitle>
+    <Description>Ardel Standalone Diagnostic Log Viewer</Description>
+    <Company>Ice Tea Studio</Company>
+    <Authors>Ice Tea Studio</Authors>
+    <Copyright>Copyright (c) 2026 Ice Tea Studio. All rights reserved.</Copyright>
+    <Version>1.5.2</Version>
+    <AssemblyVersion>1.5.2.0</AssemblyVersion>
+    <FileVersion>1.5.2.0</FileVersion>
   </PropertyGroup>
 </Project>

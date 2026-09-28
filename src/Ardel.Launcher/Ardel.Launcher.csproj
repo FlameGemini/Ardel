@@ -23,8 +23,18 @@
     <!-- R2R speeds cold start for both Debug and Release builds when publishing -->
     <PublishReadyToRun>true</PublishReadyToRun>
     <PackageLicenseExpression>OSL-3.0</PackageLicenseExpression>
-    <Authors>FlameGemini</Authors>
-    <Copyright>Copyright (c) 2026 FlameGemini</Copyright>
+    <Product>Ardel</Product>
+    <Title>Ardel</Title>
+    <AssemblyTitle>Ardel Desktop Client</AssemblyTitle>
+    <Description>Ardel Desktop Client</Description>
+    <Company>Ice Tea Studio</Company>
+    <Authors>Ice Tea Studio</Authors>
+    <Copyright>Copyright (c) 2026 Ice Tea Studio. All rights reserved.</Copyright>
+    <Version>1.5.2</Version>
+    <AssemblyVersion>1.5.2.0</AssemblyVersion>
+    <FileVersion>1.5.2.0</FileVersion>
+    <RepositoryUrl>https://github.com/FlameGemini/Ardel</RepositoryUrl>
+    <ApplicationIcon>Assets\app.ico</ApplicationIcon>
   </PropertyGroup>
 
   <!-- Debug: keep symbols, but still optimize IL for snappier F5 -->
