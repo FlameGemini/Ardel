@@ -14,11 +14,11 @@ $exe = if ($Configuration -eq 'Release') {
     Join-Path $PSScriptRoot 'src\Ardel.Launcher\bin\x64\Debug\net8.0-windows10.0.19041.0\Ardel.Launcher.exe'
 }
 
-Get-Process -Name 'Ardel.Launcher', 'XamlCompiler', 'VBCSCompiler', 'MSBuild' -ErrorAction SilentlyContinue | Stop-Process -Force
-Start-Sleep -Milliseconds 400
+Get-Process -Name 'Ardel.Launcher' -ErrorAction SilentlyContinue | Stop-Process -Force
+Start-Sleep -Milliseconds 150
 
 Write-Host "Building $Configuration|x64..."
-dotnet build $proj -c $Configuration -p:Platform=x64 -nr:false -p:UseSharedCompilation=false
+dotnet build $proj -c $Configuration -p:Platform=x64
 if ($LASTEXITCODE -ne 0) {
     throw "Build failed (exit $LASTEXITCODE). Close anything locking the output and retry."
 }

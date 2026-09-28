@@ -81,8 +81,10 @@
     <ProjectReference Include="..\Ardel.LogViewer\Ardel.LogViewer.csproj" ReferenceOutputAssembly="false" Private="false" SetTargetFramework="TargetFramework=net8.0-windows" />
   </ItemGroup>
 
-  <!-- Compile voice TypeScript → app.js / field.js before content copy -->
-  <Target Name="BuildVoiceTypeScript" BeforeTargets="BeforeBuild">
+  <!-- Compile voice TypeScript → app.js / field.js before content copy (incremental) -->
+  <Target Name="BuildVoiceTypeScript" BeforeTargets="BeforeBuild"
+          Inputs="$(MSBuildThisFileDirectory)Assets\voice\src\**\*.ts"
+          Outputs="$(MSBuildThisFileDirectory)Assets\voice\field.js;$(MSBuildThisFileDirectory)Assets\voice\app.js">
     <PropertyGroup>
       <_VoiceDir>$(MSBuildThisFileDirectory)Assets\voice</_VoiceDir>
     </PropertyGroup>
