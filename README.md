@@ -12,7 +12,7 @@
 
 <p align="center">
   <a href="https://github.com/FlameGemini/Ardel/releases/latest">
-    <img src="https://img.shields.io/badge/Release-v1.5.2-007ACC?style=for-the-badge&logo=github&logoColor=white" alt="Latest Release" />
+    <img src="https://img.shields.io/github/v/release/FlameGemini/Ardel?style=for-the-badge&logo=github&logoColor=white&color=007ACC&label=Release" alt="Latest Release" />
   </a>
   <a href="https://dotnet.microsoft.com/download/dotnet/8.0">
     <img src="https://img.shields.io/badge/.NET-8.0-512BD4?style=for-the-badge&logo=dotnet&logoColor=white" alt=".NET 8" />
