@@ -78,7 +78,7 @@ public static class ArdelLogoRenderer
             new SKSamplingOptions(SKCubicResampler.Mitchell));
         using var image = SKImage.FromBitmap(loBmp ?? hiBmp);
         using var encoded = image.Encode(SKEncodedImageFormat.Png, 100);
-        return encoded.ToArray();
+        return encoded?.ToArray() ?? Array.Empty<byte>();
     }
 
     private static SKPath BuildHexPath(float cx, float cy, float r)

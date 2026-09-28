@@ -86,7 +86,7 @@ public static class Skin3DHeadHelper
                     var bmp = await CreateBitmapImageInternalAsync(pngBytes, cancellationToken).ConfigureAwait(true);
                     tcs.TrySetResult(bmp);
                 }
-                catch (Exception ex)
+                catch (Exception)
                 {
                     tcs.TrySetResult(null);
                 }
