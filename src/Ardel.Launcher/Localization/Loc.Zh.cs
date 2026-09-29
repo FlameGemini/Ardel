@@ -852,6 +852,14 @@ public static partial class Loc
         [LocKeys.Settings_SectionAbout] = "关于",
         [LocKeys.Settings_SectionAboutDesc] =
             "版本、许可证、开源致谢与服务条款。",
+        [LocKeys.Settings_CheckUpdate] = "检查更新",
+        [LocKeys.Settings_UpdateChecking] = "正在检查更新...",
+        [LocKeys.Settings_UpdateUpToDate] = "当前已是最新版本。",
+        [LocKeys.Settings_UpdateAvailable] = "发现新版本 {0}。",
+        [LocKeys.Settings_UpdateDownloading] = "正在下载更新... {0:0}%",
+        [LocKeys.Settings_UpdateRestart] = "重启并应用更新",
+        [LocKeys.Settings_UpdateFailed] = "检查更新失败: {0}",
+        [LocKeys.Settings_UpdateReleaseNotes] = "更新日志",
         [LocKeys.Skin_NameSteve] = "Steve",
         [LocKeys.Skin_NameAlex] = "Alex",
 
@@ -865,7 +873,7 @@ public static partial class Loc
         [LocKeys.About_License] =
             "Ardel 以 OSL-3.0 分发。你可以在该许可证条款下使用、修改与再分发本软件。",
         [LocKeys.About_LegalHeading] = "服务条款",
-        [LocKeys.About_LegalUpdated] = "版本 {0} · 生效日期：{1}",
+        [LocKeys.About_LegalUpdated] = "版本 {0} - 生效日期：{1}",
         [LocKeys.About_LegalIntro] =
             "以下条款适用于所有 Ardel 用户。请仔细阅读各节内容；界面显示语言不会改变您的法律义务。",
         [LocKeys.About_LegalFeedback] = "反馈法律或合规问题",

@@ -883,6 +883,14 @@ public static partial class Loc
         [LocKeys.Settings_SectionAbout] = "About",
         [LocKeys.Settings_SectionAboutDesc] =
             "Version, license, open-source credits, and terms of service.",
+        [LocKeys.Settings_CheckUpdate] = "Check for updates",
+        [LocKeys.Settings_UpdateChecking] = "Checking for updates...",
+        [LocKeys.Settings_UpdateUpToDate] = "Ardel is up to date.",
+        [LocKeys.Settings_UpdateAvailable] = "Version {0} is available.",
+        [LocKeys.Settings_UpdateDownloading] = "Downloading update... {0:0}%",
+        [LocKeys.Settings_UpdateRestart] = "Restart to update",
+        [LocKeys.Settings_UpdateFailed] = "Update check failed: {0}",
+        [LocKeys.Settings_UpdateReleaseNotes] = "Release notes",
         [LocKeys.Skin_NameSteve] = "Steve",
         [LocKeys.Skin_NameAlex] = "Alex",
 
@@ -896,7 +904,7 @@ public static partial class Loc
         [LocKeys.About_License] =
             "Ardel is distributed under OSL-3.0. You may use, modify, and redistribute it under the terms of that license.",
         [LocKeys.About_LegalHeading] = "Terms of Service",
-        [LocKeys.About_LegalUpdated] = "Version {0} · Effective date: {1}",
+        [LocKeys.About_LegalUpdated] = "Version {0} - Effective date: {1}",
         [LocKeys.About_LegalIntro] =
             "The following terms apply to all users of Ardel. Read each section carefully; choosing a display language does not change your legal obligations.",
         [LocKeys.About_LegalFeedback] = "Report a legal or compliance issue",

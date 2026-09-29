@@ -125,6 +125,11 @@ internal static class Program
         };
 
         psi.EnvironmentVariables["ARDEL_PORTABLE_ROOT"] = workingDir;
+        string? bootstrapperExe = Environment.ProcessPath;
+        if (string.IsNullOrEmpty(bootstrapperExe))
+            bootstrapperExe = Path.Combine(workingDir, "Ardel.exe");
+        psi.EnvironmentVariables["ARDEL_BOOTSTRAPPER_EXE"] = bootstrapperExe;
+        psi.EnvironmentVariables["ARDEL_BOOTSTRAPPER_PID"] = Environment.ProcessId.ToString();
 
         foreach (var arg in args)
         {

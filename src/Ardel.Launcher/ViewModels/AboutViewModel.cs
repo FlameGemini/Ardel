@@ -8,6 +8,7 @@ using Windows.ApplicationModel.DataTransfer;
 using Ardel.Launcher.Helpers;
 using Ardel.Launcher.Localization;
 using Ardel.Launcher.Models;
+using Ardel.Launcher.Services.Update;
 
 namespace Ardel.Launcher.ViewModels;
 
@@ -17,10 +18,14 @@ public partial class AboutViewModel : ObservableObject
     private static string? _cachedLegalText;
     private static string? _cachedLegalHeading;
 
+    private readonly UpdateService _updateService;
+    private UpdateInfo? _currentUpdateInfo;
+    private string? _downloadedUpdatePath;
     private bool _initialized;
 
-    public AboutViewModel()
+    public AboutViewModel(UpdateService? updateService = null)
     {
+        _updateService = updateService ?? new UpdateService();
         VersionNumber = AboutMetadata.ResolveVersionNumber();
         App.ThemeChanged += OnAppThemeChanged;
     }
@@ -35,6 +40,7 @@ public partial class AboutViewModel : ObservableObject
         RefreshLocalized();
         RebuildCredits();
         _ = SyncBrandLogoAsync();
+        _ = CheckUpdateAsync(silent: true);
     }
 
     public string VersionNumber { get; }
@@ -47,6 +53,51 @@ public partial class AboutViewModel : ObservableObject
     [ObservableProperty] private IReadOnlyList<AboutLegalSection> _legalSections = Array.Empty<AboutLegalSection>();
     [ObservableProperty] private string _legalUpdatedLabel = string.Empty;
 
+    [ObservableProperty]
+    [NotifyPropertyChangedFor(nameof(CanCheckUpdate))]
+    [NotifyPropertyChangedFor(nameof(ShowCheckUpdateButton))]
+    private bool _isCheckingUpdate;
+
+    [ObservableProperty]
+    [NotifyPropertyChangedFor(nameof(CanCheckUpdate))]
+    [NotifyPropertyChangedFor(nameof(CanApplyUpdate))]
+    private bool _isDownloadingUpdate;
+
+    [ObservableProperty]
+    [NotifyPropertyChangedFor(nameof(ShowCheckUpdateButton))]
+    [NotifyPropertyChangedFor(nameof(ShowApplyUpdateButton))]
+    [NotifyPropertyChangedFor(nameof(HasReleaseNotes))]
+    private bool _hasUpdate;
+
+    [ObservableProperty]
+    [NotifyPropertyChangedFor(nameof(ShowCheckUpdateButton))]
+    [NotifyPropertyChangedFor(nameof(ShowApplyUpdateButton))]
+    [NotifyPropertyChangedFor(nameof(UpdateActionLabel))]
+    private bool _isUpdateReadyToRestart;
+
+    [ObservableProperty]
+    [NotifyPropertyChangedFor(nameof(HasUpdateStatusText))]
+    private string _updateStatusText = string.Empty;
+
+    [ObservableProperty] private double _updateProgress;
+    [ObservableProperty] private string _latestVersion = string.Empty;
+
+    [ObservableProperty]
+    [NotifyPropertyChangedFor(nameof(HasReleaseNotes))]
+    private string _releaseNotesUrl = string.Empty;
+
+    [ObservableProperty] private string _releaseNotes = string.Empty;
+
+    public bool CanCheckUpdate => !IsCheckingUpdate && !IsDownloadingUpdate;
+    public bool CanApplyUpdate => !IsDownloadingUpdate;
+    public bool ShowCheckUpdateButton => !HasUpdate && !IsUpdateReadyToRestart;
+    public bool ShowApplyUpdateButton => HasUpdate || IsUpdateReadyToRestart;
+    public bool HasUpdateStatusText => !string.IsNullOrWhiteSpace(UpdateStatusText);
+    public bool HasReleaseNotes => HasUpdate && !string.IsNullOrWhiteSpace(ReleaseNotesUrl);
+    public string UpdateActionLabel => IsUpdateReadyToRestart
+        ? Loc.Get(LocKeys.Settings_UpdateRestart)
+        : Loc.Get(LocKeys.Action_Download);
+
     public void Relocalize()
     {
         if (!_initialized)
@@ -55,6 +106,121 @@ public partial class AboutViewModel : ObservableObject
         RefreshLocalized();
         RebuildCredits();
         _ = SyncBrandLogoAsync();
+
+        if (IsUpdateReadyToRestart)
+        {
+            UpdateStatusText = Loc.Get(LocKeys.Settings_UpdateRestart);
+        }
+        else if (HasUpdate && !string.IsNullOrEmpty(LatestVersion))
+        {
+            UpdateStatusText = Loc.Format(LocKeys.Settings_UpdateAvailable, LatestVersion);
+        }
+        else if (!IsCheckingUpdate && !IsDownloadingUpdate && !string.IsNullOrEmpty(UpdateStatusText))
+        {
+            UpdateStatusText = Loc.Get(LocKeys.Settings_UpdateUpToDate);
+        }
+    }
+
+    [RelayCommand]
+    public async Task CheckUpdateManualAsync() => await CheckUpdateAsync(silent: false);
+
+    public async Task CheckUpdateAsync(bool silent = false)
+    {
+        if (IsCheckingUpdate || IsDownloadingUpdate)
+            return;
+
+        IsCheckingUpdate = true;
+        if (!silent)
+        {
+            UpdateStatusText = Loc.Get(LocKeys.Settings_UpdateChecking);
+        }
+
+        try
+        {
+            var info = await _updateService.CheckForUpdatesAsync().ConfigureAwait(true);
+            _currentUpdateInfo = info;
+            if (info.HasUpdate)
+            {
+                HasUpdate = true;
+                LatestVersion = info.LatestVersion;
+                ReleaseNotesUrl = info.ReleaseUrl;
+                ReleaseNotes = info.ReleaseNotes;
+                UpdateStatusText = Loc.Format(LocKeys.Settings_UpdateAvailable, info.LatestVersion);
+            }
+            else
+            {
+                HasUpdate = false;
+                if (!silent)
+                {
+                    UpdateStatusText = Loc.Get(LocKeys.Settings_UpdateUpToDate);
+                }
+            }
+        }
+        catch (Exception ex)
+        {
+            Debug.WriteLine($"[AboutViewModel] Check update failed: {ex.Message}");
+            if (!silent)
+            {
+                UpdateStatusText = Loc.Format(LocKeys.Settings_UpdateFailed, ex.Message);
+            }
+        }
+        finally
+        {
+            IsCheckingUpdate = false;
+        }
+    }
+
+    [RelayCommand]
+    public async Task ApplyUpdateAsync()
+    {
+        if (IsUpdateReadyToRestart && !string.IsNullOrEmpty(_downloadedUpdatePath))
+        {
+            _updateService.ApplyUpdateAndRestart(_downloadedUpdatePath);
+            return;
+        }
+
+        if (_currentUpdateInfo == null || !_currentUpdateInfo.HasUpdate)
+            return;
+
+        if (IsDownloadingUpdate)
+            return;
+
+        IsDownloadingUpdate = true;
+        UpdateProgress = 0;
+        UpdateStatusText = Loc.Format(LocKeys.Settings_UpdateDownloading, 0);
+
+        try
+        {
+            var progressHandler = new Progress<double>(p =>
+            {
+                UpdateProgress = p;
+                UpdateStatusText = Loc.Format(LocKeys.Settings_UpdateDownloading, p);
+            });
+
+            var path = await _updateService.DownloadUpdateAsync(_currentUpdateInfo, progressHandler).ConfigureAwait(true);
+            _downloadedUpdatePath = path;
+            IsUpdateReadyToRestart = true;
+            UpdateStatusText = Loc.Get(LocKeys.Settings_UpdateRestart);
+        }
+        catch (Exception ex)
+        {
+            Debug.WriteLine($"[AboutViewModel] Download update failed: {ex.Message}");
+            UpdateStatusText = Loc.Format(LocKeys.Settings_UpdateFailed, ex.Message);
+        }
+        finally
+        {
+            IsDownloadingUpdate = false;
+        }
+    }
+
+    [RelayCommand]
+    public async Task OpenReleaseNotesAsync()
+    {
+        var targetUrl = !string.IsNullOrEmpty(ReleaseNotesUrl)
+            ? ReleaseNotesUrl
+            : "https://github.com/FlameGemini/Ardel/releases";
+
+        await Windows.System.Launcher.LaunchUriAsync(new Uri(targetUrl));
     }
 
     private void OnAppThemeChanged() => _ = SyncBrandLogoAsync();

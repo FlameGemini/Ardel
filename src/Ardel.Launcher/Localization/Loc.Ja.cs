@@ -747,6 +747,14 @@ public static partial class Loc
         [LocKeys.Settings_SectionAbout] = "情報",
         [LocKeys.Settings_SectionAboutDesc] =
             "Ardel のバージョン、ライセンス、謝辞、利用規約。",
+        [LocKeys.Settings_CheckUpdate] = "更新を確認",
+        [LocKeys.Settings_UpdateChecking] = "更新を確認しています...",
+        [LocKeys.Settings_UpdateUpToDate] = "最新バージョンです。",
+        [LocKeys.Settings_UpdateAvailable] = "新しいバージョン {0} が利用可能です。",
+        [LocKeys.Settings_UpdateDownloading] = "更新をダウンロードしています... {0:0}%",
+        [LocKeys.Settings_UpdateRestart] = "再起動して更新を適用",
+        [LocKeys.Settings_UpdateFailed] = "更新の確認に失敗しました: {0}",
+        [LocKeys.Settings_UpdateReleaseNotes] = "リリースノート",
         [LocKeys.Skin_NameSteve] = "Steve",
         [LocKeys.Skin_NameAlex] = "Alex",
 
@@ -760,7 +768,7 @@ public static partial class Loc
         [LocKeys.About_License] =
             "Ardel は OSL-3.0 の下で配布されます。同ライセンスの条件に従い、利用・改変・再配布できます。",
         [LocKeys.About_LegalHeading] = "利用規約",
-        [LocKeys.About_LegalUpdated] = "バージョン {0} · 発効日：{1}",
+        [LocKeys.About_LegalUpdated] = "バージョン {0} - 発効日：{1}",
         [LocKeys.About_LegalIntro] =
             "以下の条件は Ardel のすべての利用者に適用されます。各節をよくお読みください。表示言語の選択は法的義務を変えません。",
         [LocKeys.About_LegalFeedback] = "法的・コンプライアンス上の問題を報告",

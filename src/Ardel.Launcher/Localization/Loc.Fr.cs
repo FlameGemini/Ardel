@@ -741,6 +741,14 @@ public static partial class Loc
         [LocKeys.Settings_SectionAbout] = "À propos",
         [LocKeys.Settings_SectionAboutDesc] =
             "Version, licence, remerciements et conditions d'utilisation d'Ardel.",
+        [LocKeys.Settings_CheckUpdate] = "Vérifier les mises à jour",
+        [LocKeys.Settings_UpdateChecking] = "Vérification des mises à jour...",
+        [LocKeys.Settings_UpdateUpToDate] = "Ardel est à jour.",
+        [LocKeys.Settings_UpdateAvailable] = "La version {0} est disponible.",
+        [LocKeys.Settings_UpdateDownloading] = "Téléchargement de la mise à jour... {0:0}%",
+        [LocKeys.Settings_UpdateRestart] = "Redémarrer pour mettre à jour",
+        [LocKeys.Settings_UpdateFailed] = "Échec de la vérification de mise à jour : {0}",
+        [LocKeys.Settings_UpdateReleaseNotes] = "Notes de version",
         [LocKeys.Skin_NameSteve] = "Steve",
         [LocKeys.Skin_NameAlex] = "Alex",
         [LocKeys.About_Title] = "À propos",
@@ -751,7 +759,7 @@ public static partial class Loc
         [LocKeys.About_LicenseId] = "OSL-3.0",
         [LocKeys.About_License] = "Ardel est distribué sous OSL-3.0. Vous pouvez l’utiliser, le modifier et le redistribuer selon les termes de cette licence.",
         [LocKeys.About_LegalHeading] = "Conditions d'utilisation",
-        [LocKeys.About_LegalUpdated] = "Version {0} · Date d'entrée en vigueur : {1}",
+        [LocKeys.About_LegalUpdated] = "Version {0} - Date d'entrée en vigueur : {1}",
         [LocKeys.About_LegalIntro] =
             "Les conditions suivantes s'appliquent à tous les utilisateurs d'Ardel. Lisez chaque section attentivement ; la langue d'affichage ne modifie pas vos obligations légales.",
         [LocKeys.About_LegalFeedback] = "Signaler un problème juridique ou de conformité",

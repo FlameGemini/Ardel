@@ -495,6 +495,7 @@ public partial class App : Application
         services.AddTransient<AccountViewModel>();
         services.AddTransient<InstancesViewModel>();
         services.AddTransient<InstanceSettingsViewModel>();
+        services.AddSingleton<Services.Update.UpdateService>();
         services.AddSingleton<AboutViewModel>();
 
         return services.BuildServiceProvider();
