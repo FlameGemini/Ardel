@@ -127,8 +127,8 @@ internal static partial class AboutLegalNotice
         Concurrent instances and system resources
         Running multiple Minecraft instances, large modpacks, or concurrent Java processes may exhaust CPU, memory, disk I/O, or GPU resources and can cause system instability, freezes, or data loss. You are solely responsible for monitoring resource usage and limiting concurrency. The Developer does not warrant that the Software will prevent over-allocation of system resources.
 
-        Experimental and Voice features
-        Optional, beta, preview, or experimental features—including Voice-related functionality that may use WebView2, microphone access, public decentralized/MQTT signaling relays, STUN servers, or similar peer-to-peer capabilities—are provided as-is, may change or be removed without notice, and may be less stable than core launch features. Voice and related features do not provide matchmaking, moderated voice-chat hosting, or Developer-operated communication servers. Enabling microphone, network relays, or WebView2 features is at your risk; you remain responsible for permissions, privacy settings, and third-party component behavior.
+        Experimental features
+        Optional, beta, preview, or experimental features are provided as-is, may change or be removed without notice, and may be less stable than core launch features. Enabling any preview or experimental capability is at your risk; you remain responsible for permissions, privacy settings, and third-party component behavior.
 
         Logs, diagnostics, and path disclosure
         Diagnostic logs, crash reports, screenshots, and configuration exports may contain absolute file paths, usernames, instance names, and other environment details from your Device. If you publish or share such materials, you are responsible for redacting sensitive information. The Developer is not liable for privacy or security consequences of your voluntary disclosure of logs or paths.
@@ -247,8 +247,8 @@ internal static partial class AboutLegalNotice
         多开实例与系统资源
         同时运行多个 Minecraft 实例、大型整合包或并发 Java 进程可能耗尽 CPU、内存、磁盘 I/O 或 GPU 资源，并可能导致系统不稳定、卡死或数据丢失。用户应自行监控资源占用并限制并发。开发者不保证本软件能防止系统资源过度分配。
 
-        实验性功能与 Voice
-        可选、测试、预览或实验性功能——包括可能使用 WebView2、麦克风访问、公共去中心化/MQTT 信令中继、STUN 服务器或类似对等连接能力之 Voice 相关功能——按现状提供，可能随时变更或移除，且稳定性可能低于核心启动功能。Voice 及相关功能不提供撮合、受审语音聊天托管或由开发者运营之通信服务器。启用麦克风、网络中继或 WebView2 功能风险由用户自担；权限、隐私设置及第三方组件行为由用户自行负责。
+        实验性功能
+        可选、测试、预览或实验性功能按现状提供，可能随时变更或移除，且稳定性可能低于核心启动功能。启用任何预览或实验性功能风险由用户自担；权限、隐私设置及第三方组件行为由用户自行负责。
 
         日志、诊断与路径披露
         诊断日志、崩溃报告、截图及配置导出可能包含设备上之绝对路径、用户名、实例名及其他环境信息。若用户公开发布或分享此类材料，应自行脱敏敏感信息。因用户自愿披露日志或路径所致隐私或安全后果，开发者不承担责任。
@@ -367,8 +367,8 @@ internal static partial class AboutLegalNotice
         多開例項與系統資源
         同時執行多個 Minecraft 例項、大型整合包或並行 Java 行程可能耗盡 CPU、記憶體、磁碟 I/O 或 GPU 資源，並可能導致系統不穩定、當機或資料遺失。使用者應自行監控資源占用並限制並行。開發者不保證本軟體能防止系統資源過度分配。
 
-        實驗性功能與 Voice
-        可選、測試、預覽或實驗性功能——包括可能使用 WebView2、麥克風訪問、公共去中心化/MQTT 信令中繼、STUN 伺服器或類似對等連線能力之 Voice 相關功能——按現狀提供，可能隨時變更或移除，且穩定性可能低於核心啟動功能。Voice 及相關功能不提供撮合、受審語音聊天託管或由開發者運營之通訊伺服器。啟用麥克風、網路中繼或 WebView2 功能風險由使用者自擔；權限、隱私設定及第三方元件行為由使用者自行負責。
+        實驗性功能
+        可選、測試、預覽或實驗性功能按現狀提供，可能隨時變更或移除，且穩定性可能低於核心啟動功能。啟用任何預覽或實驗性功能風險由使用者自擔；權限、隱私設定及第三方元件行為由使用者自行負責。
 
         日誌、診斷與路徑揭露
         診斷日誌、當機報告、螢幕截圖及設定匯出可能包含裝置上之絕對路徑、使用者名稱、例項名稱及其他環境資訊。若使用者公開發布或分享此類材料，應自行脫敏敏感資訊。因使用者自願揭露日誌或路徑所致隱私或安全後果，開發者不承擔責任。
@@ -488,8 +488,8 @@ internal static partial class AboutLegalNotice
         同時インスタンスとシステム資源
         複数の Minecraft インスタンス、大規模 Modpack または並行 Java プロセスの実行は、CPU、メモリ、ディスク I/O または GPU 資源を枯渇させ、システム不安定、フリーズまたはデータ損失を引き起こす場合があります。資源使用の監視および同時実行の制限は、お客様のみの責任です。開発者は、本ソフトウェアがシステム資源の過剰割当を防止することを保証しません。
 
-        実験的機能および Voice
-        WebView2、マイクアクセス、パブリック分散型/MQTTシグナリングリレー、STUNサーバー、または類似のP2P機能を用いる場合がある Voice 関連機能を含む、任意、ベータ、プレビューまたは実験的機能は現状有姿で提供され、予告なく変更または削除されることがあり、コア起動機能より安定性が低い場合があります。Voice および関連機能は、マッチメイキング、監理されたボイスチャットのホスティング、または開発者が運営する通信サーバーを提供しません。マイク、ネットワークリレーまたは WebView2 機能の有効化はお客様のリスクであり、権限、プライバシー設定および第三者コンポーネントの挙動はお客様の責任です。
+        実験的機能
+        任意、ベータ、プレビューまたは実験的機能は現状有姿で提供され、予告なく変更または削除されることがあり、コア起動機能より安定性が低い場合があります。プレビューまたは実験的機能の有効化はお客様のリスクであり、権限、プライバシー設定および第三者コンポーネントの挙動はお客様の責任です。
 
         ログ、診断およびパスの開示
         診断ログ、クラッシュレポート、スクリーンショットおよび設定のエクスポートには、端末上の絶対パス、ユーザー名、インスタンス名その他の環境情報が含まれる場合があります。かかる資料を公開または共有する場合、機微情報のマスキングはお客様の責任です。ログまたはパスの任意開示によるプライバシーまたはセキュリティ上の結果について、開発者は責任を負いません。

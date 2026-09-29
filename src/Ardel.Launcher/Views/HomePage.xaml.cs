@@ -128,12 +128,6 @@ public sealed partial class HomePage : Page
         GreetingText.CharacterSpacing = spacing;
     }
 
-    private void VoiceCard_Click(object sender, RoutedEventArgs e)
-    {
-        using var _ = InteractionWatchdog.Profile("HomePage.VoiceCard_Click");
-        VoiceWindowHost.Show();
-    }
-
     private double _lastDotWidth, _lastDotHeight;
 
     private void Canvas_SizeChanged(object sender, SizeChangedEventArgs e)

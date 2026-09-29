@@ -109,8 +109,8 @@ internal static partial class AboutLegalNotice
         Instances concurrentes et ressources système
         L'exécution de plusieurs instances Minecraft, de gros modpacks ou de processus Java concurrents peut épuiser le processeur, la mémoire, les E/S disque ou le GPU et provoquer une instabilité, des gelés ou des pertes de données. Vous êtes seul responsable de surveiller l'utilisation des ressources et de limiter la concurrence. Le Développeur ne garantit pas que le Logiciel empêchera une surallocation des ressources système.
 
-        Fonctionnalités expérimentales et Voice
-        Les fonctionnalités optionnelles, bêta, en aperçu ou expérimentales — y compris les fonctions liées à Voice pouvant utiliser WebView2, l'accès au microphone, des relais de signalisation publics décentralisés/MQTT, des serveurs STUN ou des capacités peer-to-peer similaires — sont fournies en l'état, peuvent être modifiées ou retirées sans préavis, et peuvent être moins stables que les fonctions de lancement principales. Voice et fonctions connexes ne fournissent ni matchmaking, ni hébergement de chat vocal modéré, ni serveurs de communication exploités par le Développeur. L'activation du microphone, des relais réseau ou de WebView2 se fait à vos risques ; vous restez responsable des autorisations, des paramètres de confidentialité et du comportement des composants tiers.
+        Fonctionnalités expérimentales
+        Les fonctionnalités optionnelles, bêta, en aperçu ou expérimentales sont fournies en l'état, peuvent être modifiées ou retirées sans préavis, et peuvent être moins stables que les fonctions de lancement principales. L'activation de fonctionnalités d'aperçu ou expérimentales se fait à vos risques ; vous restez responsable des autorisations, des paramètres de confidentialité et du comportement des composants tiers.
 
         Journaux, diagnostics et divulgation de chemins
         Les journaux de diagnostic, rapports de plantage, captures d'écran et exports de configuration peuvent contenir des chemins absolus, des noms d'utilisateur, des noms d'instance et d'autres détails d'environnement de votre appareil. Si vous publiez ou partagez ces matériaux, il vous appartient de masquer les informations sensibles. Le Développeur n'est pas responsable des conséquences en matière de vie privée ou de sécurité de votre divulgation volontaire de journaux ou de chemins.
@@ -229,8 +229,8 @@ internal static partial class AboutLegalNotice
         Parallele Instanzen und Systemressourcen
         Das Ausführen mehrerer Minecraft-Instanzen, großer Modpacks oder paralleler Java-Prozesse kann CPU, Speicher, Festplatten-I/O oder GPU erschöpfen und Instabilität, Einfrieren oder Datenverlust verursachen. Sie allein sind für die Überwachung der Ressourcennutzung und die Begrenzung der Parallelität verantwortlich. Der Entwickler gewährleistet nicht, dass die Software eine Überbelegung von Systemressourcen verhindert.
 
-        Experimentelle Funktionen und Voice
-        Optionale, Beta-, Vorschau- oder experimentelle Funktionen — einschließlich Voice-bezogener Funktionen, die WebView2, Mikrofonzugriff, öffentliche dezentrale/MQTT-Signalisierungsrelais, STUN-Server oder ähnliche Peer-to-Peer-Fähigkeiten nutzen können — werden wie besehen bereitgestellt, können ohne Vorankündigung geändert oder entfernt werden und können weniger stabil sein als Kernstartfunktionen. Voice und verwandte Funktionen bieten kein Matchmaking, kein moderiertes Voice-Chat-Hosting und keine vom Entwickler betriebenen Kommunikationsserver. Die Aktivierung von Mikrofon-, Netzwerk-Relay- oder WebView2-Funktionen erfolgt auf Ihr Risiko; Berechtigungen, Datenschutzeinstellungen und das Verhalten von Drittkomponenten bleiben Ihre Verantwortung.
+        Experimentelle Funktionen
+        Optionale, Beta-, Vorschau- oder experimentelle Funktionen werden wie besehen bereitgestellt, können ohne Vorankündigung geändert oder entfernt werden und können weniger stabil sein als Kernstartfunktionen. Die Aktivierung von Vorschau- oder experimentellen Funktionen erfolgt auf Ihr Risiko; Berechtigungen, Datenschutzeinstellungen und das Verhalten von Drittkomponenten bleiben Ihre Verantwortung.
 
         Protokolle, Diagnosen und Pfadoffenlegung
         Diagnoseprotokolle, Absturzberichte, Screenshots und Konfigurationsexporte können absolute Dateipfade, Benutzernamen, Instanznamen und andere Umgebungsdetails Ihres Geräts enthalten. Wenn Sie solche Materialien veröffentlichen oder teilen, sind Sie für die Schwärzung sensibler Informationen verantwortlich. Der Entwickler haftet nicht für Datenschutz- oder Sicherheitsfolgen Ihrer freiwilligen Offenlegung von Protokollen oder Pfaden.
@@ -350,8 +350,8 @@ internal static partial class AboutLegalNotice
         Instancias concurrentes y recursos del sistema
         Ejecutar varias instancias de Minecraft, modpacks grandes o procesos Java concurrentes puede agotar CPU, memoria, E/S de disco o GPU y provocar inestabilidad, bloqueos o pérdida de datos. Usted es el único responsable de vigilar el uso de recursos y limitar la concurrencia. El Desarrollador no garantiza que el Software impida la sobreasignación de recursos del sistema.
 
-        Funciones experimentales y Voice
-        Las funciones opcionales, beta, de vista previa o experimentales —incluidas las relacionadas con Voice que puedan usar WebView2, acceso al micrófono, repetidores de señalización públicos descentralizados/MQTT, servidores STUN o capacidades punto a punto similares— se ofrecen tal cual, pueden cambiarse o eliminarse sin aviso y pueden ser menos estables que las funciones principales de lanzamiento. Voice y funciones afines no proporcionan emparejamiento, alojamiento de chat de voz moderado ni servidores de comunicación operados por el Desarrollador. Activar el micrófono, los repetidores de red o WebView2 es bajo su propio riesgo; usted sigue siendo responsable de los permisos, la privacidad y el comportamiento de componentes de terceros.
+        Funciones experimentales
+        Las funciones opcionales, beta, de vista previa o experimentales se ofrecen tal cual, pueden cambiarse o eliminarse sin aviso y pueden ser menos estables que las funciones principales de lanzamiento. Activar funciones de vista previa o experimentales es bajo su propio riesgo; usted sigue siendo responsable de los permisos, la privacidad y el comportamiento de componentes de terceros.
 
         Registros, diagnósticos y revelación de rutas
         Los registros de diagnóstico, informes de fallo, capturas de pantalla y exportaciones de configuración pueden contener rutas absolutas, nombres de usuario, nombres de instancia y otros detalles del entorno de su dispositivo. Si publica o comparte dichos materiales, es su responsabilidad redactar la información sensible. El Desarrollador no responde por las consecuencias de privacidad o seguridad de su revelación voluntaria de registros o rutas.
@@ -471,8 +471,8 @@ internal static partial class AboutLegalNotice
         다중 인스턴스 및 시스템 자원
         여러 Minecraft 인스턴스, 대형 모드팩 또는 동시 Java 프로세스를 실행하면 CPU·메모리·디스크 I/O·GPU 자원이 고갈되어 시스템 불안정·멈춤·데이터 손실이 발생할 수 있습니다. 자원 사용 모니터링 및 동시성 제한은 전적으로 귀하의 책임입니다. 개발자는 본 소프트웨어가 시스템 자원의 과도한 할당을 방지한다고 보증하지 않습니다.
 
-        실험적 기능 및 Voice
-        WebView2, 마이크 액세스, 공개 탈중앙화/MQTT 시그널링 릴레이, STUN 서버 또는 유사한 P2P 기능을 사용할 수 있는 Voice 관련 기능을 포함한 선택적, 베타, 미리보기 또는 실험적 기능은 있는 그대로 제공되며, 사전 통지 없이 변경되거나 제거될 수 있고 핵심 실행 기능보다 불안정할 수 있습니다. Voice 및 관련 기능은 매치메이킹, 관리형 음성 채팅 호스팅 또는 개발자가 운영하는 통신 서버를 제공하지 않습니다. 마이크, 네트워크 릴레이 또는 WebView2 기능 활성화는 귀하의 위험 부담이며, 권한, 개인정보 보호 설정 및 제3자 구성 요소 동작에 대한 책임은 전적으로 귀하에게 있습니다.
+        실험적 기능
+        선택적, 베타, 미리보기 또는 실험적 기능은 있는 그대로 제공되며, 사전 통지 없이 변경되거나 제거될 수 있고 핵심 실행 기능보다 불안정할 수 있습니다. 미리보기 또는 실험적 기능 활성화는 귀하의 위험 부담이며, 권한, 개인정보 보호 설정 및 제3자 구성 요소 동작에 대한 책임은 전적으로 귀하에게 있습니다.
 
         로그, 진단 및 경로 공개
         진단 로그, 충돌 보고서, 스크린샷 및 구성 내보내기에는 장치의 절대 경로, 사용자 이름, 인스턴스 이름 및 기타 환경 정보가 포함될 수 있습니다. 그러한 자료를 게시하거나 공유하는 경우 민감 정보 마스킹은 귀하의 책임입니다. 로그 또는 경로의 자발적 공개로 인한 개인정보·보안 결과에 대해 개발자는 책임지지 않습니다.

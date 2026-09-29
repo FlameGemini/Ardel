@@ -72,6 +72,3 @@ src/Ardel.Launcher/Localization/_*
 /runtime/
 .minecraft/runtime/
 
-# Voice frontend
-src/Ardel.Launcher/Assets/voice/node_modules/
-

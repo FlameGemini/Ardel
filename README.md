@@ -115,7 +115,6 @@ Download `ArdelSetup.exe` from the official website at [https://ardel.ice-tea.to
 ### Prerequisites
 - Visual Studio 2022 (v17.8+) with **.NET desktop development** workload, or Visual Studio Code with the C# Dev Kit.
 - [.NET 8.0 SDK](https://dotnet.microsoft.com/download/dotnet/8.0) (x64 / ARM64).
-- [Node.js](https://nodejs.org/) (v18+) for building embedded voice assets.
 
 ### 1. Clone Repository
 ```powershell
@@ -151,7 +150,7 @@ The resulting portable single-file binary will be generated at `publish/Ardel.ex
 Ardel/
 ├── src/
 │   ├── Ardel.Launcher/              # Main WinUI 3 desktop application
-│   │   ├── Assets/                  # High-DPI icons, logos, WebRTC voice assets
+│   │   ├── Assets/                  # High-DPI icons, logos, static UI assets
 │   │   ├── Converters/              # XAML UI value converters
 │   │   ├── Helpers/                 # Window chrome, Java locator, theme engine, skin rendering
 │   │   ├── Localization/            # 11-language loc catalogs and legal notices

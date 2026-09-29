@@ -383,9 +383,6 @@ public partial class App : Application
         TryForceWindowToFront(_window);
 
         StartupClock.Mark("Window Activated");
-        // WebView2 env warm-up is expensive — skip during OOBE, start after wizard.
-        if (!needOobe)
-            VoiceWindowHost.WarmUp();
 
         if (!needOobe && splashOptions.Enabled)
         {
@@ -421,7 +418,6 @@ public partial class App : Application
                 _window.InitializeNavigation();
                 StartupClock.Mark("Navigate done after OOBE");
 
-                VoiceWindowHost.WarmUp();
                 dq.TryEnqueue(MarkStartupComplete);
             }
             else

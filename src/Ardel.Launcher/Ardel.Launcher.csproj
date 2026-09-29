@@ -55,11 +55,6 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Remove="Assets\_render_ardel_logo.py" />
-    <Content Remove="Assets\voice\node_modules\**" />
-    <Content Remove="Assets\voice\package.json" />
-    <Content Remove="Assets\voice\package-lock.json" />
-    <Content Remove="Assets\voice\tsconfig.json" />
-    <Content Remove="Assets\voice\src\**" />
   </ItemGroup>
 
   <ItemGroup>
@@ -80,17 +75,6 @@
     <ProjectReference Include="..\..\third_party\MinecraftSkinRender\MinecraftSkinRender.Image\MinecraftSkinRender.Image.csproj" />
     <ProjectReference Include="..\Ardel.LogViewer\Ardel.LogViewer.csproj" ReferenceOutputAssembly="false" Private="false" SetTargetFramework="TargetFramework=net8.0-windows" />
   </ItemGroup>
-
-  <!-- Compile voice TypeScript → app.js / field.js before content copy (incremental) -->
-  <Target Name="BuildVoiceTypeScript" BeforeTargets="BeforeBuild"
-          Inputs="$(MSBuildThisFileDirectory)Assets\voice\src\**\*.ts"
-          Outputs="$(MSBuildThisFileDirectory)Assets\voice\field.js;$(MSBuildThisFileDirectory)Assets\voice\app.js">
-    <PropertyGroup>
-      <_VoiceDir>$(MSBuildThisFileDirectory)Assets\voice</_VoiceDir>
-    </PropertyGroup>
-    <Exec WorkingDirectory="$(_VoiceDir)" Command="npm install --silent" Condition="!Exists('$(_VoiceDir)\node_modules\esbuild')" IgnoreExitCode="false" />
-    <Exec WorkingDirectory="$(_VoiceDir)" Command="npm run build --silent" IgnoreExitCode="false" />
-  </Target>
 
   <!-- Ensure the independent log viewer EXE (+ deps) lands next to Ardel.Launcher.exe -->
   <Target Name="CopyLogViewer" AfterTargets="Build">
