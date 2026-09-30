@@ -1,5 +1,20 @@
 <Solution>
   <Folder Name="/src/">
+    <Project Path="src/Ardel.Bootstrapper/Ardel.Bootstrapper.csproj" />
     <Project Path="src/Ardel.Launcher/Ardel.Launcher.csproj" />
+    <Project Path="src/Ardel.LogViewer/Ardel.LogViewer.csproj" />
+  </Folder>
+  <Folder Name="/tests/">
+    <Project Path="tests/Ardel.Launcher.Tests/Ardel.Launcher.Tests.csproj" />
+  </Folder>
+  <Folder Name="/third_party/" />
+  <Folder Name="/third_party/CmlLib.Core.Installer.Forge/">
+    <Project Path="third_party/CmlLib.Core.Installer.Forge/CmlLib.Core.Installer.Forge/CmlLib.Core.Installer.Forge.csproj" />
+  </Folder>
+  <Folder Name="/third_party/CmlLib.Core.Installer.NeoForge/">
+    <Project Path="third_party/CmlLib.Core.Installer.NeoForge/CmlLib.Core.Installer.NeoForge/CmlLib.Core.Installer.NeoForge.csproj" />
+  </Folder>
+  <Folder Name="/third_party/MinecraftSkinRender/">
+    <Project Path="third_party/MinecraftSkinRender/MinecraftSkinRender.Image/MinecraftSkinRender.Image.csproj" />
   </Folder>
 </Solution>

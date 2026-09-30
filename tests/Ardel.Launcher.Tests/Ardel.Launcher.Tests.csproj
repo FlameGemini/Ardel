@@ -5,7 +5,9 @@
     <Nullable>enable</Nullable>
     <IsPackable>false</IsPackable>
     <IsTestProject>true</IsTestProject>
-    <RootNamespace>Ardel.Launcher.Tests</RootNamespace>
+    <Platforms>x86;x64;ARM64</Platforms>
+    <Platform Condition="'$(Platform)' == '' or '$(Platform)' == 'AnyCPU'">x64</Platform>
+    <PlatformTarget Condition="'$(PlatformTarget)' == '' or '$(PlatformTarget)' == 'AnyCPU'">x64</PlatformTarget>
     <EnableMsixTooling>false</EnableMsixTooling>
     <EnableCoreMrtTooling>false</EnableCoreMrtTooling>
     <EnablePriGenTooling>false</EnablePriGenTooling>
