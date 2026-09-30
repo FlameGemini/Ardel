@@ -105,7 +105,7 @@ public sealed class LauncherSettings
     public bool CrashAnalysisShowConfidence { get; set; }
 
     // Startup splash / launch badge
-    public bool ShowStartupSplash { get; set; } = true;
+    public bool ShowStartupSplash { get; set; } = false;
     public bool StartupSplashShowProgressBar { get; set; } = true;
     public int StartupSplashDurationMs { get; set; } = StartupSplashOptions.DefaultDurationMs;
     public bool StartupSplashShowBrandName { get; set; } = true;

@@ -89,8 +89,6 @@ public sealed partial class MainWindow : Window
         _isInternalNavigating = true;
         try
         {
-            EnsureDownloadFlyoutBound();
-
             var pageType = activeTag.ToLowerInvariant() switch
             {
                 "download" => typeof(DownloadPage),
