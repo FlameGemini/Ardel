@@ -3,12 +3,12 @@ namespace Ardel.Launcher.Models;
 /// <summary>Runtime options for the in-window startup splash overlay.</summary>
 public sealed class StartupSplashOptions
 {
-    public const int DefaultDurationMs = 2000;
-    public const int MinDurationMs = 1000;
+    public const int DefaultDurationMs = 800;
+    public const int MinDurationMs = 0;
     public const int MaxDurationMs = 12000;
     public const int DurationStepMs = 250;
 
-    public bool Enabled { get; init; } = true;
+    public bool Enabled { get; init; } = false;
     public bool ShowProgressBar { get; init; } = true;
     public bool ShowBrandName { get; init; } = true;
     public int DurationMs { get; init; } = DefaultDurationMs;
