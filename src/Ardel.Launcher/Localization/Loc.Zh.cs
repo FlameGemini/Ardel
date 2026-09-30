@@ -853,11 +853,13 @@ public static partial class Loc
         [LocKeys.Settings_SectionAboutDesc] =
             "版本、许可证、开源致谢与服务条款。",
         [LocKeys.Settings_CheckUpdate] = "检查更新",
+        [LocKeys.Settings_DownloadUpdate] = "下载更新",
         [LocKeys.Settings_UpdateChecking] = "正在检查更新...",
         [LocKeys.Settings_UpdateUpToDate] = "当前已是最新版本。",
         [LocKeys.Settings_UpdateAvailable] = "发现新版本 {0}。",
         [LocKeys.Settings_UpdateDownloading] = "正在下载更新... {0:0}%",
         [LocKeys.Settings_UpdateRestart] = "重启并应用更新",
+        [LocKeys.Settings_UpdateReadyToRestart] = "更新已下载完成，点击按钮重启并应用更新。",
         [LocKeys.Settings_UpdateFailed] = "检查更新失败: {0}",
         [LocKeys.Settings_UpdateReleaseNotes] = "更新日志",
         [LocKeys.Skin_NameSteve] = "Steve",

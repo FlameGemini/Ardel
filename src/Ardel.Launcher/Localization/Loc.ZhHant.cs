@@ -753,11 +753,13 @@ public static partial class Loc
         [LocKeys.Settings_SectionAboutDesc] =
             "Ardel 的版本、授權、致謝與服務條款。",
         [LocKeys.Settings_CheckUpdate] = "檢查更新",
+        [LocKeys.Settings_DownloadUpdate] = "下載更新",
         [LocKeys.Settings_UpdateChecking] = "正在檢查更新...",
         [LocKeys.Settings_UpdateUpToDate] = "目前已是最新版本。",
         [LocKeys.Settings_UpdateAvailable] = "發現新版本 {0}。",
         [LocKeys.Settings_UpdateDownloading] = "正在下載更新... {0:0}%",
         [LocKeys.Settings_UpdateRestart] = "重啟並套用更新",
+        [LocKeys.Settings_UpdateReadyToRestart] = "更新已下載完成，點擊按鈕重啟並套用更新。",
         [LocKeys.Settings_UpdateFailed] = "檢查更新失敗: {0}",
         [LocKeys.Settings_UpdateReleaseNotes] = "更新日誌",
         [LocKeys.Skin_NameSteve] = "Steve",

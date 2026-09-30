@@ -19,15 +19,36 @@ public partial class AboutViewModel : ObservableObject
     private static string? _cachedLegalHeading;
 
     private readonly UpdateService _updateService;
+    private readonly Microsoft.UI.Dispatching.DispatcherQueue? _dispatcherQueue;
     private UpdateInfo? _currentUpdateInfo;
     private string? _downloadedUpdatePath;
     private bool _initialized;
 
-    public AboutViewModel(UpdateService? updateService = null)
+    public AboutViewModel(
+        UpdateService? updateService = null,
+        Microsoft.UI.Dispatching.DispatcherQueue? dispatcherQueue = null)
     {
         _updateService = updateService ?? new UpdateService();
+        _dispatcherQueue = dispatcherQueue;
         VersionNumber = AboutMetadata.ResolveVersionNumber();
+        RefreshLocalized();
         App.ThemeChanged += OnAppThemeChanged;
+    }
+
+    private void RunOnUi(Action action)
+    {
+        var dq = _dispatcherQueue
+            ?? App.MainWindowInstance?.DispatcherQueue
+            ?? Microsoft.UI.Dispatching.DispatcherQueue.GetForCurrentThread();
+
+        if (dq is not null && !dq.HasThreadAccess)
+        {
+            dq.TryEnqueue(() => action());
+        }
+        else
+        {
+            action();
+        }
     }
 
     /// <summary>Loads localized credits and legal sections on first About visit.</summary>
@@ -61,18 +82,24 @@ public partial class AboutViewModel : ObservableObject
     [ObservableProperty]
     [NotifyPropertyChangedFor(nameof(CanCheckUpdate))]
     [NotifyPropertyChangedFor(nameof(CanApplyUpdate))]
+    [NotifyPropertyChangedFor(nameof(LatestVersionDisplay))]
+    [NotifyPropertyChangedFor(nameof(HasLatestVersionDisplay))]
     private bool _isDownloadingUpdate;
 
     [ObservableProperty]
     [NotifyPropertyChangedFor(nameof(ShowCheckUpdateButton))]
     [NotifyPropertyChangedFor(nameof(ShowApplyUpdateButton))]
     [NotifyPropertyChangedFor(nameof(HasReleaseNotes))]
+    [NotifyPropertyChangedFor(nameof(LatestVersionDisplay))]
+    [NotifyPropertyChangedFor(nameof(HasLatestVersionDisplay))]
     private bool _hasUpdate;
 
     [ObservableProperty]
     [NotifyPropertyChangedFor(nameof(ShowCheckUpdateButton))]
     [NotifyPropertyChangedFor(nameof(ShowApplyUpdateButton))]
     [NotifyPropertyChangedFor(nameof(UpdateActionLabel))]
+    [NotifyPropertyChangedFor(nameof(LatestVersionDisplay))]
+    [NotifyPropertyChangedFor(nameof(HasLatestVersionDisplay))]
     private bool _isUpdateReadyToRestart;
 
     [ObservableProperty]
@@ -80,7 +107,11 @@ public partial class AboutViewModel : ObservableObject
     private string _updateStatusText = string.Empty;
 
     [ObservableProperty] private double _updateProgress;
-    [ObservableProperty] private string _latestVersion = string.Empty;
+
+    [ObservableProperty]
+    [NotifyPropertyChangedFor(nameof(LatestVersionDisplay))]
+    [NotifyPropertyChangedFor(nameof(HasLatestVersionDisplay))]
+    private string _latestVersion = string.Empty;
 
     [ObservableProperty]
     [NotifyPropertyChangedFor(nameof(HasReleaseNotes))]
@@ -94,22 +125,47 @@ public partial class AboutViewModel : ObservableObject
     public bool ShowApplyUpdateButton => HasUpdate || IsUpdateReadyToRestart;
     public bool HasUpdateStatusText => !string.IsNullOrWhiteSpace(UpdateStatusText);
     public bool HasReleaseNotes => HasUpdate && !string.IsNullOrWhiteSpace(ReleaseNotesUrl);
+    public string LatestVersionDisplay
+    {
+        get
+        {
+            if (string.IsNullOrWhiteSpace(LatestVersion) || IsDownloadingUpdate || IsUpdateReadyToRestart)
+                return string.Empty;
+
+            var clean = UpdateService.CleanVersionString(LatestVersion);
+            if (!string.IsNullOrWhiteSpace(ReleaseNotes))
+            {
+                var line = ReleaseNotes.Split(new[] { '\r', '\n' }, StringSplitOptions.RemoveEmptyEntries)
+                    .Select(s => s.Trim().TrimStart('#', '-', '*', ' '))
+                    .FirstOrDefault(s => !string.IsNullOrWhiteSpace(s));
+                if (!string.IsNullOrWhiteSpace(line))
+                    return line;
+            }
+
+            return $"Ardel v{clean}";
+        }
+    }
+    public bool HasLatestVersionDisplay => !string.IsNullOrWhiteSpace(LatestVersionDisplay);
     public string UpdateActionLabel => IsUpdateReadyToRestart
         ? Loc.Get(LocKeys.Settings_UpdateRestart)
-        : Loc.Get(LocKeys.Action_Download);
+        : Loc.Get(LocKeys.Settings_DownloadUpdate);
 
     public void Relocalize()
     {
-        if (!_initialized)
-            return;
-
         RefreshLocalized();
-        RebuildCredits();
-        _ = SyncBrandLogoAsync();
+        if (_initialized)
+        {
+            RebuildCredits();
+            _ = SyncBrandLogoAsync();
+        }
+
+        OnPropertyChanged(nameof(UpdateActionLabel));
+        OnPropertyChanged(nameof(LatestVersionDisplay));
+        OnPropertyChanged(nameof(HasLatestVersionDisplay));
 
         if (IsUpdateReadyToRestart)
         {
-            UpdateStatusText = Loc.Get(LocKeys.Settings_UpdateRestart);
+            UpdateStatusText = Loc.Get(LocKeys.Settings_UpdateReadyToRestart);
         }
         else if (HasUpdate && !string.IsNullOrEmpty(LatestVersion))
         {
@@ -129,44 +185,56 @@ public partial class AboutViewModel : ObservableObject
         if (IsCheckingUpdate || IsDownloadingUpdate)
             return;
 
-        IsCheckingUpdate = true;
-        if (!silent)
+        RunOnUi(() =>
         {
-            UpdateStatusText = Loc.Get(LocKeys.Settings_UpdateChecking);
-        }
+            IsCheckingUpdate = true;
+            if (!silent)
+            {
+                UpdateStatusText = Loc.Get(LocKeys.Settings_UpdateChecking);
+            }
+        });
 
         try
         {
-            var info = await _updateService.CheckForUpdatesAsync().ConfigureAwait(true);
+            var info = await _updateService.CheckForUpdatesAsync().ConfigureAwait(false);
             _currentUpdateInfo = info;
-            if (info.HasUpdate)
+            RunOnUi(() =>
             {
-                HasUpdate = true;
-                LatestVersion = info.LatestVersion;
-                ReleaseNotesUrl = info.ReleaseUrl;
-                ReleaseNotes = info.ReleaseNotes;
-                UpdateStatusText = Loc.Format(LocKeys.Settings_UpdateAvailable, info.LatestVersion);
-            }
-            else
-            {
-                HasUpdate = false;
-                if (!silent)
+                if (info.HasUpdate)
                 {
-                    UpdateStatusText = Loc.Get(LocKeys.Settings_UpdateUpToDate);
+                    LatestVersion = info.LatestVersion;
+                    ReleaseNotesUrl = info.ReleaseUrl;
+                    ReleaseNotes = info.ReleaseNotes;
+                    UpdateStatusText = Loc.Format(LocKeys.Settings_UpdateAvailable, info.LatestVersion);
+                    HasUpdate = true;
                 }
-            }
+                else
+                {
+                    HasUpdate = false;
+                    if (!silent)
+                    {
+                        UpdateStatusText = Loc.Get(LocKeys.Settings_UpdateUpToDate);
+                    }
+                }
+            });
         }
         catch (Exception ex)
         {
             Debug.WriteLine($"[AboutViewModel] Check update failed: {ex.Message}");
-            if (!silent)
+            RunOnUi(() =>
             {
-                UpdateStatusText = Loc.Format(LocKeys.Settings_UpdateFailed, ex.Message);
-            }
+                if (!silent)
+                {
+                    UpdateStatusText = Loc.Format(LocKeys.Settings_UpdateFailed, ex.Message);
+                }
+            });
         }
         finally
         {
-            IsCheckingUpdate = false;
+            RunOnUi(() =>
+            {
+                IsCheckingUpdate = false;
+            });
         }
     }
 
@@ -185,31 +253,46 @@ public partial class AboutViewModel : ObservableObject
         if (IsDownloadingUpdate)
             return;
 
-        IsDownloadingUpdate = true;
-        UpdateProgress = 0;
-        UpdateStatusText = Loc.Format(LocKeys.Settings_UpdateDownloading, 0);
+        RunOnUi(() =>
+        {
+            IsDownloadingUpdate = true;
+            UpdateProgress = 0;
+            UpdateStatusText = Loc.Format(LocKeys.Settings_UpdateDownloading, 0);
+        });
 
         try
         {
             var progressHandler = new Progress<double>(p =>
             {
-                UpdateProgress = p;
-                UpdateStatusText = Loc.Format(LocKeys.Settings_UpdateDownloading, p);
+                RunOnUi(() =>
+                {
+                    UpdateProgress = p;
+                    UpdateStatusText = Loc.Format(LocKeys.Settings_UpdateDownloading, p);
+                });
             });
 
-            var path = await _updateService.DownloadUpdateAsync(_currentUpdateInfo, progressHandler).ConfigureAwait(true);
+            var path = await _updateService.DownloadUpdateAsync(_currentUpdateInfo, progressHandler).ConfigureAwait(false);
             _downloadedUpdatePath = path;
-            IsUpdateReadyToRestart = true;
-            UpdateStatusText = Loc.Get(LocKeys.Settings_UpdateRestart);
+            RunOnUi(() =>
+            {
+                IsUpdateReadyToRestart = true;
+                UpdateStatusText = Loc.Get(LocKeys.Settings_UpdateReadyToRestart);
+            });
         }
         catch (Exception ex)
         {
             Debug.WriteLine($"[AboutViewModel] Download update failed: {ex.Message}");
-            UpdateStatusText = Loc.Format(LocKeys.Settings_UpdateFailed, ex.Message);
+            RunOnUi(() =>
+            {
+                UpdateStatusText = Loc.Format(LocKeys.Settings_UpdateFailed, ex.Message);
+            });
         }
         finally
         {
-            IsDownloadingUpdate = false;
+            RunOnUi(() =>
+            {
+                IsDownloadingUpdate = false;
+            });
         }
     }
 

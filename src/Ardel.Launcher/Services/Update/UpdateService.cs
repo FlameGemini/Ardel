@@ -9,7 +9,7 @@ namespace Ardel.Launcher.Services.Update;
 
 public class UpdateService
 {
-    private const string GitHubApiLatestReleaseUrl = "https://api.github.com/repos/FlameGemini/Ardel/releases/latest";
+    private const string GitHubApiReleasesUrl = "https://api.github.com/repos/FlameGemini/Ardel/releases?per_page=10";
     private readonly HttpClient _httpClient;
 
     public UpdateService(HttpClient? httpClient = null)
@@ -29,7 +29,7 @@ public class UpdateService
     {
         var currentVersion = AboutMetadata.ResolveVersionNumber();
 
-        using var request = new HttpRequestMessage(HttpMethod.Get, GitHubApiLatestReleaseUrl);
+        using var request = new HttpRequestMessage(HttpMethod.Get, GitHubApiReleasesUrl);
         using var response = await _httpClient.SendAsync(request, cancellationToken).ConfigureAwait(false);
         response.EnsureSuccessStatusCode();
 
@@ -37,15 +37,46 @@ public class UpdateService
         using var doc = await JsonDocument.ParseAsync(stream, cancellationToken: cancellationToken).ConfigureAwait(false);
         var root = doc.RootElement;
 
-        var tagName = root.TryGetProperty("tag_name", out var tagElem) ? tagElem.GetString() ?? string.Empty : string.Empty;
-        var releaseName = root.TryGetProperty("name", out var nameElem) ? nameElem.GetString() ?? tagName : tagName;
-        var releaseNotes = root.TryGetProperty("body", out var bodyElem) ? bodyElem.GetString() ?? string.Empty : string.Empty;
-        var releaseUrl = root.TryGetProperty("html_url", out var urlElem) ? urlElem.GetString() ?? string.Empty : string.Empty;
+        JsonElement latestRelease = default;
+        var foundRelease = false;
+
+        if (root.ValueKind == JsonValueKind.Array)
+        {
+            foreach (var rel in root.EnumerateArray())
+            {
+                var isDraft = rel.TryGetProperty("draft", out var dElem) && dElem.GetBoolean();
+                if (!isDraft)
+                {
+                    latestRelease = rel;
+                    foundRelease = true;
+                    break;
+                }
+            }
+        }
+        else if (root.ValueKind == JsonValueKind.Object)
+        {
+            latestRelease = root;
+            foundRelease = true;
+        }
+
+        if (!foundRelease)
+        {
+            return new UpdateInfo
+            {
+                HasUpdate = false,
+                CurrentVersion = currentVersion
+            };
+        }
+
+        var tagName = latestRelease.TryGetProperty("tag_name", out var tagElem) ? tagElem.GetString() ?? string.Empty : string.Empty;
+        var releaseName = latestRelease.TryGetProperty("name", out var nameElem) ? nameElem.GetString() ?? tagName : tagName;
+        var releaseNotes = latestRelease.TryGetProperty("body", out var bodyElem) ? bodyElem.GetString() ?? string.Empty : string.Empty;
+        var releaseUrl = latestRelease.TryGetProperty("html_url", out var urlElem) ? urlElem.GetString() ?? string.Empty : string.Empty;
 
         string? downloadUrl = null;
         long downloadSize = 0;
 
-        if (root.TryGetProperty("assets", out var assetsElem) && assetsElem.ValueKind == JsonValueKind.Array)
+        if (latestRelease.TryGetProperty("assets", out var assetsElem) && assetsElem.ValueKind == JsonValueKind.Array)
         {
             // First look for Ardel.exe
             foreach (var asset in assetsElem.EnumerateArray())
@@ -81,7 +112,7 @@ public class UpdateService
         {
             HasUpdate = hasUpdate,
             CurrentVersion = currentVersion,
-            LatestVersion = tagName,
+            LatestVersion = CleanVersionString(tagName),
             ReleaseName = releaseName,
             ReleaseNotes = releaseNotes,
             ReleaseUrl = releaseUrl,
@@ -156,50 +187,57 @@ public class UpdateService
         var scriptContent =
             "@echo off\r\n" +
             "setlocal\r\n" +
-            "set LAUNCHER_PID=%1\r\n" +
-            "set BOOTSTRAPPER_PID=%2\r\n" +
-            "set TARGET_EXE=%~3\r\n" +
-            "set TEMP_EXE=%~4\r\n" +
+            "chcp 65001 >nul\r\n" +
             "\r\n" +
-            ":wait_launcher\r\n" +
-            "if \"%LAUNCHER_PID%\"==\"0\" goto wait_bootstrapper\r\n" +
-            "tasklist /FI \"PID eq %LAUNCHER_PID%\" 2>NUL | find /I \"%LAUNCHER_PID%\" >NUL\r\n" +
+            "set MAX_WAIT=30\r\n" +
+            "set COUNT=0\r\n" +
+            "\r\n" +
+            ":wait_loop\r\n" +
+            "set /a COUNT+=1\r\n" +
+            "if %COUNT% gtr %MAX_WAIT% goto force_kill\r\n" +
+            "\r\n" +
+            $"tasklist /fi \"PID eq {launcherPid}\" 2>nul | find \"{launcherPid}\" >nul\r\n" +
             "if not errorlevel 1 (\r\n" +
-            "    timeout /t 1 /nobreak >NUL\r\n" +
-            "    goto wait_launcher\r\n" +
+            "    powershell -NoProfile -Command \"Start-Sleep -Milliseconds 300\" >nul 2>nul\r\n" +
+            "    goto wait_loop\r\n" +
             ")\r\n" +
             "\r\n" +
-            ":wait_bootstrapper\r\n" +
-            "if \"%BOOTSTRAPPER_PID%\"==\"0\" goto do_replace\r\n" +
-            "tasklist /FI \"PID eq %BOOTSTRAPPER_PID%\" 2>NUL | find /I \"%BOOTSTRAPPER_PID%\" >NUL\r\n" +
-            "if not errorlevel 1 (\r\n" +
-            "    timeout /t 1 /nobreak >NUL\r\n" +
-            "    goto wait_bootstrapper\r\n" +
-            ")\r\n" +
+            "goto do_replace\r\n" +
+            "\r\n" +
+            ":force_kill\r\n" +
+            $"taskkill /PID {launcherPid} /F >nul 2>nul\r\n" +
+            (bootstrapperPid > 0 ? $"taskkill /PID {bootstrapperPid} /F >nul 2>nul\r\n" : "") +
+            "powershell -NoProfile -Command \"Start-Sleep -Milliseconds 500\" >nul 2>nul\r\n" +
             "\r\n" +
             ":do_replace\r\n" +
-            "timeout /t 1 /nobreak >NUL\r\n" +
-            "move /Y \"%TEMP_EXE%\" \"%TARGET_EXE%\" >NUL\r\n" +
+            "set RETRY=0\r\n" +
+            ":copy_loop\r\n" +
+            "set /a RETRY+=1\r\n" +
+            $"copy /Y \"{downloadedFilePath}\" \"{targetExe}\" >nul 2>nul\r\n" +
             "if errorlevel 1 (\r\n" +
-            "    copy /Y \"%TEMP_EXE%\" \"%TARGET_EXE%\" >NUL\r\n" +
-            "    del /F /Q \"%TEMP_EXE%\" >NUL\r\n" +
+            "    if %RETRY% leq 15 (\r\n" +
+            "        powershell -NoProfile -Command \"Start-Sleep -Milliseconds 500\" >nul 2>nul\r\n" +
+            "        goto copy_loop\r\n" +
+            "    )\r\n" +
             ")\r\n" +
             "\r\n" +
-            "start \"\" \"%TARGET_EXE%\"\r\n" +
-            "exit\r\n";
+            $"del /F /Q \"{downloadedFilePath}\" >nul 2>nul\r\n" +
+            $"start \"\" \"{targetExe}\"\r\n" +
+            "del /F /Q \"%~f0\" >nul 2>nul & exit\r\n";
 
         File.WriteAllText(scriptPath, scriptContent);
 
         var psi = new ProcessStartInfo
         {
             FileName = "cmd.exe",
-            Arguments = $"/c \"\"{scriptPath}\" {launcherPid} {bootstrapperPid} \"{targetExe}\" \"{downloadedFilePath}\"\"",
+            Arguments = $"/c \"{scriptPath}\"",
             CreateNoWindow = true,
             WindowStyle = ProcessWindowStyle.Hidden,
-            UseShellExecute = false
+            UseShellExecute = true
         };
 
         Process.Start(psi);
+        Environment.Exit(0);
         return true;
     }
 

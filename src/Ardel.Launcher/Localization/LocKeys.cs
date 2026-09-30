@@ -856,11 +856,13 @@ public static partial class LocKeys
     public const string Settings_SectionAbout = "Settings_SectionAbout";
     public const string Settings_SectionAboutDesc = "Settings_SectionAboutDesc";
     public const string Settings_CheckUpdate = "Settings_CheckUpdate";
+    public const string Settings_DownloadUpdate = "Settings_DownloadUpdate";
     public const string Settings_UpdateChecking = "Settings_UpdateChecking";
     public const string Settings_UpdateUpToDate = "Settings_UpdateUpToDate";
     public const string Settings_UpdateAvailable = "Settings_UpdateAvailable";
     public const string Settings_UpdateDownloading = "Settings_UpdateDownloading";
     public const string Settings_UpdateRestart = "Settings_UpdateRestart";
+    public const string Settings_UpdateReadyToRestart = "Settings_UpdateReadyToRestart";
     public const string Settings_UpdateFailed = "Settings_UpdateFailed";
     public const string Settings_UpdateReleaseNotes = "Settings_UpdateReleaseNotes";
     public const string Skin_NameSteve = "Skin_NameSteve";

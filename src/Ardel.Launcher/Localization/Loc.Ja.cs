@@ -748,11 +748,13 @@ public static partial class Loc
         [LocKeys.Settings_SectionAboutDesc] =
             "Ardel のバージョン、ライセンス、謝辞、利用規約。",
         [LocKeys.Settings_CheckUpdate] = "更新を確認",
+        [LocKeys.Settings_DownloadUpdate] = "アップデートをダウンロード",
         [LocKeys.Settings_UpdateChecking] = "更新を確認しています...",
         [LocKeys.Settings_UpdateUpToDate] = "最新バージョンです。",
         [LocKeys.Settings_UpdateAvailable] = "新しいバージョン {0} が利用可能です。",
         [LocKeys.Settings_UpdateDownloading] = "更新をダウンロードしています... {0:0}%",
         [LocKeys.Settings_UpdateRestart] = "再起動して更新を適用",
+        [LocKeys.Settings_UpdateReadyToRestart] = "アップデートがダウンロードされました。ボタンを押して再起動して適用してください。",
         [LocKeys.Settings_UpdateFailed] = "更新の確認に失敗しました: {0}",
         [LocKeys.Settings_UpdateReleaseNotes] = "リリースノート",
         [LocKeys.Skin_NameSteve] = "Steve",

@@ -47,13 +47,17 @@ public partial class HomeViewModel : ObservableObject
     private bool _cachedLogoLight;
     private int _cachedLogoPx = -1;
 
+    private readonly AboutViewModel _about;
+    private bool _updateBannerDismissed;
+
     public HomeViewModel(
         LaunchViewModel launch,
         SettingsService settingsService,
         AccountStore accounts,
         SkinLibraryStore skins,
         WeatherService weather,
-        InstanceStatsStore statsStore)
+        InstanceStatsStore statsStore,
+        AboutViewModel about)
     {
         _launch = launch;
         _settingsService = settingsService;
@@ -61,6 +65,28 @@ public partial class HomeViewModel : ObservableObject
         _skins = skins;
         _weather = weather;
         _statsStore = statsStore;
+        _about = about;
+
+        _about.PropertyChanged += (_, e) =>
+        {
+            if (e.PropertyName is nameof(AboutViewModel.HasUpdate)
+                or nameof(AboutViewModel.IsUpdateReadyToRestart)
+                or nameof(AboutViewModel.IsDownloadingUpdate)
+                or nameof(AboutViewModel.UpdateProgress)
+                or nameof(AboutViewModel.UpdateActionLabel)
+                or nameof(AboutViewModel.UpdateStatusText)
+                or nameof(AboutViewModel.CanApplyUpdate))
+            {
+                OnPropertyChanged(nameof(ShowUpdateBanner));
+                OnPropertyChanged(nameof(UpdateBannerTitle));
+                OnPropertyChanged(nameof(UpdateBannerSubtitle));
+                OnPropertyChanged(nameof(UpdateActionLabel));
+                OnPropertyChanged(nameof(IsDownloadingUpdate));
+                OnPropertyChanged(nameof(CanApplyUpdate));
+                OnPropertyChanged(nameof(UpdateProgress));
+                OnPropertyChanged(nameof(HasReleaseNotes));
+            }
+        };
 
         _launch.Versions.CollectionChanged += OnVersionsChanged;
         _launch.PropertyChanged += (_, e) =>
@@ -279,7 +305,37 @@ public partial class HomeViewModel : ObservableObject
         _ = EnsureVersionsLoadedAsync();
     }
 
-    public void Relocalize() => Refresh();
+    public bool ShowUpdateBanner => _about.HasUpdate && !_updateBannerDismissed;
+    public string UpdateBannerTitle => _about.IsUpdateReadyToRestart
+        ? Loc.Get(LocKeys.Settings_UpdateReadyToRestart)
+        : Loc.Format(LocKeys.Settings_UpdateAvailable, _about.LatestVersion);
+    public string UpdateBannerSubtitle => _about.UpdateStatusText;
+    public string UpdateActionLabel => _about.UpdateActionLabel;
+    public bool IsDownloadingUpdate => _about.IsDownloadingUpdate;
+    public bool CanApplyUpdate => _about.CanApplyUpdate;
+    public double UpdateProgress => _about.UpdateProgress;
+    public bool HasReleaseNotes => _about.HasReleaseNotes;
+
+    [RelayCommand]
+    public async Task ApplyUpdateAsync() => await _about.ApplyUpdateAsync();
+
+    [RelayCommand]
+    public async Task OpenReleaseNotesAsync() => await _about.OpenReleaseNotesAsync();
+
+    [RelayCommand]
+    public void DismissUpdateBanner()
+    {
+        _updateBannerDismissed = true;
+        OnPropertyChanged(nameof(ShowUpdateBanner));
+    }
+
+    public void Relocalize()
+    {
+        Refresh();
+        OnPropertyChanged(nameof(UpdateBannerTitle));
+        OnPropertyChanged(nameof(UpdateBannerSubtitle));
+        OnPropertyChanged(nameof(UpdateActionLabel));
+    }
 
     /// <summary>Re-apply home widget prefs after Settings changes (clock format, weather region, etc.).</summary>
     public void ApplyPreferenceRefresh(bool refreshWeather = false)

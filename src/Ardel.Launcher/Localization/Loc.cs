@@ -884,11 +884,13 @@ public static partial class Loc
         [LocKeys.Settings_SectionAboutDesc] =
             "Version, license, open-source credits, and terms of service.",
         [LocKeys.Settings_CheckUpdate] = "Check for updates",
+        [LocKeys.Settings_DownloadUpdate] = "Download update",
         [LocKeys.Settings_UpdateChecking] = "Checking for updates...",
         [LocKeys.Settings_UpdateUpToDate] = "Ardel is up to date.",
         [LocKeys.Settings_UpdateAvailable] = "Version {0} is available.",
         [LocKeys.Settings_UpdateDownloading] = "Downloading update... {0:0}%",
         [LocKeys.Settings_UpdateRestart] = "Restart to update",
+        [LocKeys.Settings_UpdateReadyToRestart] = "Update downloaded. Tap the button to restart and apply.",
         [LocKeys.Settings_UpdateFailed] = "Update check failed: {0}",
         [LocKeys.Settings_UpdateReleaseNotes] = "Release notes",
         [LocKeys.Skin_NameSteve] = "Steve",

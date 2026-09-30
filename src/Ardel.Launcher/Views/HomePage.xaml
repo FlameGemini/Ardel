@@ -14,8 +14,57 @@
             <RowDefinition Height="*" />     <!-- 1: Pure Canvas: Centered Greeting & Bottom-Right Launch CTA -->
         </Grid.RowDefinitions>
 
-        <!-- Row 0: Ambient Top Indicators (Weather) -->
+        <!-- Row 0: Ambient Top Indicators (Update Banner on Left, Weather on Right) -->
         <Grid Grid.Row="0">
+            <!-- Left: Update Banner -->
+            <Border
+                x:Name="UpdateBanner"
+                HorizontalAlignment="Left"
+                VerticalAlignment="Center"
+                Background="{ThemeResource LayerFillColorDefaultBrush}"
+                BorderBrush="{ThemeResource ArdelAccentBrush}"
+                BorderThickness="1"
+                CornerRadius="8"
+                Padding="12,6"
+                Visibility="{x:Bind ViewModel.ShowUpdateBanner, Mode=OneWay, Converter={StaticResource BoolToVisibility}}">
+                <StackPanel Orientation="Horizontal" Spacing="10" VerticalAlignment="Center">
+                    <FontIcon Glyph="&#xE896;" FontSize="13" Foreground="{ThemeResource ArdelAccentBrush}" VerticalAlignment="Center" />
+                    <TextBlock
+                        Text="{x:Bind ViewModel.UpdateBannerTitle, Mode=OneWay}"
+                        FontSize="12"
+                        FontWeight="SemiBold"
+                        VerticalAlignment="Center" />
+                    <Button
+                        Style="{ThemeResource AccentButtonStyle}"
+                        Padding="12,4"
+                        MinHeight="28"
+                        Command="{x:Bind ViewModel.ApplyUpdateCommand}"
+                        IsEnabled="{x:Bind ViewModel.CanApplyUpdate, Mode=OneWay}">
+                        <StackPanel Orientation="Horizontal" Spacing="6">
+                            <ProgressRing
+                                IsActive="{x:Bind ViewModel.IsDownloadingUpdate, Mode=OneWay}"
+                                Width="12"
+                                Height="12"
+                                Visibility="{x:Bind ViewModel.IsDownloadingUpdate, Mode=OneWay, Converter={StaticResource BoolToVisibility}}" />
+                            <TextBlock Text="{x:Bind ViewModel.UpdateActionLabel, Mode=OneWay}" FontSize="12" VerticalAlignment="Center" />
+                        </StackPanel>
+                    </Button>
+                    <Button
+                        Style="{StaticResource ArdelIconButtonStyle}"
+                        Padding="4"
+                        Command="{x:Bind ViewModel.OpenReleaseNotesCommand}"
+                        Visibility="{x:Bind ViewModel.HasReleaseNotes, Mode=OneWay, Converter={StaticResource BoolToVisibility}}">
+                        <FontIcon Glyph="&#xE8A7;" FontSize="11" Opacity="0.75" />
+                    </Button>
+                    <Button
+                        Style="{StaticResource ArdelIconButtonStyle}"
+                        Padding="4"
+                        Command="{x:Bind ViewModel.DismissUpdateBannerCommand}">
+                        <FontIcon Glyph="&#xE711;" FontSize="10" Opacity="0.6" />
+                    </Button>
+                </StackPanel>
+            </Border>
+
             <!-- Right: Weather -->
             <StackPanel
                 x:Name="WeatherPanel"

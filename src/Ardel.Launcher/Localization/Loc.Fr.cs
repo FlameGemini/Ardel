@@ -742,11 +742,13 @@ public static partial class Loc
         [LocKeys.Settings_SectionAboutDesc] =
             "Version, licence, remerciements et conditions d'utilisation d'Ardel.",
         [LocKeys.Settings_CheckUpdate] = "Vérifier les mises à jour",
+        [LocKeys.Settings_DownloadUpdate] = "Télécharger la mise à jour",
         [LocKeys.Settings_UpdateChecking] = "Vérification des mises à jour...",
         [LocKeys.Settings_UpdateUpToDate] = "Ardel est à jour.",
         [LocKeys.Settings_UpdateAvailable] = "La version {0} est disponible.",
         [LocKeys.Settings_UpdateDownloading] = "Téléchargement de la mise à jour... {0:0}%",
         [LocKeys.Settings_UpdateRestart] = "Redémarrer pour mettre à jour",
+        [LocKeys.Settings_UpdateReadyToRestart] = "Mise à jour téléchargée. Cliquez sur le bouton pour redémarrer et appliquer.",
         [LocKeys.Settings_UpdateFailed] = "Échec de la vérification de mise à jour : {0}",
         [LocKeys.Settings_UpdateReleaseNotes] = "Notes de version",
         [LocKeys.Skin_NameSteve] = "Steve",

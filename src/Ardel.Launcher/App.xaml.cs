@@ -50,6 +50,21 @@ public partial class App : Application
                 Debug.WriteLine($"[App] Background EnsureMicrosoftSkinsAsync failed: {ex.Message}");
             }
         });
+
+        _ = Task.Run(async () =>
+        {
+            try
+            {
+                await Task.Delay(1500).ConfigureAwait(false);
+                var aboutVm = Services.GetService<AboutViewModel>();
+                if (aboutVm is not null)
+                    await aboutVm.CheckUpdateAsync(silent: true).ConfigureAwait(false);
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine($"[App] Background update check failed: {ex.Message}");
+            }
+        });
     }
 
     public static IServiceProvider Services { get; private set; } = null!;
@@ -336,7 +351,6 @@ public partial class App : Application
         try
         {
             var bootSettings = _bootSettings ??= new SettingsService();
-            bootSettings.InvalidateCache();
             var settings = bootSettings.Load();
             savedTheme = settings.AppTheme ?? "Default";
             splashOptions = StartupSplashOptions.FromSettings(settings);
@@ -368,9 +382,19 @@ public partial class App : Application
         }
 
         StartupClock.Mark("Navigate begin");
-        if (!needOobe)
+        if (!needOobe && !splashOptions.Enabled)
+        {
+            _window.InitializeNavigation();
+            StartupClock.Mark("Navigate done (immediate)");
+        }
+        else if (!needOobe)
+        {
             StartupClock.Mark("Navigate deferred until after splash");
-        StartupClock.Mark("Navigate done");
+        }
+        else
+        {
+            StartupClock.Mark("Navigate done");
+        }
 
         if (needOobe)
             OobeHost.Show(_window);
@@ -422,14 +446,16 @@ public partial class App : Application
             }
             else
             {
-                StartupClock.Mark("Navigate begin (deferred)");
-                _window.InitializeNavigation();
-                StartupClock.Mark("Navigate done (deferred)");
-
                 if (splashOptions.Enabled)
-                    await StartupSplash.CloseWhenReadyAsync(_window, splashOptions.DurationMs).ConfigureAwait(false);
+                {
+                    StartupClock.Mark("Navigate begin (deferred)");
+                    _window.InitializeNavigation();
+                    StartupClock.Mark("Navigate done (deferred)");
 
-                StartupClock.Mark("Splash closed");
+                    await StartupSplash.CloseWhenReadyAsync(_window, splashOptions.DurationMs).ConfigureAwait(false);
+                    StartupClock.Mark("Splash closed");
+                }
+
                 dq.TryEnqueue(MarkStartupComplete);
             }
 
