@@ -132,37 +132,102 @@ public class UpdateService
         var updateDir = GetUpdatesDirectory();
         Directory.CreateDirectory(updateDir);
 
+        // Clean up previous temporary update artifacts
+        try
+        {
+            foreach (var file in Directory.GetFiles(updateDir))
+            {
+                try { File.Delete(file); } catch { }
+            }
+        }
+        catch { }
+
         var tempFilePath = Path.Combine(updateDir, $"Ardel_Update_{CleanVersionString(update.LatestVersion)}.exe");
 
-        using var response = await _httpClient.GetAsync(
-            update.DownloadUrl,
-            HttpCompletionOption.ResponseHeadersRead,
-            cancellationToken).ConfigureAwait(false);
-        response.EnsureSuccessStatusCode();
+        var candidates = BuildDownloadCandidates(update.DownloadUrl);
+        Exception? lastEx = null;
 
-        var totalBytes = response.Content.Headers.ContentLength ?? update.DownloadSize;
-
-        await using var contentStream = await response.Content.ReadAsStreamAsync(cancellationToken).ConfigureAwait(false);
-        await using var fileStream = new FileStream(tempFilePath, FileMode.Create, FileAccess.Write, FileShare.None, 81920, true);
-
-        var buffer = new byte[81920];
-        long totalRead = 0;
-        int bytesRead;
-
-        while ((bytesRead = await contentStream.ReadAsync(buffer.AsMemory(0, buffer.Length), cancellationToken).ConfigureAwait(false)) > 0)
+        foreach (var url in candidates)
         {
-            await fileStream.WriteAsync(buffer.AsMemory(0, bytesRead), cancellationToken).ConfigureAwait(false);
-            totalRead += bytesRead;
-
-            if (totalBytes > 0)
+            try
             {
-                var percentage = (double)totalRead / totalBytes * 100.0;
-                progress?.Report(percentage);
+                using var cts = CancellationTokenSource.CreateLinkedTokenSource(cancellationToken);
+                cts.CancelAfter(TimeSpan.FromMinutes(5));
+
+                using var request = new HttpRequestMessage(HttpMethod.Get, url);
+                using var response = await _httpClient.SendAsync(
+                    request,
+                    HttpCompletionOption.ResponseHeadersRead,
+                    cts.Token).ConfigureAwait(false);
+
+                if (!response.IsSuccessStatusCode)
+                    continue;
+
+                var totalBytes = response.Content.Headers.ContentLength ?? update.DownloadSize;
+
+                await using var contentStream = await response.Content.ReadAsStreamAsync(cts.Token).ConfigureAwait(false);
+                await using var fileStream = new FileStream(
+                    tempFilePath,
+                    FileMode.Create,
+                    FileAccess.Write,
+                    FileShare.None,
+                    bufferSize: 524288,
+                    useAsync: true);
+
+                var buffer = new byte[524288]; // 512 KB buffer for high-throughput downloads
+                long totalRead = 0;
+                int bytesRead;
+                double lastReportedPct = -1;
+
+                while ((bytesRead = await contentStream.ReadAsync(buffer.AsMemory(0, buffer.Length), cts.Token).ConfigureAwait(false)) > 0)
+                {
+                    await fileStream.WriteAsync(buffer.AsMemory(0, bytesRead), cts.Token).ConfigureAwait(false);
+                    totalRead += bytesRead;
+
+                    if (totalBytes > 0)
+                    {
+                        var percentage = (double)totalRead / totalBytes * 100.0;
+                        if (percentage - lastReportedPct >= 0.5 || percentage >= 99.9)
+                        {
+                            lastReportedPct = percentage;
+                            progress?.Report(percentage);
+                        }
+                    }
+                }
+
+                progress?.Report(100.0);
+                return tempFilePath;
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine($"[UpdateService] Download candidate '{url}' failed: {ex.Message}");
+                lastEx = ex;
+                if (File.Exists(tempFilePath))
+                {
+                    try { File.Delete(tempFilePath); } catch { }
+                }
             }
         }
 
-        progress?.Report(100.0);
-        return tempFilePath;
+        throw new HttpRequestException($"Failed to download update from all candidates. Last error: {lastEx?.Message}", lastEx);
+    }
+
+    private static List<string> BuildDownloadCandidates(string rawUrl)
+    {
+        var list = new List<string>();
+        if (string.IsNullOrWhiteSpace(rawUrl))
+            return list;
+
+        if (rawUrl.Contains("github.com", StringComparison.OrdinalIgnoreCase) ||
+            rawUrl.Contains("githubusercontent.com", StringComparison.OrdinalIgnoreCase))
+        {
+            list.Add($"https://mirror.ghproxy.com/{rawUrl}");
+            list.Add($"https://ghproxy.net/{rawUrl}");
+            list.Add($"https://gh-proxy.com/{rawUrl}");
+        }
+
+        list.Add(rawUrl);
+        return list;
     }
 
     public bool ApplyUpdateAndRestart(string downloadedFilePath)

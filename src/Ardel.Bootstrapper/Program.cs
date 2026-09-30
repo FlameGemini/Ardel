@@ -88,6 +88,23 @@ internal static class Program
 
                     File.WriteAllText(completeMarker, payloadHash);
                 }
+
+                // Clean up stale runtime payload directories to prevent disk clutter
+                try
+                {
+                    if (Directory.Exists(baseRuntimeDir))
+                    {
+                        foreach (var dir in Directory.GetDirectories(baseRuntimeDir))
+                        {
+                            var dirName = Path.GetFileName(dir);
+                            if (!string.Equals(dirName, payloadHash, StringComparison.OrdinalIgnoreCase))
+                            {
+                                try { Directory.Delete(dir, true); } catch { }
+                            }
+                        }
+                    }
+                }
+                catch { }
             }
             finally
             {
