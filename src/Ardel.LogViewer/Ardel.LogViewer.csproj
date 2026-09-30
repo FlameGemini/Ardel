@@ -15,8 +15,8 @@
     <Company>Ice Tea Studio</Company>
     <Authors>Ice Tea Studio</Authors>
     <Copyright>Copyright (c) 2026 Ice Tea Studio. All rights reserved.</Copyright>
-    <Version>1.5.3</Version>
-    <AssemblyVersion>1.5.3.0</AssemblyVersion>
-    <FileVersion>1.5.3.0</FileVersion>
+    <Version>1.5.4</Version>
+    <AssemblyVersion>1.5.4.0</AssemblyVersion>
+    <FileVersion>1.5.4.0</FileVersion>
   </PropertyGroup>
 </Project>
