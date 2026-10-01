@@ -1,4 +1,5 @@
 using System.Diagnostics;
+using System.Formats.Tar;
 using System.IO.Compression;
 using System.Reflection;
 using System.Security.Cryptography;
@@ -33,7 +34,8 @@ internal static class Program
             // 3. Locate embedded payload
             var assembly = Assembly.GetExecutingAssembly();
             string? resourceName = assembly.GetManifestResourceNames()
-                .FirstOrDefault(n => n.EndsWith("payload.zip", StringComparison.OrdinalIgnoreCase));
+                .FirstOrDefault(n => n.EndsWith("payload.tar.br", StringComparison.OrdinalIgnoreCase) ||
+                                     n.EndsWith("payload.zip", StringComparison.OrdinalIgnoreCase));
 
             if (resourceName == null)
             {
@@ -81,9 +83,17 @@ internal static class Program
                     Directory.CreateDirectory(appRuntimeDir);
 
                     using (var stream = assembly.GetManifestResourceStream(resourceName)!)
-                    using (var archive = new ZipArchive(stream, ZipArchiveMode.Read))
                     {
-                        archive.ExtractToDirectory(appRuntimeDir, overwriteFiles: true);
+                        if (resourceName.EndsWith(".tar.br", StringComparison.OrdinalIgnoreCase))
+                        {
+                            using var brotli = new BrotliStream(stream, CompressionMode.Decompress);
+                            TarFile.ExtractToDirectory(brotli, appRuntimeDir, overwriteFiles: true);
+                        }
+                        else
+                        {
+                            using var archive = new ZipArchive(stream, ZipArchiveMode.Read);
+                            archive.ExtractToDirectory(appRuntimeDir, overwriteFiles: true);
+                        }
                     }
 
                     File.WriteAllText(completeMarker, payloadHash);

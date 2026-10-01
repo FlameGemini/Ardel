@@ -30,6 +30,7 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <EmbeddedResource Include="payload.tar.br" Condition="Exists('payload.tar.br')" />
     <EmbeddedResource Include="payload.zip" Condition="Exists('payload.zip')" />
   </ItemGroup>
 </Project>
