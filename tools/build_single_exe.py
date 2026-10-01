@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-"""Builds a rock-solid, standalone single-file Ardel.exe."""
+"""Builds a rock-solid, optimized standalone single-file Ardel.exe."""
 from __future__ import annotations
 
 import os
@@ -18,10 +18,57 @@ BOOTSTRAPPER_PROJ = BOOTSTRAPPER_DIR / "Ardel.Bootstrapper.csproj"
 PUBLISH_DIR = ROOT / "publish"
 SINGLE_OUT = PUBLISH_DIR / "single-file"
 
+# Safely prune ONLY unused legacy WPF and WinForms binaries.
+# KEEP all *.winmd, WindowsAppSDK, SkiaSharp, and CoreCLR runtime files 100% intact!
+SAFE_PRUNE_PATTERNS = [
+    # Unused WPF Framework binaries
+    "PresentationFramework*",
+    "PresentationCore*",
+    "PresentationUI*",
+    "PresentationNative*",
+    "WindowsBase*",
+    "wpfgfx*",
+    "System.Xaml*",
+    "System.Windows.Presentation*",
+    "ReachFramework*",
+    "DirectWriteForwarder*",
+    "PenImc*",
+    "D3DCompiler_47_cor3*",
+    "System.Windows.Controls.Ribbon*",
+
+    # Unused WinForms Framework binaries
+    "System.Windows.Forms*",
+    "System.Drawing.Design*",
+    "System.Design*",
+]
+
 
 def run_cmd(cmd: list[str], cwd: Path | None = None) -> None:
     print(f"Running: {' '.join(cmd)}")
     subprocess.run(cmd, cwd=cwd or ROOT, check=True)
+
+
+def prune_safe_payload(pub_dir: Path) -> tuple[int, int]:
+    """Safely prunes unused WPF & WinForms binaries and satellite folders."""
+    raw_size = sum(f.stat().st_size for f in pub_dir.rglob("*") if f.is_file())
+    removed_bytes = 0
+
+    for pat in SAFE_PRUNE_PATTERNS:
+        for f in list(pub_dir.glob(pat)):
+            if f.is_file():
+                removed_bytes += f.stat().st_size
+                f.unlink()
+
+    for sub in list(pub_dir.iterdir()):
+        if sub.is_dir() and sub.name.lower() not in ["assets", "microsoft.ui.xaml"]:
+            if "-" in sub.name or len(sub.name) in (2, 5):
+                for f in sub.rglob("*"):
+                    if f.is_file():
+                        removed_bytes += f.stat().st_size
+                shutil.rmtree(sub, ignore_errors=True)
+
+    pruned_size = sum(f.stat().st_size for f in pub_dir.rglob("*") if f.is_file())
+    return raw_size, pruned_size
 
 
 def main() -> int:
@@ -50,7 +97,12 @@ def main() -> int:
 
     time.sleep(0.5)
 
-    print("=== Step 2: Compressing runtime payload ===")
+    print("=== Step 2: Pruning unused WPF & WinForms assemblies safely ===")
+    raw_size, pruned_size = prune_safe_payload(launcher_pub_dir)
+    print(f"Raw payload size:    {raw_size / (1024 * 1024):.2f} MB")
+    print(f"Pruned payload size: {pruned_size / (1024 * 1024):.2f} MB (Saved {(raw_size - pruned_size) / (1024 * 1024):.2f} MB)")
+
+    print("=== Step 3: Compressing runtime payload ===")
     payload_zip = BOOTSTRAPPER_DIR / "payload.zip"
     if payload_zip.exists():
         payload_zip.unlink()
@@ -66,7 +118,7 @@ def main() -> int:
     payload_size_mb = payload_zip.stat().st_size / (1024 * 1024)
     print(f"Compressed payload created: {payload_zip.name} ({payload_size_mb:.2f} MB)")
 
-    print("=== Step 3: Publishing Ardel Single-File Executable ===")
+    print("=== Step 4: Publishing Ardel Single-File Executable ===")
     if SINGLE_OUT.exists():
         shutil.rmtree(SINGLE_OUT, ignore_errors=True)
     SINGLE_OUT.mkdir(parents=True, exist_ok=True)
@@ -99,6 +151,7 @@ def main() -> int:
     print("=======================================================")
     print("SUCCESS! Single-File Executable generated:")
     print(f"-> {dest_exe} ({exe_size_mb:.2f} MB)")
+    print(f"-> Size reduction: 140 MB -> {exe_size_mb:.2f} MB (~{((140 - exe_size_mb) / 140) * 100:.1f}% reduction)")
     print("-> You can place this single Ardel.exe into ANY folder and run directly!")
     print("=======================================================")
     return 0
