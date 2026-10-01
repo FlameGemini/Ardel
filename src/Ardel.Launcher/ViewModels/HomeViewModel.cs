@@ -228,6 +228,9 @@ public partial class HomeViewModel : ObservableObject
     public string SelectedInstanceJavaLabel => SelectedInstance?.JavaRequirementLabel ?? string.Empty;
     public string SelectedInstanceIconGlyph => SelectedInstance?.IconGlyph ?? "\uE7FC";
     public BitmapImage? SelectedInstanceIconImage => SelectedInstance?.IconImage;
+    public bool HasCustomInstanceIcon => SelectedInstanceIconImage != null;
+    public bool HasPlayTime => !string.IsNullOrEmpty(InstanceTotalPlayTime) && InstanceTotalPlayTime != "--";
+    public bool HasLastPlayed => !string.IsNullOrEmpty(InstanceLastPlayed) && InstanceLastPlayed != "--";
 
     partial void OnSelectedInstanceChanged(GameVersionItem? value)
     {
@@ -253,6 +256,9 @@ public partial class HomeViewModel : ObservableObject
         OnPropertyChanged(nameof(SelectedInstanceJavaLabel));
         OnPropertyChanged(nameof(SelectedInstanceIconGlyph));
         OnPropertyChanged(nameof(SelectedInstanceIconImage));
+        OnPropertyChanged(nameof(HasCustomInstanceIcon));
+        OnPropertyChanged(nameof(HasPlayTime));
+        OnPropertyChanged(nameof(HasLastPlayed));
     }
 
     /// <summary>Instance name when pinned; otherwise the empty-pin hint — shown under the launch title inside the button.</summary>
@@ -892,6 +898,16 @@ public partial class HomeViewModel : ObservableObject
         {
             item = _launch.Versions.FirstOrDefault(v =>
                 string.Equals(v.Id, id, StringComparison.OrdinalIgnoreCase));
+        }
+
+        if (item is null && _launch.SelectedVersion is not null)
+        {
+            item = _launch.SelectedVersion;
+        }
+
+        if (item is null && _launch.Versions.Count > 0)
+        {
+            item = _launch.Versions[0];
         }
 
         if (item is null)
