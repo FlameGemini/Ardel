@@ -93,7 +93,8 @@ public partial class HomeViewModel : ObservableObject
         {
             if (e.PropertyName is nameof(LaunchViewModel.IsLaunching)
                 or nameof(LaunchViewModel.IsLocalReady)
-                or nameof(LaunchViewModel.HasSignedInAccount))
+                or nameof(LaunchViewModel.HasSignedInAccount)
+                or nameof(LaunchViewModel.SelectedVersion))
             {
                 RefreshQuickLaunch();
                 RefreshPlayerAccountInfo();
