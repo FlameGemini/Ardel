@@ -128,6 +128,8 @@ def main() -> int:
         "-c", "Release",
         "-r", "win-x64",
         "-p:PublishSingleFile=true",
+        "-p:PublishTrimmed=true",
+        "-p:TrimMode=partial",
         "-p:IncludeNativeLibrariesForSelfExtract=true",
         "-p:EnableCompressionInSingleFile=true",
         "--self-contained", "true",
