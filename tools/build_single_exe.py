@@ -49,7 +49,7 @@ def run_cmd(cmd: list[str], cwd: Path | None = None) -> None:
 
 
 def prune_safe_payload(pub_dir: Path) -> tuple[int, int]:
-    """Safely prunes unused WPF & WinForms binaries and satellite folders."""
+    """Safely prunes unused WPF & WinForms binaries. Keeps all MUI, WinUI, WinMD, and runtime resources intact."""
     raw_size = sum(f.stat().st_size for f in pub_dir.rglob("*") if f.is_file())
     removed_bytes = 0
 
@@ -59,13 +59,11 @@ def prune_safe_payload(pub_dir: Path) -> tuple[int, int]:
                 removed_bytes += f.stat().st_size
                 f.unlink()
 
-    for sub in list(pub_dir.iterdir()):
-        if sub.is_dir() and sub.name.lower() not in ["assets", "microsoft.ui.xaml"]:
-            if "-" in sub.name or len(sub.name) in (2, 5):
-                for f in sub.rglob("*"):
-                    if f.is_file():
-                        removed_bytes += f.stat().st_size
-                shutil.rmtree(sub, ignore_errors=True)
+    # Safely remove WPF / WinForms satellite resource dlls without touching any MUI or WinUI files
+    for f in list(pub_dir.rglob("*.resources.dll")):
+        if any(f.name.startswith(p.rstrip("*")) for p in SAFE_PRUNE_PATTERNS):
+            removed_bytes += f.stat().st_size
+            f.unlink()
 
     pruned_size = sum(f.stat().st_size for f in pub_dir.rglob("*") if f.is_file())
     return raw_size, pruned_size
