@@ -137,45 +137,19 @@ def main() -> int:
     print(f"Raw payload size:    {raw_size / (1024 * 1024):.2f} MB")
     print(f"Pruned payload size: {pruned_size / (1024 * 1024):.2f} MB (Stripped {(raw_size - pruned_size) / (1024 * 1024):.2f} MB)")
 
-    print("=== Step 3: Compressing runtime payload (TAR + Brotli Stream) ===")
-    payload_br = BOOTSTRAPPER_DIR / "payload.tar.br"
+    print("=== Step 3: Compressing runtime payload ===")
     payload_zip = BOOTSTRAPPER_DIR / "payload.zip"
-    if payload_br.exists():
-        payload_br.unlink()
     if payload_zip.exists():
         payload_zip.unlink()
 
-    import io
-    import tarfile
-    try:
-        import brotli
-        use_brotli = True
-    except ImportError:
-        use_brotli = False
+    with zipfile.ZipFile(payload_zip, "w", zipfile.ZIP_DEFLATED, compresslevel=9) as zf:
+        for file in launcher_pub_dir.rglob("*"):
+            if file.is_file() and file.suffix.lower() != ".pdb":
+                arcname = file.relative_to(launcher_pub_dir)
+                zf.write(file, arcname)
 
-    if use_brotli:
-        print("Packing TAR stream...")
-        tar_buf = io.BytesIO()
-        with tarfile.open(fileobj=tar_buf, mode="w") as tar:
-            for file in launcher_pub_dir.rglob("*"):
-                if file.is_file() and file.suffix.lower() != ".pdb":
-                    arcname = str(file.relative_to(launcher_pub_dir))
-                    tar.add(file, arcname=arcname)
-        print("Compressing payload with Brotli (fast mode)...")
-        raw_bytes = tar_buf.getvalue()
-        compressed_data = brotli.compress(raw_bytes, quality=6)
-        payload_br.write_bytes(compressed_data)
-        payload_size_mb = payload_br.stat().st_size / (1024 * 1024)
-        print(f"Brotli compressed payload created: {payload_br.name} ({payload_size_mb:.2f} MB)")
-    else:
-        print("Compressing payload with Zip Deflate...")
-        with zipfile.ZipFile(payload_zip, "w", zipfile.ZIP_DEFLATED, compresslevel=9) as zf:
-            for file in launcher_pub_dir.rglob("*"):
-                if file.is_file() and file.suffix.lower() != ".pdb":
-                    arcname = file.relative_to(launcher_pub_dir)
-                    zf.write(file, arcname)
-        payload_size_mb = payload_zip.stat().st_size / (1024 * 1024)
-        print(f"Zip compressed payload created: {payload_zip.name} ({payload_size_mb:.2f} MB)")
+    payload_size_mb = payload_zip.stat().st_size / (1024 * 1024)
+    print(f"Compressed payload created: {payload_zip.name} ({payload_size_mb:.2f} MB)")
 
     print("=== Step 4: Publishing Ardel Single-File Executable ===")
     if SINGLE_OUT.exists():
@@ -187,9 +161,6 @@ def main() -> int:
         "-c", "Release",
         "-r", "win-x64",
         "-p:PublishSingleFile=true",
-        "-p:PublishTrimmed=true",
-        "-p:TrimMode=full",
-        "-p:InvariantGlobalization=true",
         "-p:IncludeNativeLibrariesForSelfExtract=true",
         "-p:EnableCompressionInSingleFile=true",
         "--self-contained", "true",
@@ -205,9 +176,7 @@ def main() -> int:
     dest_exe = PUBLISH_DIR / "Ardel.exe"
     shutil.copy2(single_exe, dest_exe)
 
-    # Clean up intermediate payloads
-    if payload_br.exists():
-        payload_br.unlink()
+    # Clean up intermediate payload
     if payload_zip.exists():
         payload_zip.unlink()
 
