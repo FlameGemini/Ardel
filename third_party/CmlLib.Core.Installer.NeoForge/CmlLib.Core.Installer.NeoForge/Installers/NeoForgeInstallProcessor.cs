@@ -1,4 +1,4 @@
-﻿using System.Diagnostics;
+using System.Diagnostics;
 using System.Text;
 using System.Text.Json;
 using CmlLib.Core.Installers;
@@ -207,6 +207,9 @@ public class NeoForgeInstallProcessor
         {
             FileName = _javaPath,
             Arguments = argBuilder.ToString(),
+            CreateNoWindow = true,
+            UseShellExecute = false,
+            WindowStyle = ProcessWindowStyle.Hidden
         };
 
         var p = new ProcessWrapper(process);

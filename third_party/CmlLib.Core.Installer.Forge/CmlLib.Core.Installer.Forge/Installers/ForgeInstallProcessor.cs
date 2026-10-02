@@ -1,4 +1,4 @@
-﻿using CmlLib.Core.Installers;
+using CmlLib.Core.Installers;
 using CmlLib.Core.ProcessBuilder;
 using CmlLib.Utils;
 using System.Diagnostics;
@@ -206,6 +206,9 @@ public class ForgeInstallProcessor
         {
             FileName = _javaPath,
             Arguments = argBuilder.ToString(),
+            CreateNoWindow = true,
+            UseShellExecute = false,
+            WindowStyle = ProcessWindowStyle.Hidden
         };
 
         var p = new ProcessWrapper(process);
