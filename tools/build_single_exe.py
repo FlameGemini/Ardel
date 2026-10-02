@@ -18,10 +18,10 @@ BOOTSTRAPPER_PROJ = BOOTSTRAPPER_DIR / "Ardel.Bootstrapper.csproj"
 PUBLISH_DIR = ROOT / "publish"
 SINGLE_OUT = PUBLISH_DIR / "single-file"
 
-# Safely prune ONLY unused legacy WPF and WinForms binaries.
-# KEEP all *.winmd, WindowsAppSDK, SkiaSharp, and CoreCLR runtime files 100% intact!
+# Safely prune ONLY unused WPF desktop framework binaries.
+# KEEP all WinForms (for LogViewer), WinUI 3, WindowsAppSDK, *.winmd, MUI, SkiaSharp, and CoreCLR runtime files 100% intact!
 SAFE_PRUNE_PATTERNS = [
-    # Unused WPF Framework binaries
+    # Unused WPF Framework binaries (Ardel uses WinUI 3, not WPF)
     "PresentationFramework*",
     "PresentationCore*",
     "PresentationUI*",
@@ -35,11 +35,6 @@ SAFE_PRUNE_PATTERNS = [
     "PenImc*",
     "D3DCompiler_47_cor3*",
     "System.Windows.Controls.Ribbon*",
-
-    # Unused WinForms Framework binaries
-    "System.Windows.Forms*",
-    "System.Drawing.Design*",
-    "System.Design*",
 ]
 
 
