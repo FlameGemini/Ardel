@@ -1447,7 +1447,46 @@ public sealed class MinecraftLaunchService : IMinecraftLaunchService
         }
     }
 
-    private static async Task<string> InstallForgeAsync(
+    private async Task<string> ResolveJavaForInstallerAsync(
+        LauncherSettings settings,
+        string mcId,
+        HttpClient http,
+        CancellationToken cancellationToken)
+    {
+        var required = JavaLocator.GetRequiredJavaMajor(mcId);
+        string? javaPath = settings.JavaPath;
+        if (!string.IsNullOrWhiteSpace(javaPath) && File.Exists(javaPath))
+        {
+            try
+            {
+                var actual = JavaLocator.GetJavaVersion(javaPath);
+                if (!JavaLocator.IsCompatible(actual, required))
+                    javaPath = null;
+            }
+            catch
+            {
+                javaPath = null;
+            }
+        }
+        else
+        {
+            javaPath = null;
+        }
+
+        javaPath ??= JavaRuntimeInstaller.TryFindInstalled(required);
+        javaPath ??= JavaLocator.FindBestMatch(required)?.JavaExePath;
+
+        if (string.IsNullOrWhiteSpace(javaPath) || !File.Exists(javaPath))
+        {
+            javaPath = await JavaRuntimeInstaller
+                .EnsureAsync(required, http, null, cancellationToken)
+                .ConfigureAwait(false);
+        }
+
+        return javaPath;
+    }
+
+    private async Task<string> InstallForgeAsync(
         MinecraftLauncher launcher,
         HttpClient http,
         LauncherSettings settings,
@@ -1456,12 +1495,14 @@ public sealed class MinecraftLaunchService : IMinecraftLaunchService
         string? loaderVersion,
         CancellationToken cancellationToken)
     {
+        var javaPath = await ResolveJavaForInstallerAsync(settings, mcId, http, cancellationToken)
+            .ConfigureAwait(false);
         var forge = new ForgeInstaller(launcher, http);
         var options = new ForgeInstallOptions
         {
             CancellationToken = cancellationToken,
             SkipIfAlreadyInstalled = false,
-            JavaPath = string.IsNullOrWhiteSpace(settings.JavaPath) ? null : settings.JavaPath
+            JavaPath = javaPath
         };
 
         var installed = string.IsNullOrWhiteSpace(loaderVersion)
@@ -1472,7 +1513,7 @@ public sealed class MinecraftLaunchService : IMinecraftLaunchService
             .ConfigureAwait(false);
     }
 
-    private static async Task<string> InstallNeoForgeAsync(
+    private async Task<string> InstallNeoForgeAsync(
         MinecraftLauncher launcher,
         LauncherSettings settings,
         string mcId,
@@ -1480,12 +1521,15 @@ public sealed class MinecraftLaunchService : IMinecraftLaunchService
         string? loaderVersion,
         CancellationToken cancellationToken)
     {
+        var http = GetHttpClient(settings);
+        var javaPath = await ResolveJavaForInstallerAsync(settings, mcId, http, cancellationToken)
+            .ConfigureAwait(false);
         var neo = new NeoForgeInstaller(launcher);
         var options = new NeoForgeInstallOptions
         {
             CancellationToken = cancellationToken,
             SkipIfAlreadyInstalled = false,
-            JavaPath = string.IsNullOrWhiteSpace(settings.JavaPath) ? null : settings.JavaPath
+            JavaPath = javaPath
         };
 
         var installed = string.IsNullOrWhiteSpace(loaderVersion)
