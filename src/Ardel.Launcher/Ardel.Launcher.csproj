@@ -33,9 +33,9 @@
     <Company>Ice Tea Studio</Company>
     <Authors>Ice Tea Studio</Authors>
     <Copyright>Copyright (c) 2026 Ice Tea Studio. All rights reserved.</Copyright>
-    <Version>1.5.5</Version>
-    <AssemblyVersion>1.5.5.0</AssemblyVersion>
-    <FileVersion>1.5.5.0</FileVersion>
+    <Version>1.5.6</Version>
+    <AssemblyVersion>1.5.6.0</AssemblyVersion>
+    <FileVersion>1.5.6.0</FileVersion>
     <RepositoryUrl>https://github.com/FlameGemini/Ardel</RepositoryUrl>
     <ApplicationIcon>Assets\app.ico</ApplicationIcon>
   </PropertyGroup>

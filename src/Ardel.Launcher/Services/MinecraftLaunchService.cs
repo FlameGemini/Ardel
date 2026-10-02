@@ -36,7 +36,7 @@ public sealed class MinecraftLaunchService : IMinecraftLaunchService
     /// </summary>
     private const int HttpMaxConnectionsPerServer = 64;
     /// <summary>Hard ceiling for loader-list HTTP. Cancel tokens alone are unreliable.</summary>
-    private static readonly TimeSpan ListTimeout = TimeSpan.FromSeconds(3);
+    private static readonly TimeSpan ListTimeout = TimeSpan.FromSeconds(15);
     private static readonly System.Text.RegularExpressions.Regex VersionJsonRegex = new(
         "\"version\"\\s*:\\s*\"([^\"]+)\"",
         System.Text.RegularExpressions.RegexOptions.Compiled |
@@ -226,10 +226,12 @@ public sealed class MinecraftLaunchService : IMinecraftLaunchService
         {
             if (useBmclApi)
             {
-                parameters.VersionLoader = new MojangJsonVersionLoaderV2(
+                var local = new LocalJsonVersionLoader(parameters.MinecraftPath!);
+                var mojang = new MojangJsonVersionLoaderV2(
                     parameters.MinecraftPath!,
                     parameters.HttpClient,
                     $"{BmclApiBase}/mc/game/version_manifest_v2.json");
+                parameters.VersionLoader = new VersionLoaderCollection { local, mojang };
             }
 
             var extractors = DefaultFileExtractors.CreateDefault(
@@ -1098,14 +1100,28 @@ public sealed class MinecraftLaunchService : IMinecraftLaunchService
         string mcId,
         CancellationToken cancellationToken)
     {
-        // Fabric meta list via BMCL rewrite on listing client (fast / reliable).
         _ = settings;
         cancellationToken.ThrowIfCancellationRequested();
         using var timeoutCts = CancellationTokenSource.CreateLinkedTokenSource(cancellationToken);
         timeoutCts.CancelAfter(ListTimeout);
-        var fabric = new FabricInstaller(GetListingHttpClient(mirror: true));
+
+        // Try mirror first; if mirror fails or times out, seamlessly fallback to official meta.fabricmc.net
+        try
+        {
+            var fabricMirror = new FabricInstaller(GetListingHttpClient(mirror: true));
+            var loaders = await fabricMirror.GetLoaders(mcId).WaitAsync(timeoutCts.Token).ConfigureAwait(false);
+            if (loaders is not null && loaders.Any())
+                return MapFabricLoaders(loaders);
+        }
+        catch (Exception ex)
+        {
+            Debug.WriteLine($"[MinecraftLaunchService] Fabric mirror list failed, falling back to official: {ex.Message}");
+        }
+
+        cancellationToken.ThrowIfCancellationRequested();
+        var fabricOfficial = new FabricInstaller(GetListingHttpClient(mirror: false));
         return MapFabricLoaders(
-            await fabric.GetLoaders(mcId).WaitAsync(timeoutCts.Token).ConfigureAwait(false));
+            await fabricOfficial.GetLoaders(mcId).WaitAsync(timeoutCts.Token).ConfigureAwait(false));
     }
 
     private static List<ModLoaderVersionOption> MapFabricLoaders(
@@ -1177,10 +1193,21 @@ public sealed class MinecraftLaunchService : IMinecraftLaunchService
         string mcId,
         CancellationToken cancellationToken)
     {
-        // List from BMCL forge index (fast). Install jars still follow UseBmclApi.
         _ = settings;
         cancellationToken.ThrowIfCancellationRequested();
-        return await ListForgeFromBmclAsync(mcId, cancellationToken).ConfigureAwait(false);
+        try
+        {
+            return await ListForgeFromBmclAsync(mcId, cancellationToken).ConfigureAwait(false);
+        }
+        catch (Exception ex)
+        {
+            Debug.WriteLine($"[MinecraftLaunchService] BMCL Forge list failed, falling back to official: {ex.Message}");
+            using var timeoutCts = CancellationTokenSource.CreateLinkedTokenSource(cancellationToken);
+            timeoutCts.CancelAfter(ListTimeout);
+            var forge = new ForgeVersionLoader(GetListingHttpClient(mirror: false));
+            var versions = await forge.GetForgeVersions(mcId).WaitAsync(timeoutCts.Token).ConfigureAwait(false);
+            return MapForgeVersions(versions);
+        }
     }
 
     private static List<ModLoaderVersionOption> MapForgeVersions(IEnumerable<ForgeVersion> versions) =>
@@ -1253,7 +1280,23 @@ public sealed class MinecraftLaunchService : IMinecraftLaunchService
     {
         _ = settings;
         cancellationToken.ThrowIfCancellationRequested();
-        return await ListNeoForgeFromBmclAsync(mcId, cancellationToken).ConfigureAwait(false);
+        try
+        {
+            return await ListNeoForgeFromBmclAsync(mcId, cancellationToken).ConfigureAwait(false);
+        }
+        catch (Exception ex)
+        {
+            Debug.WriteLine($"[MinecraftLaunchService] BMCL NeoForge list failed, falling back to official: {ex.Message}");
+            using var timeoutCts = CancellationTokenSource.CreateLinkedTokenSource(cancellationToken);
+            timeoutCts.CancelAfter(ListTimeout);
+            var neoforge = new NeoForgeVersionLoader(GetListingHttpClient(mirror: false));
+            var versions = await neoforge.GetNeoForgeVersions(mcId).WaitAsync(timeoutCts.Token).ConfigureAwait(false);
+            return versions.Select(v => new ModLoaderVersionOption
+            {
+                Id = v.VersionName,
+                DisplayName = v.VersionName
+            }).ToList();
+        }
     }
 
     private async Task<IReadOnlyList<ModLoaderVersionOption>> ListNeoForgeFromBmclAsync(
