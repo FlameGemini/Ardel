@@ -7,12 +7,13 @@ namespace Ardel.Launcher.Services;
 
 /// <summary>
 /// Resolves and downloads Fabric API into a version's <c>mods/</c> folder.
-/// Prefers Modrinth; falls back to CurseForge website API.
+/// Queries Modrinth and CurseForge in parallel with fast timeouts and fallback.
 /// </summary>
 public sealed class FabricApiModService
 {
     public const string ModrinthSlug = "fabric-api";
     public const int CurseForgeProjectId = 306612;
+    private static readonly TimeSpan ResolveTimeout = TimeSpan.FromSeconds(5);
 
     private static readonly JsonSerializerOptions JsonOptions = new()
     {
@@ -38,49 +39,82 @@ public sealed class FabricApiModService
 
         status?.Report(Loc.Get(LocKeys.FabricApi_Resolving));
 
-        ModFileHit? hit = null;
-        Exception? modrinthError = null;
+        // Query Modrinth and CurseForge concurrently with per-request timeouts.
+        var modrinthTask = ResolveWithTimeoutAsync(
+            ct => ResolveFromModrinthAsync(minecraftVersionId, ct),
+            cancellationToken);
 
-        try
-        {
-            hit = await ResolveFromModrinthAsync(minecraftVersionId, cancellationToken)
-                .ConfigureAwait(false);
-        }
-        catch (Exception ex) when (ex is not OperationCanceledException)
-        {
-            modrinthError = ex;
-        }
+        var curseForgeTask = ResolveWithTimeoutAsync(
+            ct => ResolveFromCurseForgeAsync(minecraftVersionId, ct),
+            cancellationToken);
 
-        if (hit is null)
+        await Task.WhenAll(modrinthTask, curseForgeTask).ConfigureAwait(false);
+
+        var (modrinthHit, modrinthError) = modrinthTask.Result;
+        var (curseForgeHit, curseForgeError) = curseForgeTask.Result;
+
+        var candidates = new List<ModFileHit>();
+        if (modrinthHit is not null) candidates.Add(modrinthHit);
+        if (curseForgeHit is not null) candidates.Add(curseForgeHit);
+
+        if (candidates.Count == 0)
         {
-            try
+            if (modrinthError is not null || curseForgeError is not null)
             {
-                hit = await ResolveFromCurseForgeAsync(minecraftVersionId, cancellationToken)
-                    .ConfigureAwait(false);
-            }
-            catch (Exception ex) when (ex is not OperationCanceledException)
-            {
-                var detail = modrinthError is null
-                    ? ex.Message
-                    : Loc.Format(LocKeys.FabricApi_BothFailed, modrinthError.Message, ex.Message);
+                var detail = modrinthError is not null && curseForgeError is not null
+                    ? Loc.Format(LocKeys.FabricApi_BothFailed, modrinthError.Message, curseForgeError.Message)
+                    : (modrinthError ?? curseForgeError)!.Message;
+
                 throw new InvalidOperationException(
-                    Loc.Format(LocKeys.FabricApi_ResolveFailed, minecraftVersionId, detail),
-                    ex);
+                    Loc.Format(LocKeys.FabricApi_ResolveFailed, minecraftVersionId, detail));
             }
-        }
 
-        if (hit is null)
-        {
             throw new InvalidOperationException(
                 Loc.Format(LocKeys.FabricApi_NotFound, minecraftVersionId));
         }
 
-        status?.Report(Loc.Format(LocKeys.FabricApi_Downloading, hit.FileName, hit.Source));
+        // Try candidate downloads in order
+        Exception? lastDlError = null;
+        foreach (var hit in candidates)
+        {
+            try
+            {
+                status?.Report(Loc.Format(LocKeys.FabricApi_Downloading, hit.FileName, hit.Source));
+                var targetPath = Path.Combine(modsDirectory, hit.FileName);
+                await DownloadFileAsync(hit.DownloadUrl, targetPath, cancellationToken).ConfigureAwait(false);
+                status?.Report(Loc.Format(LocKeys.FabricApi_Installed, hit.FileName, hit.Source));
+                return;
+            }
+            catch (Exception ex) when (ex is not OperationCanceledException)
+            {
+                lastDlError = ex;
+            }
+        }
 
-        var targetPath = Path.Combine(modsDirectory, hit.FileName);
-        await DownloadFileAsync(hit.DownloadUrl, targetPath, cancellationToken).ConfigureAwait(false);
+        if (lastDlError is not null)
+            throw lastDlError;
+    }
 
-        status?.Report(Loc.Format(LocKeys.FabricApi_Installed, hit.FileName, hit.Source));
+    private static async Task<(ModFileHit? Hit, Exception? Error)> ResolveWithTimeoutAsync(
+        Func<CancellationToken, Task<ModFileHit?>> resolver,
+        CancellationToken parentToken)
+    {
+        using var cts = CancellationTokenSource.CreateLinkedTokenSource(parentToken);
+        cts.CancelAfter(ResolveTimeout);
+
+        try
+        {
+            var hit = await resolver(cts.Token).ConfigureAwait(false);
+            return (hit, null);
+        }
+        catch (Exception ex) when (ex is not OperationCanceledException)
+        {
+            return (null, ex);
+        }
+        catch (OperationCanceledException ex) when (!parentToken.IsCancellationRequested)
+        {
+            return (null, new TimeoutException("Request timed out", ex));
+        }
     }
 
     private async Task<ModFileHit?> ResolveFromModrinthAsync(
@@ -92,7 +126,9 @@ public sealed class FabricApiModService
         var url =
             $"https://api.modrinth.com/v2/project/{ModrinthSlug}/version?loaders={loaders}&game_versions={games}&limit=20";
 
-        using var response = await _http.GetAsync(url, cancellationToken).ConfigureAwait(false);
+        using var request = new HttpRequestMessage(HttpMethod.Get, url);
+        using var response = await _http.SendAsync(request, HttpCompletionOption.ResponseContentRead, cancellationToken)
+            .ConfigureAwait(false);
         response.EnsureSuccessStatusCode();
 
         var versions = await response.Content
@@ -123,8 +159,6 @@ public sealed class FabricApiModService
         string minecraftVersionId,
         CancellationToken cancellationToken)
     {
-        // Official CF Core API shape via community proxy (www.curseforge.com/api rejects anonymous clients).
-        // Use /v1/... (not /v1/cf/...), which avoids an HTTPS→HTTP 302 that HttpClient will not follow.
         var url =
             $"https://api.curse.tools/v1/mods/{CurseForgeProjectId}/files" +
             $"?pageSize=50&index=0" +
@@ -133,7 +167,8 @@ public sealed class FabricApiModService
         using var request = new HttpRequestMessage(HttpMethod.Get, url);
         request.Headers.TryAddWithoutValidation("Accept", "application/json");
 
-        using var response = await _http.SendAsync(request, cancellationToken).ConfigureAwait(false);
+        using var response = await _http.SendAsync(request, HttpCompletionOption.ResponseContentRead, cancellationToken)
+            .ConfigureAwait(false);
         response.EnsureSuccessStatusCode();
 
         await using var stream = await response.Content.ReadAsStreamAsync(cancellationToken)

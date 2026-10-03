@@ -634,12 +634,19 @@ public sealed class MinecraftLaunchService : IMinecraftLaunchService
                         var modsDir = Path.Combine(
                             GamePaths.GetVersionInstanceDirectory(installedId, settings.GameDirectory),
                             "mods");
-                        var fabricApi = new FabricApiModService(GetHttpClient(false));
+                        var fabricApi = new FabricApiModService(GetHttpClient(settings));
                         var status = new DirectProgress<string>(message =>
                             fileProgress?.Report(new FileProgressInfo(message, 0, 0)));
-                        await fabricApi
-                            .InstallAsync(mcId, modsDir, status, cancellationToken)
-                            .ConfigureAwait(false);
+                        try
+                        {
+                            await fabricApi
+                                .InstallAsync(mcId, modsDir, status, cancellationToken)
+                                .ConfigureAwait(false);
+                        }
+                        catch (Exception ex) when (ex is not OperationCanceledException)
+                        {
+                            fileProgress?.Report(new FileProgressInfo(ex.Message, 0, 0));
+                        }
                     }
 
                     return installedId;
