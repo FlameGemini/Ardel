@@ -1123,10 +1123,16 @@ public partial class HomeViewModel : ObservableObject
         if (!_homePrefsWarm)
             SyncHomePreferenceCache();
 
-        var id = _quickLaunchVersionId;
-        if (string.IsNullOrEmpty(id) || SelectedInstance is null)
+        var targetInstance = SelectedInstance;
+        if (targetInstance is null && !string.IsNullOrEmpty(_quickLaunchVersionId))
         {
-            // If no quick launch instance is pinned, navigate to instances page so the user can choose
+            targetInstance = _launch.Versions.FirstOrDefault(v =>
+                string.Equals(v.Id, _quickLaunchVersionId, StringComparison.OrdinalIgnoreCase));
+        }
+        targetInstance ??= _launch.SelectedVersion ?? _launch.Versions.FirstOrDefault();
+
+        if (targetInstance is null)
+        {
             (App.MainWindowInstance as MainWindow)?.SelectNavTag("instances");
             return;
         }
@@ -1140,17 +1146,8 @@ public partial class HomeViewModel : ObservableObject
             return;
         }
 
-        if (_launch.Versions.FirstOrDefault(v =>
-                string.Equals(v.Id, id, StringComparison.OrdinalIgnoreCase)) is null)
-        {
-            RefreshQuickLaunch();
-            LaunchQuickCommand.NotifyCanExecuteChanged();
-            (App.MainWindowInstance as MainWindow)?.SelectNavTag("instances");
-            return;
-        }
-
         if (App.MainWindowInstance is MainWindow mainWindow)
-            mainWindow.NavigateToInstancesAndLaunch(id);
+            mainWindow.NavigateToInstancesAndLaunch(targetInstance.Id);
     }
 
     private static async Task ShowNeedLoginAsync()

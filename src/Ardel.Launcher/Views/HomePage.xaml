@@ -120,11 +120,12 @@
                 VerticalAlignment="Bottom"
                 Spacing="12"
                 Margin="0,0,4,8"
-                MaxWidth="320">
+                MaxWidth="320"
+                Visibility="{x:Bind ViewModel.ShowQuickLaunchButton, Mode=OneWay, Converter={StaticResource BoolToVisibility}}">
 
-                <!-- Last Played Instance Card (Clickable to switch / open instance) -->
+                <!-- Last Played Instance Card (Clickable to launch directly) -->
                 <Button
-                    Command="{x:Bind ViewModel.NavigateToInstancesCommand}"
+                    Command="{x:Bind ViewModel.LaunchQuickCommand}"
                     Background="{ThemeResource LayerFillColorDefaultBrush}"
                     BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}"
                     BorderThickness="1"
@@ -195,15 +196,23 @@
                             </StackPanel>
                         </StackPanel>
 
-                        <!-- Right Chevron / Switch Indicator -->
-                        <FontIcon
+                        <!-- Right Play / Launch Indicator -->
+                        <Border
                             Grid.Column="2"
-                            Glyph="&#xE76C;"
-                            FontFamily="Segoe Fluent Icons, Segoe MDL2 Assets"
-                            FontSize="11"
-                            Opacity="0.4"
+                            Width="26"
+                            Height="26"
+                            CornerRadius="13"
+                            Background="{ThemeResource SubtleFillColorSecondaryBrush}"
                             VerticalAlignment="Center"
-                            Margin="4,0,2,0" />
+                            Margin="4,0,2,0">
+                            <FontIcon
+                                Glyph="&#xE768;"
+                                FontFamily="Segoe Fluent Icons, Segoe MDL2 Assets"
+                                FontSize="10"
+                                Foreground="{ThemeResource ArdelAccentBrush}"
+                                HorizontalAlignment="Center"
+                                VerticalAlignment="Center" />
+                        </Border>
                     </Grid>
                 </Button>
 
