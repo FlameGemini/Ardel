@@ -23,18 +23,9 @@ SINGLE_OUT = PUBLISH_DIR / "single-file"
 SAFE_PRUNE_PATTERNS = [
     # Unused WPF Framework binaries (Ardel uses WinUI 3, not WPF)
     "PresentationFramework*",
-    "PresentationCore*",
     "PresentationUI*",
-    "PresentationNative*",
-    "WindowsBase*",
-    "wpfgfx*",
-    "System.Xaml*",
-    "System.Windows.Presentation*",
-    "ReachFramework*",
-    "DirectWriteForwarder*",
-    "PenImc*",
-    "D3DCompiler_47_cor3*",
     "System.Windows.Controls.Ribbon*",
+    "ReachFramework*",
 ]
 
 
