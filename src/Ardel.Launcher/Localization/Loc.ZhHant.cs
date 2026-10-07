@@ -767,7 +767,7 @@ public static partial class Loc
 
         [LocKeys.About_Title] = "關於",
         [LocKeys.About_Subtitle] =
-            "專為 Windows 的可攜 Minecraft 啟動器——本機實例、離線遊玩與精選下載。",
+            "面向 Windows 的原生 Minecraft 啟動器，專注於社群生態整合與穩定體驗。",
         [LocKeys.About_Version] = "v{0}",
         [LocKeys.About_LicenseHeading] = "授權",
         [LocKeys.About_LicenseName] = "Open Software License",

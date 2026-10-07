@@ -898,7 +898,7 @@ public static partial class Loc
 
         [LocKeys.About_Title] = "About",
         [LocKeys.About_Subtitle] =
-            "A portable Minecraft launcher for Windows — local instances, offline play, and curated downloads.",
+            "A native Windows Minecraft launcher focused on community integration and reliable stability.",
         [LocKeys.About_Version] = "v{0}",
         [LocKeys.About_LicenseHeading] = "License",
         [LocKeys.About_LicenseName] = "Open Software License",

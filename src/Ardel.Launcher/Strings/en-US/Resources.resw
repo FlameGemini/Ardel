@@ -2510,7 +2510,7 @@ Install them together, or install only this mod?</value>
     <value>About</value>
   </data>
   <data name="About_Subtitle" xml:space="preserve">
-    <value>A portable Minecraft launcher for Windows — local instances, offline play, and curated downloads.</value>
+    <value>A native Windows Minecraft launcher focused on community integration and reliable stability.</value>
   </data>
   <data name="About_Version" xml:space="preserve">
     <value>v{0}</value>

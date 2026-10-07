@@ -762,7 +762,7 @@ public static partial class Loc
 
         [LocKeys.About_Title] = "情報",
         [LocKeys.About_Subtitle] =
-            "Windows 向けポータブル Minecraft ランチャー。ローカルインスタンス、オフラインプレイ、厳選ダウンロードに対応。",
+            "Windows ネイティブの Minecraft ランチャー。コミュニティ連携と高い安定性に特化。",
         [LocKeys.About_Version] = "v{0}",
         [LocKeys.About_LicenseHeading] = "ライセンス",
         [LocKeys.About_LicenseName] = "Open Software License",

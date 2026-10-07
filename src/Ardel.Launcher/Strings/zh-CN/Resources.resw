@@ -2510,7 +2510,7 @@
     <value>关于</value>
   </data>
   <data name="About_Subtitle" xml:space="preserve">
-    <value>面向 Windows 的便携 Minecraft 启动器——本地实例、离线游玩与精选下载。</value>
+    <value>面向 Windows 的原生 Minecraft 启动器，专注于社区生态集成与稳定体验。</value>
   </data>
   <data name="About_Version" xml:space="preserve">
     <value>v{0}</value>

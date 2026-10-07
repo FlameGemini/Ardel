@@ -46,7 +46,7 @@
 
 ## Overview
 
-Ardel is an open-source, client-side Minecraft launcher engineered for speed, stability, and aesthetic excellence on modern Windows. Built from the ground up on native **WinUI 3** and **.NET 8**, Ardel avoids heavyweight web runtimes and Electron overhead to deliver sub-second cold starts, minimal system resource consumption, comprehensive version isolation, and frictionless multi-account management.
+Ardel is an open-source, client-side Minecraft launcher engineered for speed, stability, and aesthetic excellence on modern Windows. Built from the ground up on native **WinUI 3** and **.NET 8**, Ardel avoids heavyweight web runtimes and Electron overhead to deliver fast, responsive performance, minimal system resource consumption, comprehensive version isolation, and frictionless multi-account management.
 
 ---
 
@@ -55,7 +55,7 @@ Ardel is an open-source, client-side Minecraft launcher engineered for speed, st
 ### Native Windows 11 & Fluent Design
 - **Mica Alt Backdrop**: Native Windows 11 Mica Alt material integration with dynamic acrylic fallback on Windows 10.
 - **Crafted Theme System**: 9 bespoke palettes (*Arctic, Aurora, Cedar, Cinder, Honey, Moss, Obsidian, Peach, Twilight*) with seamless dark/light mode switching.
-- **Sub-Second Hydration**: Asynchronous initialization with deferred non-critical network requests for instantaneous UI responsiveness.
+- **Responsive Hydration**: Asynchronous initialization with deferred non-critical network requests for reliable and fluid UI responsiveness.
 
 ### Complete Version & Loader Ecosystem
 - **All Minecraft Editions**: Seamless support for Official Releases, Snapshots, Beta, Alpha, and April Fools historical releases.

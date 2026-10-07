@@ -2510,7 +2510,7 @@
     <value>情報</value>
   </data>
   <data name="About_Subtitle" xml:space="preserve">
-    <value>Windows 向けポータブル Minecraft ランチャー。ローカルインスタンス、オフラインプレイ、厳選ダウンロードに対応。</value>
+    <value>Windows ネイティブの Minecraft ランチャー。コミュニティ連携と高い安定性に特化。</value>
   </data>
   <data name="About_Version" xml:space="preserve">
     <value>v{0}</value>

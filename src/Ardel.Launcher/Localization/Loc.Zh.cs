@@ -867,7 +867,7 @@ public static partial class Loc
 
         [LocKeys.About_Title] = "关于",
         [LocKeys.About_Subtitle] =
-            "面向 Windows 的便携 Minecraft 启动器——本地实例、离线游玩与精选下载。",
+            "面向 Windows 的原生 Minecraft 启动器，专注于社区生态集成与稳定体验。",
         [LocKeys.About_Version] = "v{0}",
         [LocKeys.About_LicenseHeading] = "许可证",
         [LocKeys.About_LicenseName] = "Open Software License",

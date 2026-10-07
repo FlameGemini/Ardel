@@ -747,7 +747,7 @@ public static partial class Loc
         [LocKeys.Skin_NameSteve] = "Steve",
         [LocKeys.Skin_NameAlex] = "Alex",
         [LocKeys.About_Title] = "Über",
-        [LocKeys.About_Subtitle] = "Ein tragbarer Minecraft-Launcher für Windows – lokale Instanzen, Offline-Spiel und kuratierte Downloads.",
+        [LocKeys.About_Subtitle] = "Ein nativer Windows Minecraft-Launcher mit Fokus auf Community-Integration und Zuverlässigkeit.",
         [LocKeys.About_Version] = "v{0}",
         [LocKeys.About_LicenseHeading] = "Lizenz",
         [LocKeys.About_LicenseName] = "Offene Softwarelizenz",
