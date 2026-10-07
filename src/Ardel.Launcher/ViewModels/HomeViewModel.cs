@@ -851,6 +851,21 @@ public partial class HomeViewModel : ObservableObject
         }
     }
 
+    private void RunOnUi(Action action)
+    {
+        var dq = App.MainWindowInstance?.DispatcherQueue
+            ?? DispatcherQueue.GetForCurrentThread();
+
+        if (dq is not null && !dq.HasThreadAccess)
+        {
+            dq.TryEnqueue(() => action());
+        }
+        else
+        {
+            action();
+        }
+    }
+
     private async Task SyncBrandLogoImageAsync(bool force = false)
     {
         try
@@ -870,19 +885,26 @@ public partial class HomeViewModel : ObservableObject
                 return;
             }
 
-            BrandLogoImage = await ArdelLogoRenderer.CreateAsync(px, lightShell).ConfigureAwait(true);
-            _cachedLogoLight = lightShell;
-            _cachedLogoPx = px;
+            var bmp = await ArdelLogoRenderer.CreateAsync(px, lightShell).ConfigureAwait(true);
+            RunOnUi(() =>
+            {
+                BrandLogoImage = bmp;
+                _cachedLogoLight = lightShell;
+                _cachedLogoPx = px;
+            });
         }
         catch (Exception ex)
         {
             Debug.WriteLine($"[Home] Brand logo render failed: {ex.Message}");
             var lightShell = Application.Current.RequestedTheme == ApplicationTheme.Light;
-            BrandLogoImage = new BitmapImage(new Uri(lightShell
-                ? "ms-appx:///Assets/ardel-logo-ink.png"
-                : "ms-appx:///Assets/ardel-logo.png"));
-            _cachedLogoLight = lightShell;
-            _cachedLogoPx = -1;
+            RunOnUi(() =>
+            {
+                BrandLogoImage = new BitmapImage(new Uri(lightShell
+                    ? "ms-appx:///Assets/ardel-logo-ink.png"
+                    : "ms-appx:///Assets/ardel-logo.png"));
+                _cachedLogoLight = lightShell;
+                _cachedLogoPx = -1;
+            });
         }
     }
 

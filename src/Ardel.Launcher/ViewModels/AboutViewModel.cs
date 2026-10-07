@@ -433,10 +433,16 @@ public partial class AboutViewModel : ObservableObject
             {
                 var candidate = Path.GetFullPath(Path.Combine(baseDir, "..", "..", "..", "..", "..", "NOTICE.txt"));
                 if (File.Exists(candidate))
+                {
                     noticePath = candidate;
+                }
+                else
+                {
+                    noticePath = TryExtractEmbeddedNotice(baseDir);
+                }
             }
 
-            if (File.Exists(noticePath))
+            if (!string.IsNullOrEmpty(noticePath) && File.Exists(noticePath))
             {
                 Process.Start(new ProcessStartInfo
                 {
@@ -463,6 +469,47 @@ public partial class AboutViewModel : ObservableObject
         }
     }
 
+    private static string? TryExtractEmbeddedNotice(string targetDir)
+    {
+        try
+        {
+            var assembly = typeof(AboutViewModel).Assembly;
+            var resourceName = assembly.GetManifestResourceNames()
+                .FirstOrDefault(n => n.EndsWith("NOTICE.txt", StringComparison.OrdinalIgnoreCase));
+            if (resourceName is null)
+                return null;
+
+            using var stream = assembly.GetManifestResourceStream(resourceName);
+            if (stream is null)
+                return null;
+
+            string targetPath;
+            try
+            {
+                targetPath = Path.Combine(targetDir, "NOTICE.txt");
+                using var fs = new FileStream(targetPath, FileMode.Create, FileAccess.Write, FileShare.Read);
+                stream.CopyTo(fs);
+                return targetPath;
+            }
+            catch
+            {
+                var tempDir = Path.Combine(Path.GetTempPath(), "Ardel");
+                Directory.CreateDirectory(tempDir);
+                targetPath = Path.Combine(tempDir, "NOTICE.txt");
+                if (stream.CanSeek)
+                    stream.Position = 0;
+                using var fs = new FileStream(targetPath, FileMode.Create, FileAccess.Write, FileShare.Read);
+                stream.CopyTo(fs);
+                return targetPath;
+            }
+        }
+        catch (Exception ex)
+        {
+            Debug.WriteLine($"[AboutViewModel] Failed to restore embedded NOTICE.txt: {ex.Message}");
+            return null;
+        }
+    }
+
     private async Task SyncBrandLogoAsync()
     {
         try
@@ -473,14 +520,15 @@ public partial class AboutViewModel : ObservableObject
 
             var scale = App.MainWindowInstance?.Content?.XamlRoot?.RasterizationScale ?? 1.0;
             var px = (int)Math.Clamp(Math.Ceiling(96 * scale * 2), 128, 512);
-            BrandLogoImage = await ArdelLogoRenderer.CreateAsync(px, lightShell).ConfigureAwait(true);
+            var bmp = await ArdelLogoRenderer.CreateAsync(px, lightShell).ConfigureAwait(true);
+            RunOnUi(() => BrandLogoImage = bmp);
         }
         catch
         {
             var lightShell = Application.Current.RequestedTheme == ApplicationTheme.Light;
-            BrandLogoImage = new BitmapImage(new Uri(lightShell
+            RunOnUi(() => BrandLogoImage = new BitmapImage(new Uri(lightShell
                 ? "ms-appx:///Assets/ardel-logo-ink.png"
-                : "ms-appx:///Assets/ardel-logo.png"));
+                : "ms-appx:///Assets/ardel-logo.png")));
         }
     }
 

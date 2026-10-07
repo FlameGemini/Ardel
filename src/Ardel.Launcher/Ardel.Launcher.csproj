@@ -98,6 +98,7 @@
 
   <ItemGroup>
     <None Include="..\..\NOTICE.txt" Link="NOTICE.txt" CopyToOutputDirectory="PreserveNewest" />
+    <EmbeddedResource Include="..\..\NOTICE.txt" Link="Resources\NOTICE.txt" />
   </ItemGroup>
 
   <ItemGroup>

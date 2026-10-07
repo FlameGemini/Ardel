@@ -93,42 +93,81 @@ public partial class App : Application
         };
     }
 
+    private static bool _isApplyingTheme;
+
     public static void ApplyTheme(string? theme)
     {
         if (_window is null)
             return;
 
-        _activeThemeCode = AppThemeController.NormalizeThemeCode(theme);
-        StartupClock.Mark($"ApplyTheme begin ({_activeThemeCode})");
-        var queue = _window.DispatcherQueue ?? DispatcherQueue.GetForCurrentThread();
-
-        // Already on the UI thread: apply now. Enqueueing would leave OOBE SyncOverlayTheme
-        // (and launch-time Show) snapshotting stale ArdelCanvas/Ink brushes → washed-out /
-        // inverted contrast until a later tick.
-        if (queue is null || queue.HasThreadAccess)
-        {
-            AppThemeController.Apply(_window, _activeThemeCode);
-            StartupClock.Mark("ApplyTheme done");
-            ThemeChanged?.Invoke();
+        if (_isApplyingTheme)
             return;
-        }
 
-        if (!queue.TryEnqueue(() =>
+        _isApplyingTheme = true;
+        try
+        {
+            _activeThemeCode = AppThemeController.NormalizeThemeCode(theme);
+            StartupClock.Mark($"ApplyTheme begin ({_activeThemeCode})");
+            var queue = _window.DispatcherQueue ?? DispatcherQueue.GetForCurrentThread();
+
+            // Already on the UI thread: apply now. Enqueueing would leave OOBE SyncOverlayTheme
+            // (and launch-time Show) snapshotting stale ArdelCanvas/Ink brushes → washed-out /
+            // inverted contrast until a later tick.
+            if (queue is null || queue.HasThreadAccess)
             {
                 AppThemeController.Apply(_window, _activeThemeCode);
                 StartupClock.Mark("ApplyTheme done");
-                ThemeChanged?.Invoke();
-            }))
+                NotifyThemeChanged();
+                return;
+            }
+
+            if (!queue.TryEnqueue(() =>
+                {
+                    try
+                    {
+                        AppThemeController.Apply(_window, _activeThemeCode);
+                        StartupClock.Mark("ApplyTheme done");
+                        NotifyThemeChanged();
+                    }
+                    catch (Exception ex)
+                    {
+                        Debug.WriteLine($"[App] ApplyTheme async failed: {ex.Message}");
+                    }
+                }))
+            {
+                AppThemeController.Apply(_window, _activeThemeCode);
+                StartupClock.Mark("ApplyTheme done");
+                NotifyThemeChanged();
+            }
+        }
+        finally
         {
-            AppThemeController.Apply(_window, _activeThemeCode);
-            StartupClock.Mark("ApplyTheme done");
-            ThemeChanged?.Invoke();
+            _isApplyingTheme = false;
+        }
+    }
+
+    private static void NotifyThemeChanged()
+    {
+        var handlers = ThemeChanged?.GetInvocationList();
+        if (handlers is null)
+            return;
+
+        foreach (var handler in handlers)
+        {
+            try
+            {
+                ((Action)handler)();
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine($"[App] ThemeChanged subscriber exception: {ex}");
+            }
         }
     }
 
     public static void OnRootActualThemeChanged()
     {
-        if (_window is null)
+        if (_window is null || _isApplyingTheme)
             return;
 
         if (string.Equals(_activeThemeCode, "Default", StringComparison.OrdinalIgnoreCase))
