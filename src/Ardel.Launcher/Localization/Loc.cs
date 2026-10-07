@@ -823,8 +823,8 @@ public static partial class Loc
         [LocKeys.Settings_StartupSplashPreviewDone] = "Splash preview finished.",
         [LocKeys.Settings_StartupSplashPreviewDisabled] = "Enable the startup splash to preview it.",
         [LocKeys.Settings_QuickLaunch] = "Quick launch",
-        [LocKeys.Settings_QuickLaunchDesc] = "Control the Home quick-launch button for your pinned instance.",
-        [LocKeys.Settings_QuickLaunchShowOnHome] = "Show quick launch button on Home",
+        [LocKeys.Settings_QuickLaunchDesc] = "Control the Home quick-launch card for your pinned instance.",
+        [LocKeys.Settings_QuickLaunchShowOnHome] = "Show quick launch card on Home",
         [LocKeys.Settings_HomeWidgets] = "Home widgets",
         [LocKeys.Settings_HomeWidgetsDesc] =
             "Show weather and date at the top of the Home page. Set a region to enable weather.",
