@@ -192,6 +192,7 @@ public partial class HomeViewModel : ObservableObject
     [ObservableProperty] private bool _hasQuickLaunch;
     [ObservableProperty] private string _quickLaunchHint = string.Empty;
     [ObservableProperty] private bool _showQuickLaunchButton = true;
+    [ObservableProperty] private bool _showQuickLaunchCard = true;
     [ObservableProperty] private bool _showBrandLogo = true;
     [ObservableProperty] private BitmapImage? _brandLogoImage;
     [ObservableProperty] private BitmapImage? _heroHeadImage;
@@ -940,6 +941,7 @@ public partial class HomeViewModel : ObservableObject
             QuickLaunchHint = Loc.Get(LocKeys.Home_QuickLaunchNone);
             SelectedInstance = null;
             HasInstance = false;
+            ShowQuickLaunchCard = false;
             OnPropertyChanged(nameof(LaunchButtonSubtitle));
             return;
         }
@@ -952,6 +954,7 @@ public partial class HomeViewModel : ObservableObject
             SelectedInstance = item;
         }
         HasInstance = true;
+        ShowQuickLaunchCard = _showHomeQuickLaunch;
         RefreshInstanceStats(item.Id);
         OnPropertyChanged(nameof(LaunchButtonSubtitle));
     }

@@ -420,24 +420,6 @@ public partial class App : Application
             Debug.WriteLine($"[App] ApplyTheme on launch failed: {ex.Message}");
         }
 
-        if (needOobe)
-            OobeHost.Show(_window);
-
-        StartupClock.Mark("Activate begin");
-        _window.Activate();
-        
-        // Ensure the AppWindow is explicitly shown, bypassing any inherited hidden states
-        try { _window.AppWindow.Show(); } catch { }
-        TryForceWindowToFront(_window);
-
-        StartupClock.Mark("Window Activated");
-
-        if (!needOobe && splashOptions.Enabled)
-        {
-            StartupSplash.Show(_window, savedTheme, splashOptions);
-            StartupClock.Mark("Splash overlay shown");
-        }
-
         StartupClock.Mark("Navigate begin");
         if (!needOobe && !splashOptions.Enabled)
         {
@@ -452,6 +434,23 @@ public partial class App : Application
         {
             StartupClock.Mark("Navigate done");
         }
+
+        if (needOobe)
+            OobeHost.Show(_window);
+        else if (splashOptions.Enabled)
+        {
+            StartupSplash.Show(_window, savedTheme, splashOptions);
+            StartupClock.Mark("Splash overlay shown");
+        }
+
+        StartupClock.Mark("Activate begin");
+        _window.Activate();
+        
+        // Ensure the AppWindow is explicitly shown, bypassing any inherited hidden states
+        try { _window.AppWindow.Show(); } catch { }
+        TryForceWindowToFront(_window);
+
+        StartupClock.Mark("Window Activated");
 
         var dq = DispatcherQueue.GetForCurrentThread();
         dq.TryEnqueue(async () =>

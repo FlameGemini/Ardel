@@ -79,8 +79,12 @@ public sealed partial class MainWindow : Window
 
     public void InitializeNavigation()
     {
-        SystemBackdrop = new Microsoft.UI.Xaml.Media.MicaBackdrop();
-        ApplyLocalization(navigateToTag: "home");
+        if (SystemBackdrop is null)
+        {
+            try { SystemBackdrop = new Microsoft.UI.Xaml.Media.MicaBackdrop(); } catch { }
+        }
+        ApplyChromeStrings();
+        PrewarmPages("home");
     }
 
     private void PrewarmPages(string activeTag = "home")
@@ -114,11 +118,7 @@ public sealed partial class MainWindow : Window
         StartupClock.Mark("PrewarmPages done");
     }
 
-    /// <summary>
-    /// Refresh chrome strings from <see cref="Loc"/> and rebuild the current page.
-    /// </summary>
-    /// <param name="navigateToTag">Nav tag to select after refresh; null keeps the current main nav item.</param>
-    public void ApplyLocalization(string? navigateToTag = null)
+    private void ApplyChromeStrings()
     {
         Title = Loc.Get(LocKeys.Brand_Name);
         if (AppTitleTextBlock is not null)
@@ -142,10 +142,17 @@ public sealed partial class MainWindow : Window
             };
         }
 
-        // Do not resolve DownloadViewModel on cold start — binds ModSearch/ModDetail.
-        // Relocalize flyout chrome only when already bound.
         if (_downloadFlyoutBound)
             DownloadFlyout.Relocalize();
+    }
+
+    /// <summary>
+    /// Refresh chrome strings from <see cref="Loc"/> and rebuild the current page.
+    /// </summary>
+    /// <param name="navigateToTag">Nav tag to select after refresh; null keeps the current main nav item.</param>
+    public void ApplyLocalization(string? navigateToTag = null)
+    {
+        ApplyChromeStrings();
 
         var preserveTag = navigateToTag;
         if (string.IsNullOrEmpty(preserveTag) &&

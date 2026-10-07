@@ -120,8 +120,7 @@
                 VerticalAlignment="Bottom"
                 Spacing="12"
                 Margin="0,0,4,8"
-                MaxWidth="320"
-                Visibility="{x:Bind ViewModel.ShowQuickLaunchButton, Mode=OneWay, Converter={StaticResource BoolToVisibility}}">
+                MaxWidth="320">
 
                 <!-- Last Played Instance Card (Clickable to launch directly) -->
                 <Button
@@ -133,7 +132,7 @@
                     Padding="12,10"
                     HorizontalAlignment="Right"
                     HorizontalContentAlignment="Stretch"
-                    Visibility="{x:Bind ViewModel.HasInstance, Mode=OneWay, Converter={StaticResource BoolToVisibility}}">
+                    Visibility="{x:Bind ViewModel.ShowQuickLaunchCard, Mode=OneWay, Converter={StaticResource BoolToVisibility}}">
                     <Grid ColumnDefinitions="Auto,*,Auto" ColumnSpacing="12">
                         <!-- Instance Icon Box -->
                         <Border
