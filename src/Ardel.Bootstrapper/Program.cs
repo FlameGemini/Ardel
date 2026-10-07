@@ -106,8 +106,63 @@ internal static class Program
                     if (zipResourceName != null)
                     {
                         using var stream = assembly.GetManifestResourceStream(zipResourceName)!;
-                        using var archive = new ZipArchive(stream, ZipArchiveMode.Read);
-                        archive.ExtractToDirectory(appRuntimeDir, overwriteFiles: true);
+                        byte[] zipBytes = new byte[stream.Length];
+                        int totalRead = 0;
+                        while (totalRead < zipBytes.Length)
+                        {
+                            int read = stream.Read(zipBytes, totalRead, zipBytes.Length - totalRead);
+                            if (read <= 0) break;
+                            totalRead += read;
+                        }
+
+                        // Gather all entry names upfront
+                        List<string> entryNames;
+                        using (var probeArchive = new ZipArchive(new MemoryStream(zipBytes, false), ZipArchiveMode.Read))
+                        {
+                            entryNames = probeArchive.Entries.Select(e => e.FullName).ToList();
+                        }
+
+                        // Pre-create all directories upfront in batch to eliminate filesystem lock contention
+                        var uniqueDirs = entryNames
+                            .Select(e => Path.GetDirectoryName(Path.Combine(appRuntimeDir, e)))
+                            .Where(d => !string.IsNullOrEmpty(d))
+                            .Distinct(StringComparer.OrdinalIgnoreCase);
+
+                        foreach (var dir in uniqueDirs)
+                        {
+                            if (dir != null && !Directory.Exists(dir))
+                            {
+                                Directory.CreateDirectory(dir);
+                            }
+                        }
+
+                        // Extract files concurrently across all CPU cores
+                        int maxParallelism = Math.Clamp(Environment.ProcessorCount, 2, 16);
+                        Parallel.ForEach(
+                            entryNames,
+                            new ParallelOptions { MaxDegreeOfParallelism = maxParallelism },
+                            () => new ZipArchive(new MemoryStream(zipBytes, false), ZipArchiveMode.Read),
+                            (entryName, loopState, localArchive) =>
+                            {
+                                var entry = localArchive.GetEntry(entryName);
+                                if (entry == null || string.IsNullOrEmpty(entry.Name))
+                                    return localArchive;
+
+                                string destPath = Path.Combine(appRuntimeDir, entry.FullName);
+                                using var entryStream = entry.Open();
+                                using var destStream = new FileStream(
+                                    destPath,
+                                    FileMode.Create,
+                                    FileAccess.Write,
+                                    FileShare.None,
+                                    bufferSize: 128 * 1024,
+                                    options: FileOptions.SequentialScan);
+                                entryStream.CopyTo(destStream, 128 * 1024);
+
+                                return localArchive;
+                            },
+                            localArchive => localArchive.Dispose()
+                        );
                     }
 
                     File.WriteAllText(completeMarker, payloadHash);

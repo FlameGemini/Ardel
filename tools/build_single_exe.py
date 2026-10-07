@@ -55,8 +55,9 @@ def main() -> int:
         payload_zip.unlink()
 
     # Zip all published files into payload.zip, skipping only .pdb debug symbols
+    # Use compresslevel=1 (Fastest Deflate) for ultra-fast first-time extraction
     file_count = 0
-    with zipfile.ZipFile(payload_zip, "w", zipfile.ZIP_DEFLATED, compresslevel=9) as zf:
+    with zipfile.ZipFile(payload_zip, "w", zipfile.ZIP_DEFLATED, compresslevel=1) as zf:
         for file in launcher_pub_dir.rglob("*"):
             if file.is_file():
                 if file.suffix.lower() == ".pdb":
