@@ -26,8 +26,8 @@
   <a href="https://github.com/FlameGemini/Ardel/blob/main/LICENSE">
     <img src="https://img.shields.io/badge/License-OSL--3.0-2EA44F?style=for-the-badge" alt="License" />
   </a>
-  <a href="https://ardel.ice-tea.top">
-    <img src="https://img.shields.io/badge/Website-ardel.ice--tea.top-E36209?style=for-the-badge&logo=googlechrome&logoColor=white" alt="Official Website" />
+  <a href="https://icetea.one">
+    <img src="https://img.shields.io/badge/Website-icetea.one-E36209?style=for-the-badge&logo=googlechrome&logoColor=white" alt="Official Website" />
   </a>
 </p>
 
@@ -94,7 +94,7 @@ Download the single-file portable release `Ardel.exe` from the [Releases](https:
 - All game files and settings are safely stored alongside the launcher in `.minecraft/`.
 
 ### Option 2: Web Installer
-Download `ArdelSetup.exe` from the official website at [https://ardel.ice-tea.top](https://ardel.ice-tea.top).
+Download `ArdelSetup.exe` from the official website at [https://icetea.one](https://icetea.one).
 
 ---
 
