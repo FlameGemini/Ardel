@@ -293,11 +293,14 @@ public partial class LaunchViewModel : ObservableObject
         EnsureVersionsWatcher();
         var gameDir = SnapshotSettingsWithoutFlush().GameDirectory;
         var saved = _settings.SelectedVersion;
-        var items = await Task.Run(() => _localVersions.GetInstalled(gameDir)).ConfigureAwait(true);
+        var items = await Task.Run(() => _localVersions.GetInstalled(gameDir)).ConfigureAwait(false);
 
-        ApplyInstalledVersions(items, saved);
-        StartupClock.Mark($"LoadLocalVersions done ({items.Count} instances)");
-        StartupClock.Flush();
+        RunOnUi(() =>
+        {
+            ApplyInstalledVersions(items, saved);
+            StartupClock.Mark($"LoadLocalVersions done ({items.Count} instances)");
+            StartupClock.Flush();
+        });
     }
 
     /// <summary>Reload local instances and select the version that was just installed.</summary>
@@ -306,10 +309,13 @@ public partial class LaunchViewModel : ObservableObject
         EnsureSettingsLoaded();
         EnsureVersionsWatcher();
         var gameDir = SnapshotSettingsWithoutFlush().GameDirectory;
-        var items = await Task.Run(() => _localVersions.GetInstalled(gameDir)).ConfigureAwait(true);
+        var items = await Task.Run(() => _localVersions.GetInstalled(gameDir)).ConfigureAwait(false);
 
-        ApplyInstalledVersions(items, versionId);
-        PersistNow();
+        RunOnUi(() =>
+        {
+            ApplyInstalledVersions(items, versionId);
+            PersistNow();
+        });
     }
 
     private void ApplyInstalledVersions(IReadOnlyList<GameVersionItem> items, string? preferredId)
@@ -319,12 +325,6 @@ public partial class LaunchViewModel : ObservableObject
 
         var ordered = OrderByInstancePreference(items, _settings.InstanceOrder);
         MergeVersionsCollection(ordered);
-
-        // Preload icons into cache so opening or switching to Instances list is instant
-        foreach (var v in ordered)
-        {
-            _ = v.IconImage;
-        }
 
         _suppressPersist = true;
         SelectedVersion = Versions.FirstOrDefault(v =>

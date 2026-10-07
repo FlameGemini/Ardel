@@ -22,12 +22,15 @@
     <Version>1.5.6</Version>
     <AssemblyVersion>1.5.6.0</AssemblyVersion>
     <FileVersion>1.5.6.0</FileVersion>
+    <PublishReadyToRun>true</PublishReadyToRun>
+    <TieredCompilationQuickJit>true</TieredCompilationQuickJit>
+    <TieredPGO>true</TieredPGO>
     <PackageLicenseExpression>OSL-3.0</PackageLicenseExpression>
     <RepositoryUrl>https://github.com/FlameGemini/Ardel</RepositoryUrl>
   </PropertyGroup>
 
   <ItemGroup>
-    <EmbeddedResource Include="payload.tar.br" Condition="Exists('payload.tar.br')" />
+    <EmbeddedResource Include="payload.hash" Condition="Exists('payload.hash')" />
     <EmbeddedResource Include="payload.zip" Condition="Exists('payload.zip')" />
   </ItemGroup>
 </Project>

@@ -420,21 +420,6 @@ public partial class App : Application
             Debug.WriteLine($"[App] ApplyTheme on launch failed: {ex.Message}");
         }
 
-        StartupClock.Mark("Navigate begin");
-        if (!needOobe && !splashOptions.Enabled)
-        {
-            _window.InitializeNavigation();
-            StartupClock.Mark("Navigate done (immediate)");
-        }
-        else if (!needOobe)
-        {
-            StartupClock.Mark("Navigate deferred until after splash");
-        }
-        else
-        {
-            StartupClock.Mark("Navigate done");
-        }
-
         if (needOobe)
             OobeHost.Show(_window);
 
@@ -451,6 +436,21 @@ public partial class App : Application
         {
             StartupSplash.Show(_window, savedTheme, splashOptions);
             StartupClock.Mark("Splash overlay shown");
+        }
+
+        StartupClock.Mark("Navigate begin");
+        if (!needOobe && !splashOptions.Enabled)
+        {
+            _window.InitializeNavigation();
+            StartupClock.Mark("Navigate done (immediate)");
+        }
+        else if (!needOobe)
+        {
+            StartupClock.Mark("Navigate deferred until after splash");
+        }
+        else
+        {
+            StartupClock.Mark("Navigate done");
         }
 
         var dq = DispatcherQueue.GetForCurrentThread();

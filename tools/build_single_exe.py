@@ -68,6 +68,13 @@ def main() -> int:
     payload_size_mb = payload_zip.stat().st_size / (1024 * 1024)
     print(f"Compressed payload created: {payload_zip.name} ({file_count} files, {payload_size_mb:.2f} MB)")
 
+    import hashlib
+    with open(payload_zip, "rb") as f:
+        payload_hash = hashlib.sha256(f.read()).hexdigest()[:16].lower()
+    payload_hash_file = BOOTSTRAPPER_DIR / "payload.hash"
+    payload_hash_file.write_text(payload_hash, encoding="utf-8")
+    print(f"Pre-computed payload hash: {payload_hash}")
+
     print("=== Step 3: Publishing Ardel Single-File Executable ===")
     if SINGLE_OUT.exists():
         shutil.rmtree(SINGLE_OUT, ignore_errors=True)
@@ -78,10 +85,8 @@ def main() -> int:
         "-c", "Release",
         "-r", "win-x64",
         "-p:PublishSingleFile=true",
-        "-p:PublishTrimmed=true",
-        "-p:TrimMode=partial",
+        "-p:PublishReadyToRun=true",
         "-p:IncludeNativeLibrariesForSelfExtract=true",
-        "-p:EnableCompressionInSingleFile=true",
         "--self-contained", "true",
         "-o", str(SINGLE_OUT)
     ])
@@ -95,9 +100,11 @@ def main() -> int:
     dest_exe = PUBLISH_DIR / "Ardel.exe"
     shutil.copy2(single_exe, dest_exe)
 
-    # Clean up intermediate payload
+    # Clean up intermediate payload and hash files
     if payload_zip.exists():
         payload_zip.unlink()
+    if payload_hash_file.exists():
+        payload_hash_file.unlink()
 
     exe_size_mb = dest_exe.stat().st_size / (1024 * 1024)
     print("=======================================================")

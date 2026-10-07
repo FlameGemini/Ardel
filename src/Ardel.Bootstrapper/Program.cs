@@ -30,29 +30,42 @@ internal static class Program
             if (string.IsNullOrEmpty(localAppData))
                 localAppData = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.UserProfile), "AppData", "Local");
             string baseRuntimeDir = Path.Combine(localAppData, AppName, "runtime");
-            Directory.CreateDirectory(baseRuntimeDir);
 
-            // 3. Locate embedded payload
+            // 3. Obtain pre-computed payload hash (instant < 0.1ms)
             var assembly = Assembly.GetExecutingAssembly();
-            string? resourceName = assembly.GetManifestResourceNames()
-                .FirstOrDefault(n => n.EndsWith("payload.zip", StringComparison.OrdinalIgnoreCase));
+            string payloadHash = string.Empty;
+            string? hashResourceName = assembly.GetManifestResourceNames()
+                .FirstOrDefault(n => n.EndsWith("payload.hash", StringComparison.OrdinalIgnoreCase));
 
-            if (resourceName == null)
+            if (hashResourceName != null)
             {
-                // Fallback for development / side-by-side execution
-                string directExe = Path.Combine(launchDir, "Ardel.Launcher.exe");
-                if (File.Exists(directExe))
+                using var stream = assembly.GetManifestResourceStream(hashResourceName);
+                if (stream != null)
                 {
-                    return Launch(directExe, launchDir, args);
+                    using var reader = new StreamReader(stream);
+                    payloadHash = (reader.ReadToEnd() ?? string.Empty).Trim().ToLowerInvariant();
                 }
-                return 1;
             }
 
-            // Compute payload hash to manage versioning and updates cleanly
-            string payloadHash;
-            using (var stream = assembly.GetManifestResourceStream(resourceName)!)
-            using (var sha = SHA256.Create())
+            string? zipResourceName = assembly.GetManifestResourceNames()
+                .FirstOrDefault(n => n.EndsWith("payload.zip", StringComparison.OrdinalIgnoreCase));
+
+            if (string.IsNullOrEmpty(payloadHash))
             {
+                if (zipResourceName == null)
+                {
+                    // Fallback for development / side-by-side execution
+                    string directExe = Path.Combine(launchDir, "Ardel.Launcher.exe");
+                    if (File.Exists(directExe))
+                    {
+                        return Launch(directExe, launchDir, args);
+                    }
+                    return 1;
+                }
+
+                // Compute payload hash only if hash was not pre-embedded
+                using var stream = assembly.GetManifestResourceStream(zipResourceName)!;
+                using var sha = SHA256.Create();
                 byte[] hashBytes = sha.ComputeHash(stream);
                 payloadHash = Convert.ToHexString(hashBytes)[..16].ToLowerInvariant();
             }
@@ -61,6 +74,14 @@ internal static class Program
             string completeMarker = Path.Combine(appRuntimeDir, ".complete");
             string targetExe = Path.Combine(appRuntimeDir, "Ardel.Launcher.exe");
 
+            // Ultra-Fast Path: If already extracted and verified, launch immediately with ZERO delay (< 1ms)
+            if (File.Exists(completeMarker) && File.Exists(targetExe))
+            {
+                return Launch(targetExe, launchDir, args);
+            }
+
+            // Extraction Path (First run or after updates)
+            Directory.CreateDirectory(baseRuntimeDir);
             using var extractMutex = new Mutex(false, @"Global\Ardel_Bootstrapper_Extract_" + payloadHash);
             var mutexAcquired = false;
             try
@@ -82,9 +103,10 @@ internal static class Program
                     }
                     Directory.CreateDirectory(appRuntimeDir);
 
-                    using (var stream = assembly.GetManifestResourceStream(resourceName)!)
-                    using (var archive = new ZipArchive(stream, ZipArchiveMode.Read))
+                    if (zipResourceName != null)
                     {
+                        using var stream = assembly.GetManifestResourceStream(zipResourceName)!;
+                        using var archive = new ZipArchive(stream, ZipArchiveMode.Read);
                         archive.ExtractToDirectory(appRuntimeDir, overwriteFiles: true);
                     }
 
