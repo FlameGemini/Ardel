@@ -6,7 +6,7 @@ NOTICE AND INTELLECTUAL PROPERTY STATEMENTS
 Copyright (c) 2026 FlameGemini. All rights reserved.
 
 Project Repository: https://github.com/FlameGemini/Ardel
-Project Website:    https://ardel.ice-tea.top
+Project Website:    https://ardel.icetea.one
 
 --------------------------------------------------------------------------------
 1. PRIMARY LICENSE & SOURCE CODE AVAILABILITY REQUIREMENT

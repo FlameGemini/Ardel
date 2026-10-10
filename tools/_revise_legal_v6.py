@@ -15,8 +15,8 @@ FILES = [
     LOC / "AboutLegalNotice.Locales2.cs",
 ]
 
-AUTH = "https://ardel.ice-tea.top/authcompleted"
-TERMS = "https://ardel.ice-tea.top/terms"
+AUTH = "https://ardel.icetea.one/authcompleted"
+TERMS = "https://ardel.icetea.one/terms"
 
 REPLACEMENTS = [
     # EN
